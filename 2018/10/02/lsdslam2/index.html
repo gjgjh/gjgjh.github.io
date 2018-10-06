@@ -431,40 +431,40 @@ dist(\mathbf\xi_{ji}):=\mathbf\xi_{ji}^T \mathbf W \mathbf\xi_{ji} \tag{4}</scri
 <p>原论文中没有按这个顺序介绍，这里按上述顺序介绍。</p>
 <h4 id="2-1-1-选择出“good”像素"><a href="#2-1-1-选择出“good”像素" class="headerlink" title="2.1.1 选择出“good”像素"></a>2.1.1 选择出“good”像素</h4><p>这部分论文中称为不确定性估计（Uncertainty Estimation），主要对逆深度的不确定度进行估计，并以此挑选好的像素。<br>我们知道在直接法中，逆深度与四个变量有关，可以表示成它们的的函数：</p>
 <script type="math/tex; mode=display">
-d^\*=d(I_0,I_1,\xi,\pi)\tag{5}</script><p>其中$I_0$，$I_1$分别为参考帧和当前帧两个图像，$\xi$表示两帧间位姿变换，$\pi$为相机内参。<br>为进一步分析各个变量的影响，将整个立体匹配过程分为三步：<br>1.计算在参考帧中的对极线<br>2.在对极线上找到最好的匹配位置$\lambda^*\in\mathbb{R}$(视差)<br>3.通过$\lambda^*$求出逆深度$d^*$</p>
+d^*=d(I_0,I_1,\xi,\pi)\tag{5}</script><p>其中$I_0$，$I_1$分别为参考帧和当前帧两个图像，$\xi$表示两帧间位姿变换，$\pi$为相机内参。<br>为进一步分析各个变量的影响，将整个立体匹配过程分为三步：<br>1.计算在参考帧中的对极线<br>2.在对极线上找到最好的匹配位置$\lambda^*\in\mathbb{R}$(视差)<br>3.通过$\lambda^*$求出逆深度$d^*$</p>
 <p>这三个步骤分别涉及三个误差：<strong>几何视差误差</strong>，由$ \xi $和$\pi$中的噪声将影响第１步对极线的位置，从而导致匹配点位置的误差；<strong>光度视差误差</strong>，在图像$I_0$和$I_1$上的噪声将影响第２步匹配位置的求取；<strong>逆深度计算误差</strong>，逆深度误差除了与上述两个误差有关外，还与基线、像素位置等有关。接下来将对这几个误差如何建模进行分析。</p>
 <h5 id="a-几何视差误差"><a href="#a-几何视差误差" class="headerlink" title="a.几何视差误差"></a>a.几何视差误差</h5><p><strong>几何视差误差（Geometric disparity error）</strong>，记为$\epsilon_\lambda$。这一部分从几何和代数上分析了几何视差误差的具体形式。<br>首先我们从<strong>代数</strong>上分析。理论上，几何视差误差可以准确地计算出，但计算复杂度较大，不够高效，故使用了近似的误差模型进行了代替。首先，极线可定义为：</p>
 <script type="math/tex; mode=display">
-L:=\begin{Bmatrix}l_0+\lambda\begin{pmatrix}l_x\\\l_y\end{pmatrix}\mid\lambda\in S\end{Bmatrix}\tag{6}</script><p>其中，$\lambda$为视差，$l:=(l_x,l_y)^T$是归一化的极线方向向量，$l_0$是极线上对应无穷远点的图像点，但我认为当作极点更容易理解，不影响结果，只是视差的具体数值不一样。<br>设我们要求的点在极线和灰度等值线(isocurve)的交点上，在局部上我们将等值线近似为直线，同时梯度方向近似不变，则有：</p>
+L:=\begin{Bmatrix}l_0+\lambda\begin{pmatrix}l_x\\l_y\end{pmatrix}\mid\lambda\in S\end{Bmatrix}\tag{6}</script><p>其中，$\lambda$为视差，$l:=(l_x,l_y)^T$是归一化的极线方向向量，$l_0$是极线上对应无穷远点的图像点，但我认为当作极点更容易理解，不影响结果，只是视差的具体数值不一样。<br>设我们要求的点在极线和灰度等值线(isocurve)的交点上，在局部上我们将等值线近似为直线，同时梯度方向近似不变，则有：</p>
 <script type="math/tex; mode=display">
-l_0+\lambda\begin{pmatrix}l_x\\\l_y\end{pmatrix}\stackrel{!}＝g_0+\gamma\begin{pmatrix}-g_y\\\g_x\end{pmatrix} \quad\quad \gamma\in\mathbb{R}\tag{7}</script><p>这里$g_0$为等值线上的一点，$g_0$处的灰度值等于或接近待匹配像素的灰度值，归一化梯度方向向量$g:=(g_x,g_y)^T$，则$(-g_y,g_x)^T$表示等值线方向向量。故等式右边表示沿等值线搜索到的该点坐标，等式左边是沿极线搜索到的匹配点坐标。由于下面会分析影像噪声的影响，所以这里假设$g_0$和$g$不受噪声影响。现在用这些相关量将$\lambda^*$表示出来(将式(7)两边同左乘$g^T$并移项得):</p>
+l_0+\lambda\begin{pmatrix}l_x\\l_y\end{pmatrix}\stackrel{!}＝g_0+\gamma\begin{pmatrix}-g_y\\g_x\end{pmatrix} \quad\quad \gamma\in\mathbb{R}\tag{7}</script><p>这里$g_0$为等值线上的一点，$g_0$处的灰度值等于或接近待匹配像素的灰度值，归一化梯度方向向量$g:=(g_x,g_y)^T$，则$(-g_y,g_x)^T$表示等值线方向向量。故等式右边表示沿等值线搜索到的该点坐标，等式左边是沿极线搜索到的匹配点坐标。由于下面会分析影像噪声的影响，所以这里假设$g_0$和$g$不受噪声影响。现在用这些相关量将$\lambda^*$表示出来(将式(7)两边同左乘$g^T$并移项得):</p>
 <script type="math/tex; mode=display">
-\lambda^\*(l_0)=\frac{\langle g,g_0-l_0 \rangle}{\langle g,l \rangle}\tag{8}</script><p>由<a href="https://en.wikipedia.org/wiki/Propagation_of_uncertainty" target="_blank" rel="noopener">协方差传播率</a>可得：</p>
+\lambda^*(l_0)=\frac{\langle g,g_0-l_0 \rangle}{\langle g,l \rangle}\tag{8}</script><p>由<a href="https://en.wikipedia.org/wiki/Propagation_of_uncertainty" target="_blank" rel="noopener">协方差传播率</a>可得：</p>
 <script type="math/tex; mode=display">
-\sigma_{\lambda(\xi,\pi)}^2=J_{\lambda^\*(l_0)}\begin{pmatrix}\sigma_l^2&0\\\0&\sigma_l^2\end{pmatrix}J_{\lambda^\*(l_0)}^{T}
+\sigma_{\lambda(\xi,\pi)}^2=J_{\lambda^*(l_0)}\begin{pmatrix}\sigma_l^2&0\\0&\sigma_l^2\end{pmatrix}J_{\lambda^*(l_0)}^{T}
 \tag{9}</script><p>由式(8)得：</p>
 <script type="math/tex; mode=display">
-J_{\lambda^\*(l_0)}=\frac{\partial\lambda^\*(l_0)}{\partial l_0}=-\frac{g^T}{\langle g,l \rangle} \tag{10}</script><p>代入式(9)得：</p>
+J_{\lambda^*(l_0)}=\frac{\partial\lambda^*(l_0)}{\partial l_0}=-\frac{g^T}{\langle g,l \rangle} \tag{10}</script><p>代入式(9)得：</p>
 <script type="math/tex; mode=display">
 \sigma_{\lambda(\xi,\pi)}^2=\frac{\langle g,g\rangle\cdot\sigma_l^2}{\langle g,l\rangle^2}=\frac{\sigma_l^2}{\langle g,l\rangle^2} \tag{11}</script><p>其中，$\sigma_{l}^2$为极线位置误差$\epsilon_l$的方差（$\epsilon_l$可以看作位姿扰动的影响，其示意图见下面）。总之，从式(11)得出以下结论：</p>
 <ul>
 <li>位姿扰动造成的误差$\sigma_{l}^2$越大，则几何视差误差越大</li>
 <li>梯度$g$和极线$l$的夹角越小（内积越大），几何视差误差越小</li>
 </ul>
-<p>代数上分析完后，再从<strong>几何</strong>上分析一下，毕竟数形结合才能更好理解，否则这个地方理解起来有点抽象。如下图所示，$P<em>0$是假设没有误差时匹配到的点，$L’$是无误差时的极线。但是由于位姿扰动影响，在图上表现为$P_0$偏移了$\epsilon_l$这么远（论文认为位姿扰动只影响极点位置计算，但极线方向不受影响，所以极点$l_0$等极线上的点都偏移了这么远），论文假设$l_0$受各向同性的高斯噪声，因此$P_0$偏移后的位置可能出现在蓝色虚圆的任意一点$P_1$。偏移后极线为$L$，虚直线为等值线。那么现在，在极线$L$上要匹配到同样灰度值的点，就得多走$\epsilon</em>\lambda$这么一段距离，这就是几何视差误差。<br>从图上我们可以清晰看出梯度方向与极线方向夹角大小对几何视差误差的影响，可以得出和上面代数分析部分一样的两个结论。<br><img src="https://res.cloudinary.com/ddqa2am0q/image/upload/v1538738729/lsdslam_geometric.jpg" alt=""></p>
+<p>代数上分析完后，再从<strong>几何</strong>上分析一下，毕竟数形结合才能更好理解，否则这个地方理解起来有点抽象。如下图所示，$P_0$是假设没有误差时匹配到的点，$L’$是无误差时的极线。但是由于位姿扰动影响，在图上表现为$P_0$偏移了$\epsilon_l$这么远（论文认为位姿扰动只影响极点位置计算，但极线方向不受影响，所以极点$l_0$等极线上的点都偏移了这么远），论文假设$l_0$受各向同性的高斯噪声，因此$P_0$偏移后的位置可能出现在蓝色虚圆的任意一点$P_1$。偏移后极线为$L$，虚直线为等值线。那么现在，在极线$L$上要匹配到同样灰度值的点，就得多走$\epsilon_\lambda$这么一段距离，这就是几何视差误差。<br>从图上我们可以清晰看出梯度方向与极线方向夹角大小对几何视差误差的影响，可以得出和上面代数分析部分一样的两个结论。<br><img src="https://res.cloudinary.com/ddqa2am0q/image/upload/v1538738729/lsdslam_geometric.jpg" alt=""></p>
 <h5 id="b-光度视差误差"><a href="#b-光度视差误差" class="headerlink" title="b.光度视差误差"></a>b.光度视差误差</h5><p><strong>光度视差误差（Photometric disparity error）</strong>这一部分论文也从几何和代数上分析了几何视差误差的具体形式。首先我们从<strong>代数</strong>上分析。在立体匹配时我们使用SSD误差，即：</p>
 <script type="math/tex; mode=display">
-\lambda^\*＝\min_{\lambda}(i_{ref}-I_p(\lambda))^2 \tag{12}</script><p>其中$i_{ref}$是参考帧像素灰度，$I_p(\lambda)$是极线上视差$\lambda$处的像素灰度。假设可以获得一个比较好的初值$\lambda_0$，则将$I_p(\lambda)$一阶泰勒展开：</p>
+\lambda^*＝\min_{\lambda}(i_{ref}-I_p(\lambda))^2 \tag{12}</script><p>其中$i_{ref}$是参考帧像素灰度，$I_p(\lambda)$是极线上视差$\lambda$处的像素灰度。假设可以获得一个比较好的初值$\lambda_0$，则将$I_p(\lambda)$一阶泰勒展开：</p>
 <script type="math/tex; mode=display">
 I_p(\lambda)\approx I_p(\lambda_0)+g_p\Delta \lambda \tag{13}</script><p>则误差函数变为：</p>
 <script type="math/tex; mode=display">
-\lambda^\*＝\min_{\lambda}(i_{ref}-I_p(\lambda_0)-g_p\Delta\lambda)^2 \tag{14}</script><p>可以解出$\Delta\lambda$，则有：</p>
+\lambda^*＝\min_{\lambda}(i_{ref}-I_p(\lambda_0)-g_p\Delta\lambda)^2 \tag{14}</script><p>可以解出$\Delta\lambda$，则有：</p>
 <script type="math/tex; mode=display">
-\lambda^\*(I)=\lambda_0+\Delta\lambda=\lambda_0+(i_{ref}-I_p(\lambda_0))g_p^{-1} \tag{15}</script><p>注意这里$g_p$是图像$I_p$极线上的梯度，因此是一维的。这里同样不考虑梯度的噪声，只考虑两个图像的噪声，则有：</p>
+\lambda^*(I)=\lambda_0+\Delta\lambda=\lambda_0+(i_{ref}-I_p(\lambda_0))g_p^{-1} \tag{15}</script><p>注意这里$g_p$是图像$I_p$极线上的梯度，因此是一维的。这里同样不考虑梯度的噪声，只考虑两个图像的噪声，则有：</p>
 <script type="math/tex; mode=display">
-\sigma_{\lambda(I)}^2=J_{\lambda^\*(I)}\begin{pmatrix}\sigma_i^2&0\\\0&\sigma_i^2\end{pmatrix}J_{\lambda^\*(I)}^T=\frac{2\sigma_i^2}{g_p^2} \tag{16}</script><p>这里由于同时对关键帧和参考帧的灰度都计算了噪声，二者误差相互独立，因此会有２这个系数。故也可以这么求：</p>
+\sigma_{\lambda(I)}^2=J_{\lambda^*(I)}\begin{pmatrix}\sigma_i^2&0\\0&\sigma_i^2\end{pmatrix}J_{\lambda^*(I)}^T=\frac{2\sigma_i^2}{g_p^2} \tag{16}</script><p>这里由于同时对关键帧和参考帧的灰度都计算了噪声，二者误差相互独立，因此会有２这个系数。故也可以这么求：</p>
 <script type="math/tex; mode=display">
-\sigma_{\lambda(I)}^2=\text{Var}(\lambda^\*(I))=(\text{Var}(i_{ref})+\text{Var}(I_p))g_p^{-2}=\frac{2\sigma_i^2}{g_p^2}　\tag{17}</script><p>其中$\sigma_i^2$是图像的高斯噪声的方差。从上式可得结论：</p>
+\sigma_{\lambda(I)}^2=\text{Var}(\lambda^*(I))=(\text{Var}(i_{ref})+\text{Var}(I_p))g_p^{-2}=\frac{2\sigma_i^2}{g_p^2}　\tag{17}</script><p>其中$\sigma_i^2$是图像的高斯噪声的方差。从上式可得结论：</p>
 <ul>
 <li>图像噪声越大，光度视差误差越大</li>
 <li>极线方向上梯度越大，光度视差误差越小</li>
@@ -521,7 +521,7 @@ $$
 \sigma_{r_d(\mathbf{p},\mathbf\xi_{ji})}^2 = V_j([\mathbf{p}']_{1,2})\begin{pmatrix}\frac{{\partial}r_d(\mathbf{p},\mathbf\xi_{ji})}{{\partial}D_j([\mathbf{p}']_{1,2})}\end{pmatrix} + V_i(\mathbf{p})\begin{pmatrix}\frac{{\partial}r_d(\mathbf{p},\mathbf\xi_{ji})}{{\partial}D_i(\mathbf{p})}\end{pmatrix}　\tag{29}
 $$
 
-<p>这里的$\mathbf{p}’:=\omega<em>s(\mathbf{p},D_i(\mathbf{p}),\mathbf\xi</em>{ji})$表示从图像帧$i$变换到图像帧$j$上的点。这里在求解$\mathfrak{sim}(3)$的时候也是同求$\mathfrak{se}(3)$一样，使用了迭代变权重高斯牛顿算法。此外，同样也使用了Huber核函数。</p>
+<p>这里的$\mathbf{p}’:=\omega_s(\mathbf{p},D_i(\mathbf{p}),\mathbf\xi_{ji})$表示从图像帧$i$变换到图像帧$j$上的点。这里在求解$\mathfrak{sim}(3)$的时候也是同求$\mathfrak{se}(3)$一样，使用了迭代变权重高斯牛顿算法。此外，同样也使用了Huber核函数。</p>
 <p>下面看一下回环检测部分。由于论文中采用的是直接法，虽然代码中有fabmap检测闭环的部分，但是其默认检测闭环的方式是帧与帧之间做双向跟踪（Reciprocal tracking check）。首先搜索最近的10个关键帧及一些外观较像的帧作为候选帧，对每一个候选帧都计算其与当前关键帧彼此跟踪的$\mathfrak{sim}(3)$，然后计算两者间的马氏距离的平方：<br>
 $$
 \begin{equation}
@@ -541,7 +541,7 @@ E(\xi_{W1}\cdots\xi_{Wn})=\sum_{(\xi_{ji},\Sigma)\in\varepsilon}(\xi_{ji}\circ\x
             <p>原文作者：<a href="https://gjgjh.github.io">GJGJH</a>
             <p>原文链接：<a href="https://gjgjh.github.io/2018/10/02/lsdslam2/">https://gjgjh.github.io/2018/10/02/lsdslam2/</a>
             <p>发表日期：<a href="https://gjgjh.github.io/2018/10/02/lsdslam2/">October 2nd 2018, 2:22:39 pm</a>
-            <p>更新日期：<a href="https://gjgjh.github.io/2018/10/02/lsdslam2/">October 6th 2018, 8:24:35 pm</a>
+            <p>更新日期：<a href="https://gjgjh.github.io/2018/10/02/lsdslam2/">October 6th 2018, 8:39:02 pm</a>
             <p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
