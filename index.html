@@ -12,8 +12,6 @@
 
 <head>
     <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
-    <link rel="dns-prefetch" href="//cdn.bootcss.com" />
-    <link rel="dns-prefetch" href="//cdn.mathjax.org" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
     <meta name="author" content="GJGJH">
     <meta name="renderer" content="webkit">
@@ -201,7 +199,6 @@
     <!-- 谷歌统计  --><!-- hexo-inject:begin --><!-- hexo-inject:end -->
     
 </head>
-
     
         <body class="home-body">
     
@@ -372,9 +369,9 @@ height:50vh;
 
 
 
-在阅读本文之前，最好先看过《视觉SLAM十四讲》中直接法(chap 8)和单目稠密建图(chap 13)部分，并对李群李代数和立体匹配相关知识了解，对于理解LSD-SLAM算法有一定帮助
+在阅读本文之前，最好先看过《视觉SLAM十四讲》中直接法(chap 8)和单目稠密建图(chap 13)部分，并对李群李代数和立体匹配相关知识了解，对于理解LSD-SLAM算法有一定帮助1
 
-LSD-SLAM算法主要在以下两个论文中提出：[1] 2013 Semi-dense Visual Odometry for a Monocular Camera[2] 2014 LSD-SLAM: Large-Scale ...
+LSD-SLAM算法主要在以下两个论文中提出：[1] 2013 Semi-dense Visual Odometry for a Monocular Camera[2] 2014 LSD-SLAM: Large-Scale...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
@@ -730,7 +727,23 @@ jsonContent:
     <!-- CNZZ  -->
     
     </div>
-    <!-- async load share.js --><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+    <!-- async load share.js -->
+     
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"]]}});
 </script>
@@ -748,8 +761,7 @@ jsonContent:
 </script>
 <!-- End: Injected MathJax -->
 <!-- hexo-inject:end -->
-     
-    </body>
+</body>
 </html>
 
 
