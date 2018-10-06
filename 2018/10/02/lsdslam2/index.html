@@ -12,6 +12,8 @@
 
 <head>
     <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
+    <link rel="dns-prefetch" href="//cdn.bootcss.com" />
+    <link rel="dns-prefetch" href="//cdn.mathjax.org" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
     <meta name="author" content="GJGJH">
     <meta name="renderer" content="webkit">
@@ -401,12 +403,7 @@ height:50vh;
         <div class="container container-unloaded">
             <main class="main post-page">
     <article class="article-entry">
-        <script type="text/x-mathjax-config"> MathJax.Hub.Config({ tex2jax: {inlineMath: [['$', '$']]}, messageStyle: "none" }); 
-</script>
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-
-<blockquote>
+        <blockquote>
 <p>在阅读本文之前，最好先看过《视觉SLAM十四讲》中直接法(chap 8)和单目稠密建图(chap 13)部分，并对李群李代数和立体匹配相关知识了解，对于理解LSD-SLAM算法有一定帮助</p>
 </blockquote>
 <p>LSD-SLAM算法主要在以下两个论文中提出：<br>[1] 2013 <a href="https://vision.in.tum.de/_media/spezial/bib/engel2013iccv.pdf" target="_blank" rel="noopener">Semi-dense Visual Odometry for a Monocular Camera</a><br>[2] 2014 <a href="https://vision.in.tum.de/_media/spezial/bib/engel14eccv.pdf" target="_blank" rel="noopener">LSD-SLAM: Large-Scale Direct Monocular SLAM</a><br>另外，以下是本文参考的比较好的LSD-SLAM算法解析的链接：<br>[3] <a href="https://www.zybuluo.com/kokerf/note/855220" target="_blank" rel="noopener">LSD-SLAM笔记之SE3Tracking</a><br>[4] <a href="https://www.zybuluo.com/kokerf/note/863719" target="_blank" rel="noopener">LSD-SLAM笔记之DepthMap</a><br>[5] <a href="https://www.zybuluo.com/kokerf/note/877881" target="_blank" rel="noopener">LSD-SLAM笔记之一致性约束</a><br>[6] <a href="https://www.bilibili.com/video/av5912043" target="_blank" rel="noopener">SVO &amp; LSD_SLAM(贺一家)视频</a></p>
@@ -516,7 +513,7 @@ $$
             <p>原文作者：<a href="https://gjgjh.github.io">GJGJH</a>
             <p>原文链接：<a href="https://gjgjh.github.io/2018/10/02/lsdslam2/">https://gjgjh.github.io/2018/10/02/lsdslam2/</a>
             <p>发表日期：<a href="https://gjgjh.github.io/2018/10/02/lsdslam2/">October 2nd 2018, 2:22:39 pm</a>
-            <p>更新日期：<a href="https://gjgjh.github.io/2018/10/02/lsdslam2/">October 6th 2018, 6:37:24 pm</a>
+            <p>更新日期：<a href="https://gjgjh.github.io/2018/10/02/lsdslam2/">October 6th 2018, 6:50:24 pm</a>
             <p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
@@ -798,7 +795,7 @@ jsonContent:
     
         <script src="/scripts/share.js" async></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
 <script type="text/x-mathjax-config">
-  MathJax.Hub.Config("");
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"]]}});
 </script>
 
 <script type="text/x-mathjax-config">
@@ -810,7 +807,7 @@ jsonContent:
   });
 </script>
 
-<script type="text/javascript" src="">
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
 <!-- End: Injected MathJax -->
 <!-- hexo-inject:end -->    
