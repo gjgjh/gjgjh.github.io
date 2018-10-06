@@ -277,7 +277,7 @@ height:50vh;
                 
                 
                     <div class="post-intro-read">
-                        <span>字数统计: <span class="post-count word-count">4.9k</span>阅读时长: <span class="post-count reading-time">19 min</span></span>
+                        <span>字数统计: <span class="post-count word-count">5.1k</span>阅读时长: <span class="post-count reading-time">20 min</span></span>
                     </div>
                 
                 <div class="post-intro-meta">
@@ -407,36 +407,36 @@ height:50vh;
             <main class="main post-page">
     <article class="article-entry">
         <blockquote>
-<p>在阅读本文之前，最好先看过《视觉SLAM十四讲》中直接法(chap 8)和单目稠密建图(chap 13)部分，并对李群李代数和立体匹配相关知识了解，对于理解LSD-SLAM算法有一定帮助</p>
+<p>在阅读本文之前，最好先看过《视觉SLAM十四讲》中直接法(chap 8)和单目稠密建图(chap 13)部分，并对李群李代数和立体匹配相关知识有一些了解，这对于理解LSD-SLAM算法有一定帮助</p>
 </blockquote>
-<p>LSD-SLAM算法主要在以下两个论文中提出：<br>[1] 2013 <a href="https://vision.in.tum.de/_media/spezial/bib/engel2013iccv.pdf" target="_blank" rel="noopener">Semi-dense Visual Odometry for a Monocular Camera</a><br>[2] 2014 <a href="https://vision.in.tum.de/_media/spezial/bib/engel14eccv.pdf" target="_blank" rel="noopener">LSD-SLAM: Large-Scale Direct Monocular SLAM</a><br>另外，以下是本文参考的比较好的LSD-SLAM算法解析的链接：<br>[3] <a href="https://www.zybuluo.com/kokerf/note/855220" target="_blank" rel="noopener">LSD-SLAM笔记之SE3Tracking</a><br>[4] <a href="https://www.zybuluo.com/kokerf/note/863719" target="_blank" rel="noopener">LSD-SLAM笔记之DepthMap</a><br>[5] <a href="https://www.zybuluo.com/kokerf/note/877881" target="_blank" rel="noopener">LSD-SLAM笔记之一致性约束</a><br>[6] <a href="https://www.bilibili.com/video/av5912043" target="_blank" rel="noopener">SVO &amp; LSD_SLAM(贺一家)视频</a></p>
-<p>LSD-SLAM可以分为三个模块：Tracking、Depth Map Estimation、Map Optimization，如下图所示。三个部分位于论文[2]中3.3，3.4和第3章其余部分。但是Depth Map Estimation部分详细的算法是在[1]中说明的。<br><img src="https://res.cloudinary.com/ddqa2am0q/image/upload/v1538703314/lsdslam_flowchart.png" alt=""></p>
-<h2 id="1-Tracking"><a href="#1-Tracking" class="headerlink" title="1 Tracking"></a>1 Tracking</h2><p>Tracking部分比较简单，就是《十四讲》中讲的直接法，然后进行了一些小的改进。<br>直接法即最小化光度误差，论文使用的是方差归一化后的光度误差(variance-normalized photometric error)：</p>
+<p>LSD-SLAM算法主要在以下两个论文中提出：<br>[1] 2013 <a href="https://vision.in.tum.de/_media/spezial/bib/engel2013iccv.pdf" target="_blank" rel="noopener">Semi-dense Visual Odometry for a Monocular Camera</a><br>[2] 2014 <a href="https://vision.in.tum.de/_media/spezial/bib/engel14eccv.pdf" target="_blank" rel="noopener">LSD-SLAM: Large-Scale Direct Monocular SLAM</a><br>另外，以下是本文参考的比较好的LSD-SLAM算法解析的链接：<br>[3] <a href="https://blog.csdn.net/kokerf/article/details/78005934" target="_blank" rel="noopener">LSD-SLAM笔记之SE3Tracking</a><br>[4] <a href="https://blog.csdn.net/kokerf/article/details/78006703" target="_blank" rel="noopener">LSD-SLAM笔记之DepthMap</a><br>[5] <a href="https://blog.csdn.net/kokerf/article/details/78006743" target="_blank" rel="noopener">LSD-SLAM笔记之一致性约束</a><br>[6] <a href="https://www.bilibili.com/video/av5912043" target="_blank" rel="noopener">SVO &amp; LSD_SLAM(贺一家)视频</a></p>
+<p>LSD-SLAM可以分为三大模块：Tracking、Depth Map Estimation和Map Optimization，如下图所示。三个部分分别位于论文[2]中3.3，3.4和第3章其余部分。但Depth Map Estimation部分详细的算法是在[1]中介绍的。Map Optimization部分是整个算法的核心。下面我们来分别看一下这三大模块。<br><img src="https://res.cloudinary.com/ddqa2am0q/image/upload/v1538703314/lsdslam_flowchart.png" alt=""></p>
+<h2 id="1-Tracking"><a href="#1-Tracking" class="headerlink" title="1 Tracking"></a>1 Tracking</h2><p>Tracking部分比较简单，就是《十四讲》中讲的直接法，每当获取一张新的帧时，就对它进行Tracking。直接法即最小化光度误差，论文进行了一些小的改进，如使用的是方差归一化后的光度误差（variance-normalized photometric error）：</p>
 <script type="math/tex; mode=display">
 E_p(\mathbf\xi_{ji}) =\sum_{\mathbf{p}\in\Omega_{D_i}}
-\Biggl\|\frac{r_p^2(\mathbf{p},\mathbf\xi_{ji})}{\sigma_{r_p(\mathbf{p},\mathbf\xi_{ji})}^2}\Biggr\|\_\delta \tag{1}</script><script type="math/tex; mode=display">
+\Biggl\|\frac{r_p^2(\mathbf{p},\mathbf\xi_{ji})}{\sigma_{r_p(\mathbf{p},\mathbf\xi_{ji})}^2}\Biggr\|_\delta \tag{1}</script><script type="math/tex; mode=display">
 r_p(\mathbf{p},{\mathbf\xi_{ji}}) := I_i({\mathbf{p}}) - I_j(\omega({\mathbf{p}}, D_i({\mathbf{p}}), \mathbf\xi_{ji})) \tag{2}</script><script type="math/tex; mode=display">
-\sigma_{r_p(\mathbf{p},\mathbf\xi_{ji})}^2 := 2\sigma_I^2 + (\frac{\partial{r_p(\mathbf{p}, \mathbf\xi_{ji})}}{\partial{D_i(\mathbf{p})}})^2V_i(\mathbf{p}) \tag{3}</script><p>可以看出不同之处就是分母加了个方差(方差推导可以参考[3])，然后使用了Huber核函数，总之目的就是为了更好更快地解求位姿。需要注意的是Tracking部分求的是SE(3)上的位姿。</p>
-<h2 id="2-Depth-Map-Estimation"><a href="#2-Depth-Map-Estimation" class="headerlink" title="2 Depth Map Estimation"></a>2 Depth Map Estimation</h2><p>这部分主要是用Tracking跟踪后的帧更新或构建深度图，因此分为两种情况：</p>
+\sigma_{r_p(\mathbf{p},\mathbf\xi_{ji})}^2 := 2\sigma_I^2 + (\frac{\partial{r_p(\mathbf{p}, \mathbf\xi_{ji})}}{\partial{D_i(\mathbf{p})}})^2V_i(\mathbf{p}) \tag{3}</script><p>可以看出改进的地方就是在分母部分加了个方差（方差的推导可以参考[3]），然后还使用了Huber核函数，总之目的就是为了更好更快地解求位姿。需要注意的是Tracking部分求的是$\mathfrak{se}(3)$上的位姿。</p>
+<h2 id="2-Depth-Map-Estimation"><a href="#2-Depth-Map-Estimation" class="headerlink" title="2 Depth Map Estimation"></a>2 Depth Map Estimation</h2><p>这部分主要是用Tracking跟踪后的帧更新或构建深度图，分两种情况：</p>
 <ul>
-<li>构建关键帧，则构建新的深度图（Depth Map Creation）</li>
-<li>不构建关键帧，则更新参考关键帧的深度图（Depth Map Refinement）</li>
+<li>构建关键帧时，则构建新的深度图（Depth Map Creation）</li>
+<li>不构建关键帧时，则更新当前关键帧的深度图（Depth Map Refinement）</li>
 </ul>
-<p>其中，是否构建关键帧是通过与当前关键帧的距离判断的，距离定义如下，W为对角阵，目的是加权：</p>
+<p>其中，是否构建关键帧是通过计算当前帧与当前关键帧的距离判断的，大于一定距离时才构建新的关键帧。距离定义如下，$\mathbf W$为对角阵，目的是加权：</p>
 <script type="math/tex; mode=display">
-dist(\mathbf\xi_{ji}):=\mathbf\xi_{ji}^T \mathbf W \mathbf\xi_{ji} \tag{4}</script><p>那么下面就分别介绍一下这两种情况。</p>
-<h3 id="2-1-深度图的更新"><a href="#2-1-深度图的更新" class="headerlink" title="2.1 深度图的更新"></a>2.1 深度图的更新</h3><p>这部分论文中称为基于立体匹配的深度更新（Stereo-Based Depth Map Update），具体可分为以下四个步骤：</p>
+dist(\mathbf\xi_{ji}):=\mathbf\xi_{ji}^T \mathbf W \mathbf\xi_{ji} \tag{4}</script><p>在进一步介绍之前，有必要重申一下一些定义：<strong>关键帧（key frame）</strong>是相隔一定距离的具有代表性的帧，每一个关键帧对应一个深度图；<strong>参考帧（reference frame）</strong>是用于和当前帧做立体匹配的帧，一个关键帧后面一般有许多参考帧。接下来就分别介绍一下上述的两种情况。</p>
+<h3 id="2-1-深度图的更新"><a href="#2-1-深度图的更新" class="headerlink" title="2.1 深度图的更新"></a>2.1 深度图的更新</h3><p>当我们获得一个新的帧，并且判断不构建新的关键帧，则进行当前关键帧深度图的更新过程。这部分论文中称为基于立体匹配的深度更新（Stereo-Based Depth Map Update），具体可分为以下四个步骤：</p>
 <ul>
-<li>根据一些标准选择出“good”像素</li>
+<li>根据一些标准选择出“好的”像素</li>
 <li>为每个像素自适应选择最合适的参考帧</li>
 <li>极线上进行立体匹配</li>
 <li>深度观测融合</li>
 </ul>
-<p>原论文中没有按这个顺序介绍，这里按上述顺序介绍。</p>
-<h4 id="2-1-1-选择出“good”像素"><a href="#2-1-1-选择出“good”像素" class="headerlink" title="2.1.1 选择出“good”像素"></a>2.1.1 选择出“good”像素</h4><p>这部分论文中称为不确定性估计（Uncertainty Estimation），主要对逆深度的不确定度进行估计，并以此挑选好的像素。<br>我们知道在直接法中，逆深度与四个变量有关，可以表示成它们的的函数：</p>
+<p>原论文打乱了顺序，这里我们按上述顺序依次介绍。</p>
+<h4 id="2-1-1-选择出“好的”像素"><a href="#2-1-1-选择出“好的”像素" class="headerlink" title="2.1.1 选择出“好的”像素"></a>2.1.1 选择出“好的”像素</h4><p>这部分论文中称为不确定性估计（Uncertainty Estimation），主要通过建模（对逆深度的不确定度进行估计），并以此为依据挑选出好的像素。我们知道在直接法中，逆深度与四个变量有关，可以表示成它们的的函数：</p>
 <script type="math/tex; mode=display">
-d^*=d(I_0,I_1,\xi,\pi)\tag{5}</script><p>其中$I_0$，$I_1$分别为参考帧和当前帧两个图像，$\xi$表示两帧间位姿变换，$\pi$为相机内参。<br>为进一步分析各个变量的影响，将整个立体匹配过程分为三步：<br>1.计算在参考帧中的对极线<br>2.在对极线上找到最好的匹配位置$\lambda^*\in\mathbb{R}$(视差)<br>3.通过$\lambda^*$求出逆深度$d^*$</p>
-<p>这三个步骤分别涉及三个误差：<strong>几何视差误差</strong>，由$ \xi $和$\pi$中的噪声将影响第１步对极线的位置，从而导致匹配点位置的误差；<strong>光度视差误差</strong>，在图像$I_0$和$I_1$上的噪声将影响第２步匹配位置的求取；<strong>逆深度计算误差</strong>，逆深度误差除了与上述两个误差有关外，还与基线、像素位置等有关。接下来将对这几个误差如何建模进行分析。</p>
+d^*=d(I_0,I_1,\xi,\pi)\tag{5}</script><p>其中$I_0$，$I_1$分别为参考帧和当前帧两个图像，$\xi$表示两帧间位姿变换，$\pi$为相机内参。为进一步分析各个变量的影响，将整个立体匹配过程分为三步：<br>1.计算在参考帧中的极线<br>2.在极线上找到最好的匹配位置$\lambda^*\in\mathbb{R}$(视差)<br>3.通过$\lambda^*$求出逆深度$d^*$</p>
+<p>这三个步骤分别涉及三个误差：<strong>几何视差误差</strong>，由$ \xi $和$\pi$中的噪声将影响第１步极线的位置，从而导致匹配点位置的误差；<strong>光度视差误差</strong>，在图像$I_0$和$I_1$上的噪声将影响第２步匹配位置的求取；<strong>逆深度计算误差</strong>，逆深度误差除了与上述两个误差有关外，还与基线、像素位置等有关。接下来将对这几个误差一一建模分析。</p>
 <h5 id="a-几何视差误差"><a href="#a-几何视差误差" class="headerlink" title="a.几何视差误差"></a>a.几何视差误差</h5><p><strong>几何视差误差（Geometric disparity error）</strong>，记为$\epsilon_\lambda$。这一部分从几何和代数上分析了几何视差误差的具体形式。<br>首先我们从<strong>代数</strong>上分析。理论上，几何视差误差可以准确地计算出，但计算复杂度较大，不够高效，故使用了近似的误差模型进行了代替。首先，极线可定义为：</p>
 <script type="math/tex; mode=display">
 L:=\begin{Bmatrix}l_0+\lambda\begin{pmatrix}l_x\\l_y\end{pmatrix}\mid\lambda\in S\end{Bmatrix}\tag{6}</script><p>其中，$\lambda$为视差，$l:=(l_x,l_y)^T$是归一化的极线方向向量，$l_0$是极线上对应无穷远点的图像点，但我认为当作极点更容易理解，不影响结果，只是视差的具体数值不一样。<br>设我们要求的点在极线和灰度等值线(isocurve)的交点上，在局部上我们将等值线近似为直线，同时梯度方向近似不变，则有：</p>
@@ -504,17 +504,17 @@ E_{SSD}(u)=\sum_{i}[I_1(x_i+u)-I_0(x_i)]^2 \tag{21}</script><h4 id="2-1-4-深度
 <script type="math/tex; mode=display">
 d_1(d_0)=(d_0^{-1}-t_z)^{-1} \tag{23}</script><p>这里的$t_z$是相机沿着光轴方向的位移，同样根据协方差传播率则有：</p>
 <script type="math/tex; mode=display">
-\sigma_{d_1}^2=J_{d_1}\sigma_{d_0}^2J_{d_1}^T+\sigma_p^2=\begin{pmatrix}\frac{d_1}{d_0}\end{pmatrix}^4\sigma_{d_0}^2+\sigma_p^2　\tag{24}</script><p>这里$\sigma_p^2$的为预测不确定性。需要注意在实际求逆深度的时候，是考虑旋转的，把参考关键帧上的点通过SE3变换到当前新的关键帧上来，然后求逆深度。但是求方差则是用上述近似方法求的。<br>一个像素点只能有一个逆深度的先验值，在得到一个新的观测值的时候，根据方差来判断对新的观测值融合或者舍弃，论文中称这部分为Collision handling:</p>
+\sigma_{d_1}^2=J_{d_1}\sigma_{d_0}^2J_{d_1}^T+\sigma_p^2=\begin{pmatrix}\frac{d_1}{d_0}\end{pmatrix}^4\sigma_{d_0}^2+\sigma_p^2　\tag{24}</script><p>这里$\sigma_p^2$的为预测不确定性。需要注意在实际求逆深度的时候，是考虑旋转的，把参考关键帧上的点通过$\mathfrak{se}(3)$变换到当前新的关键帧上来，然后求逆深度。但是求方差则是用上述近似方法求的。<br>一个像素点只能有一个逆深度的先验值，在得到一个新的观测值的时候，根据方差来判断对新的观测值融合或者舍弃，论文中称这部分为Collision handling:</p>
 <ul>
 <li>当两个逆深度观测值的差值小于$2\sigma$的时候，则认为观测有效，根据(22)融合</li>
 <li>否则，离相机较远的这个深度估计认为是被遮挡(occluded)了的（逆深度假设无效），并且舍弃该逆深度信息（逆深度图传播过程）。</li>
 </ul>
-<h3 id="2-3-深度图的正则化"><a href="#2-3-深度图的正则化" class="headerlink" title="2.3 深度图的正则化"></a>2.3 深度图的正则化</h3><p>把每个像素与其周边的加权深度作为改点的深度值，假如两个邻接深度之间的差值远大于$2\sigma$，他们便不做这个处理。处理之后，各自的方差不变。这里其实是一个Edge-preserving smoothing。另外，论文中还用了个outlier removal。</p>
-<h2 id="3-Map-Optimization"><a href="#3-Map-Optimization" class="headerlink" title="3 Map Optimization"></a>3 Map Optimization</h2><p>这部分在论文中叫建图一致性约束（constraint acquisition），因为长距离会出现尺度漂移，因此建图一致性约束也就是做闭环检测和全局优化。我们先看一下关键帧之间的Sim3位姿估计。<br>首先，将每个关键帧地图的平均逆深度归一化为１。然后最小化加了尺度项的误差函数来对齐不同的关键帧，误差函数如下：</p>
+<h3 id="2-3-其他"><a href="#2-3-其他" class="headerlink" title="2.3 其他"></a>2.3 其他</h3><p>论文还进行了一些其他处理，如把每个像素与其周边的加权深度作为改点的深度值，假如两个邻接深度之间的差值远大于$2\sigma$，他们便不做这个处理。处理之后，各自的方差不变。这里其实是一个Edge-preserving smoothing，也叫地图的正则化。另外，论文中还用了outlier removal。</p>
+<h2 id="3-Map-Optimization"><a href="#3-Map-Optimization" class="headerlink" title="3 Map Optimization"></a>3 Map Optimization</h2><p>这部分在论文中叫建图一致性约束（constraint acquisition），因为长距离会出现尺度漂移，因此建图一致性约束也就是做闭环检测和全局优化。我们先看一下关键帧之间的$\mathfrak{sim}(3)$位姿估计。<br>首先，将每个关键帧地图的平均逆深度归一化为１。然后最小化加了尺度项的误差函数来对齐不同的关键帧，误差函数如下：</p>
 <script type="math/tex; mode=display">
 E(\mathbf\xi_{ji}) =\sum_{\mathbf{p}\in\Omega_{D_i}}\Biggl\|
 \frac{r_p^2(\mathbf{p},\mathbf\xi_{ji})}{\sigma_{r_p(\mathbf{p},\mathbf\xi_{ji})}^2} + \frac{r_d^2(\mathbf{p},\mathbf\xi_{ji})}{\sigma_{r_d(\mathbf{p},\mathbf\xi_{ji})}^2}
-\Biggr\|\_\delta \label{eq:sim3err} \tag{25}</script><p>这里的光度残差和方差的定义和SE3跟踪是一样的: </p>
+\Biggr\|\_\delta  \tag{25}</script><p>这里的光度残差和方差的定义和$\mathfrak{se}(3)$跟踪是一样的: </p>
 <script type="math/tex; mode=display">
 r_p(\mathbf{p},{\mathbf\xi_{ji}}) := I_i({\mathbf{p}}) - I_j(\omega({\mathbf{p}}, D_i({\mathbf{p}}), \mathbf\xi_{ji})) \tag{26}</script><script type="math/tex; mode=display">
 \sigma_{r_p(\mathbf{p},\mathbf\xi_{ji})}^2 := 2\sigma_I^2 + (\frac{\partial{r_p(\mathbf{p}, \mathbf\xi_{ji})}}{\partial{D_i(\mathbf{p})}})^2V_i(\mathbf{p})
@@ -545,7 +545,7 @@ E(\xi_{W1}\cdots\xi_{Wn})=\sum_{(\xi_{ji},\Sigma)\in\varepsilon}(\xi_{ji}\circ\x
             <p>原文作者：<a href="https://gjgjh.github.io">GJGJH</a>
             <p>原文链接：<a href="https://gjgjh.github.io/2018/10/02/lsdslam2/">https://gjgjh.github.io/2018/10/02/lsdslam2/</a>
             <p>发表日期：<a href="https://gjgjh.github.io/2018/10/02/lsdslam2/">October 2nd 2018, 2:22:39 pm</a>
-            <p>更新日期：<a href="https://gjgjh.github.io/2018/10/02/lsdslam2/">October 6th 2018, 9:02:41 pm</a>
+            <p>更新日期：<a href="https://gjgjh.github.io/2018/10/02/lsdslam2/">October 6th 2018, 10:36:54 pm</a>
             <p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
@@ -695,7 +695,7 @@ top:50vh;
         <div class="toc-catalog">
             <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
         </div>
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Tracking"><span class="toc-number">1.</span> <span class="toc-text">1 Tracking</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Depth-Map-Estimation"><span class="toc-number">2.</span> <span class="toc-text">2 Depth Map Estimation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-深度图的更新"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 深度图的更新</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-1-选择出“good”像素"><span class="toc-number">2.1.1.</span> <span class="toc-text">2.1.1 选择出“good”像素</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#a-几何视差误差"><span class="toc-number">2.1.1.1.</span> <span class="toc-text">a.几何视差误差</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#b-光度视差误差"><span class="toc-number">2.1.1.2.</span> <span class="toc-text">b.光度视差误差</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#c-逆深度计算误差"><span class="toc-number">2.1.1.3.</span> <span class="toc-text">c.逆深度计算误差</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-2-为每个像素自适应选择参考帧"><span class="toc-number">2.1.2.</span> <span class="toc-text">2.1.2 为每个像素自适应选择参考帧</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-3-立体匹配策略"><span class="toc-number">2.1.3.</span> <span class="toc-text">2.1.3 立体匹配策略</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-4-深度观测融合"><span class="toc-number">2.1.4.</span> <span class="toc-text">2.1.4　深度观测融合</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-深度图的传播"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 深度图的传播</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-深度图的正则化"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 深度图的正则化</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Map-Optimization"><span class="toc-number">3.</span> <span class="toc-text">3 Map Optimization</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Tracking"><span class="toc-number">1.</span> <span class="toc-text">1 Tracking</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Depth-Map-Estimation"><span class="toc-number">2.</span> <span class="toc-text">2 Depth Map Estimation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-深度图的更新"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 深度图的更新</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-1-选择出“好的”像素"><span class="toc-number">2.1.1.</span> <span class="toc-text">2.1.1 选择出“好的”像素</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#a-几何视差误差"><span class="toc-number">2.1.1.1.</span> <span class="toc-text">a.几何视差误差</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#b-光度视差误差"><span class="toc-number">2.1.1.2.</span> <span class="toc-text">b.光度视差误差</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#c-逆深度计算误差"><span class="toc-number">2.1.1.3.</span> <span class="toc-text">c.逆深度计算误差</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-2-为每个像素自适应选择参考帧"><span class="toc-number">2.1.2.</span> <span class="toc-text">2.1.2 为每个像素自适应选择参考帧</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-3-立体匹配策略"><span class="toc-number">2.1.3.</span> <span class="toc-text">2.1.3 立体匹配策略</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-4-深度观测融合"><span class="toc-number">2.1.4.</span> <span class="toc-text">2.1.4　深度观测融合</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-深度图的传播"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 深度图的传播</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-其他"><span class="toc-number">2.3.</span> <span class="toc-text">2.3 其他</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Map-Optimization"><span class="toc-number">3.</span> <span class="toc-text">3 Map Optimization</span></a></li></ol>
     </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
