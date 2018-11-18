@@ -363,6 +363,82 @@
     
     
     <article class="index-post">
+        <a class="abstract-title" href = "/ptam2.html" >
+            
+                <span>PTAM学习笔记</span>
+        </a>
+        <div class="abstract-content">
+            PTAM算法是2007年提出的经典的单目特征点法SLAM，同时也是早期将SLAM和AR结合起来的工作之一。虽然PTAM几乎已经过时，但其在整个SLAM发展过程中占有重要地位：
+
+PTAM首先提出将定位(Tracking)和建图(Mapping)分为两个线程并行进行
+计算资源因此得到了释放，所以PTAM也是第一个使用非线性优化的方案，精度自然更高
+PTAM引入关键帧机制，不必精细处理每一张图
+
+在今天的众多先进的SLAM算法中仍可见PTAM的影子，因此学习一下PTAM还是很有必要的。
+PTAM由论文Parallel Tracking and Mapping for Small AR Wor...
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/11/12</span>
+            </div>
+            <!-- tags  -->
+            
+            <div class= abstract-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "SLAM">SLAM</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "PTAM">PTAM</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "单目">单目</a>
+    
+</div>
+            
+        </div>
+    </article>
+    
+    
+    
+    
+    
+    
+    <article class="index-post">
+        <a class="abstract-title" href = "/ptam1.html" >
+            
+                <span>ubuntu16.04+ROS kinetic下跑PTAM</span>
+        </a>
+        <div class="abstract-content">
+            PTAM是一个单目特征点法的SLAM算法。虽然是比较老的工作了，但其历史地位还是很重要的。而且还提供了相机标定工具，因此十分有必要学习PTAM的编译和运行。
+其主页见PTAM-ox其代码见PTAM-github
+1.安装ROS kinetic这个地方一般不会有问题，请参考ROS wiki或者一些博客，如博客,根据博客安装、初始化并测试ROS。如果出错，请换个源或者VPN试试。
+2.编译PTAM1.创建ROS工作空间不同于上次使用rosbuild，这次我们使用catkin创建ROS工作空间。12345mkdir -p ~/catkin_ws/srccd ~/catkin_wscatkin_...
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/11/10</span>
+            </div>
+            <!-- tags  -->
+            
+            <div class= abstract-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "SLAM">SLAM</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "PTAM">PTAM</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "单目">单目</a>
+    
+</div>
+            
+        </div>
+    </article>
+    
+    
+    
+    
+    
+    
+    <article class="index-post">
         <a class="abstract-title" href = "/lsdslam2.html" >
             
                 <span>LSDSLAM算法解析</span>
@@ -384,9 +460,9 @@ LSD-SLAM算法主要在以下两个论文中提出：[1] 2013 Semi-dense Visual 
     
         <a class="post-tag" href="javascript:void(0);" data-tags = "SLAM">SLAM</a>
     
-        <a class="post-tag" href="javascript:void(0);" data-tags = "LSDSLAM">LSDSLAM</a>
-    
         <a class="post-tag" href="javascript:void(0);" data-tags = "单目">单目</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "LSDSLAM">LSDSLAM</a>
     
 </div>
             
@@ -424,9 +500,9 @@ ROS indigo + Ubuntu 14.04
     
         <a class="post-tag" href="javascript:void(0);" data-tags = "SLAM">SLAM</a>
     
-        <a class="post-tag" href="javascript:void(0);" data-tags = "LSDSLAM">LSDSLAM</a>
-    
         <a class="post-tag" href="javascript:void(0);" data-tags = "单目">单目</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "LSDSLAM">LSDSLAM</a>
     
 </div>
             
@@ -557,9 +633,27 @@ ROS indigo + Ubuntu 14.04
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 3
+        Total : 5
         </div>
         <!-- search  -->
         
@@ -572,6 +666,16 @@ ROS indigo + Ubuntu 14.04
     
     <div class="archive-year"> 2018 </div>
     <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/12</span><a class="archive-post-title" href= "/ptam2.html" >PTAM学习笔记</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/10</span><a class="archive-post-title" href= "/ptam1.html" >ubuntu16.04+ROS kinetic下跑PTAM</a>
+        </li>
     
     
         <li class="archive-post-item">
@@ -593,13 +697,15 @@ ROS indigo + Ubuntu 14.04
         <div class="sidebar-panel-tags">
     <div class="sidebar-tags-name">
     
-        <span class="sidebar-tag-name" data-tags="ROS"><span class="iconfont-archer">&#xe606;</span>ROS</span>
-    
         <span class="sidebar-tag-name" data-tags="SLAM"><span class="iconfont-archer">&#xe606;</span>SLAM</span>
+    
+        <span class="sidebar-tag-name" data-tags="PTAM"><span class="iconfont-archer">&#xe606;</span>PTAM</span>
+    
+        <span class="sidebar-tag-name" data-tags="单目"><span class="iconfont-archer">&#xe606;</span>单目</span>
     
         <span class="sidebar-tag-name" data-tags="LSDSLAM"><span class="iconfont-archer">&#xe606;</span>LSDSLAM</span>
     
-        <span class="sidebar-tag-name" data-tags="单目"><span class="iconfont-archer">&#xe606;</span>单目</span>
+        <span class="sidebar-tag-name" data-tags="ROS"><span class="iconfont-archer">&#xe606;</span>ROS</span>
     
     </div>
     <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
