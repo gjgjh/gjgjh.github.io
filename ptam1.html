@@ -293,7 +293,7 @@ height:50vh;
                 
                 
                     <div class="post-intro-read">
-                        <span>字数统计: <span class="post-count word-count">671</span>阅读时长: <span class="post-count reading-time">2 min</span></span>
+                        <span>字数统计: <span class="post-count word-count">673</span>阅读时长: <span class="post-count reading-time">2 min</span></span>
                     </div>
                 
                 <div class="post-intro-meta">
@@ -425,15 +425,16 @@ height:50vh;
         <p>PTAM是一个单目特征点法的SLAM算法。虽然是比较老的工作了，但其历史地位还是很重要的。而且还提供了相机标定工具，因此十分有必要学习PTAM的编译和运行。</p>
 <p>其主页见<a href="http://www.robots.ox.ac.uk/~gk/PTAM/" target="_blank" rel="noopener">PTAM-ox</a><br>其代码见<a href="https://github.com/Oxford-PTAM/PTAM-GPL" target="_blank" rel="noopener">PTAM-github</a></p>
 <h2 id="1-安装ROS-kinetic"><a href="#1-安装ROS-kinetic" class="headerlink" title="1.安装ROS kinetic"></a>1.安装ROS kinetic</h2><p>这个地方一般不会有问题，请参考ROS wiki或者一些博客，如<a href="https://www.cnblogs.com/liu-fa/p/5779206.html" target="_blank" rel="noopener">博客</a>,根据博客安装、初始化并测试ROS。如果出错，请换个源或者VPN试试。</p>
-<h2 id="2-编译PTAM"><a href="#2-编译PTAM" class="headerlink" title="2.编译PTAM"></a>2.编译PTAM</h2><h3 id="1-创建ROS工作空间"><a href="#1-创建ROS工作空间" class="headerlink" title="1.创建ROS工作空间"></a>1.创建ROS工作空间</h3><p>不同于上次使用rosbuild，这次我们使用catkin创建ROS工作空间。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p ~/catkin_ws/src</span><br><span class="line"><span class="built_in">cd</span> ~/catkin_ws</span><br><span class="line">catkin_make</span><br><span class="line"><span class="built_in">source</span> devel/setup.bash</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$ROS_PACKAGE_PATH</span> <span class="comment">#　查看ROS路径，如果没添加上使用sudo gedit ~/.bashrc手动添加</span></span><br></pre></td></tr></table></figure></p>
-<h3 id="2-获取PTAM并编译"><a href="#2-获取PTAM并编译" class="headerlink" title="2.获取PTAM并编译"></a>2.获取PTAM并编译</h3><p>这里使用的是PTAM的ROS移植版本，如果编译出错，可以参考<a href="https://github.com/ethz-asl/ethzasl_ptam/issues" target="_blank" rel="noopener">issues</a>中的解答。编译之前需要提前安装一些依赖库，这个可以在网上找到。虽然编译过程中会出一些警告，但无大碍。当看到[100%] Built target ptam信息表示编译成功。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/catkin_ws/src</span><br><span class="line">git <span class="built_in">clone</span> -b kineticbuild https://github.com/ethz-asl/ethzasl_ptam</span><br><span class="line"><span class="built_in">cd</span> ..</span><br><span class="line">catkin_make</span><br></pre></td></tr></table></figure></p>
+<h2 id="2-编译PTAM"><a href="#2-编译PTAM" class="headerlink" title="2.编译PTAM"></a>2.编译PTAM</h2><h3 id="1-创建ROS工作空间"><a href="#1-创建ROS工作空间" class="headerlink" title="1.创建ROS工作空间"></a>1.创建ROS工作空间</h3><p>不同于上次使用rosbuild，这次我们使用catkin创建ROS工作空间。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p ~/catkin_ws/src</span><br><span class="line"><span class="built_in">cd</span> ~/catkin_ws</span><br><span class="line">catkin_make</span><br><span class="line"><span class="built_in">source</span> devel/setup.bash</span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$ROS_PACKAGE_PATH</span> <span class="comment">#　查看ROS路径，如果没添加上使用sudo gedit ~/.bashrc手动添加并source一下</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="2-获取PTAM并编译"><a href="#2-获取PTAM并编译" class="headerlink" title="2.获取PTAM并编译"></a>2.获取PTAM并编译</h3><p>这里使用的是PTAM的ROS移植版本，如果编译出错，可以参考<a href="https://github.com/ethz-asl/ethzasl_ptam/issues" target="_blank" rel="noopener">issues</a>中的解答。编译之前可能需要提前安装一些依赖库，这个可以在网上找到。虽然编译过程中会出一些warning，但无大碍。当看到[100%] Built target ptam信息表示编译成功。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/catkin_ws/src</span><br><span class="line">git <span class="built_in">clone</span> -b kineticbuild https://github.com/gjgjh/ethzasl_ptam</span><br><span class="line"><span class="built_in">cd</span> ..</span><br><span class="line">catkin_make</span><br></pre></td></tr></table></figure></p>
 <h2 id="3-使用PTAM自带工具标定相机"><a href="#3-使用PTAM自带工具标定相机" class="headerlink" title="3.使用PTAM自带工具标定相机"></a>3.使用PTAM自带工具标定相机</h2><p>首先打开roscore。然后启动相机，不同的相机需要打开不同的launch文件。在之前的博客中，我们已经知道如何将手机连接ROS了，这里就以手机为例进行标定。在一个新的终端输入roslaunch android_cam-imu.launch启动相机以后，可以使用rostopic list查看到<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/android/imu</span><br><span class="line">/camera/image_raw</span><br><span class="line">/clock</span><br><span class="line">/rosout</span><br><span class="line">/rosout_agg</span><br></pre></td></tr></table></figure></p>
 <p>因为PTAM标定<a href="http://wiki.ros.org/ethzasl_ptam/Tutorials/camera_calibration" target="_blank" rel="noopener">要求</a>输入为灰度图像，必须首先将彩色的image_raw转换为灰度图，否则会出现<a href="https://github.com/ethz-asl/ethzasl_ptam/issues/78" target="_blank" rel="noopener">issues#78</a> 这样的图像重影模糊问题。因此使用的自带的<a href="http://wiki.ros.org/image_proc" target="_blank" rel="noopener">image_proc</a>节点来转换：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这里我的image_raw位于camera命名空间下</span></span><br><span class="line">ROS_NAMESPACE=camera rosrun image_proc image_proc</span><br></pre></td></tr></table></figure></p>
 <p>这时再查看rostopic list会发现多了很多topic，其中camera/image_mono表示灰度图。<br>然后需要根据相机的情况，对~/catkin_ws/src/ethzasl_ptam/ptam/PtamFixParams.yaml更改相关的配置参数:<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ImageSizeX: 640</span><br><span class="line">ImageSizeY: 480</span><br></pre></td></tr></table></figure></p>
 <p>接着运行标定节点，记得将变量名重新映射(<a href="http://wiki.ros.org/Remapping%20Arguments" target="_blank" rel="noopener">remap</a>)一下即可：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rosrun ptam cameracalibrator image:=camera/image_mono</span><br></pre></td></tr></table></figure></p>
-<p>至此就可以开始标定相机了。在相机标定时如果中断了可以看下<a href="https://github.com/ethz-asl/ethzasl_ptam/issues/74" target="_blank" rel="noopener">issues#74</a> ，标定的具体流程和细节见<a href="http://wiki.ros.org/ethzasl_ptam/Tutorials/camera_calibration" target="_blank" rel="noopener">官方文档</a></p>
-<h2 id="4-运行PTAM"><a href="#4-运行PTAM" class="headerlink" title="4.运行PTAM"></a>4.运行PTAM</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rosrun ptam ptam image:=camera/image_mono</span><br></pre></td></tr></table></figure>
-<p>现在就可以成功运行了！但是现在还是只能跑灰度图，跑彩色的还是会重影，不知道怎么解决。</p>
+<p>至此就可以开始标定相机了，标定后将保存文件camera.cfg。在相机标定时如果中断了可以看下<a href="https://github.com/ethz-asl/ethzasl_ptam/issues/74" target="_blank" rel="noopener">issues#74</a> ，标定的具体流程和细节见<a href="http://wiki.ros.org/ethzasl_ptam/Tutorials/camera_calibration" target="_blank" rel="noopener">官方文档</a></p>
+<h2 id="4-运行PTAM"><a href="#4-运行PTAM" class="headerlink" title="4.运行PTAM"></a>4.运行PTAM</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">roslaunch ptam ptam.launch</span><br></pre></td></tr></table></figure>
+<p>现在就可以成功运行了！但是现在还是只能跑灰度图，不知道怎么解决。</p>
+<p><img src="https://raw.githubusercontent.com/gjgjh/myblog_images/master/ptam.png" alt=""></p>
 <blockquote>
 <p>个人理解错误的地方还请不吝赐教，转载请标明出处</p>
 </blockquote>
@@ -445,7 +446,7 @@ height:50vh;
             <p>原文作者：<a href="https://guojh.top">GJGJH</a>
             <p>原文链接：<a href="https://guojh.top/ptam1.html">https://guojh.top/ptam1.html</a>
             <p>发表日期：<a href="https://guojh.top/ptam1.html">November 10th 2018, 4:02:45 pm</a>
-            <p>更新日期：<a href="https://guojh.top/ptam1.html">November 12th 2018, 6:07:00 pm</a>
+            <p>更新日期：<a href="https://guojh.top/ptam1.html">November 20th 2018, 6:00:55 pm</a>
             <p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
@@ -613,10 +614,6 @@ top:50vh;
     <div class="sidebar-content sidebar-content-show-archive">
           <div class="sidebar-panel-archives">
     <!-- 在ejs中将archive按照时间排序 -->
-    
-    
-    
-    
     
     
     
