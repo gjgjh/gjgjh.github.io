@@ -26,7 +26,7 @@
     <meta name="description" content="">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <title>ROS学习笔记 · guojh&#39;s Blog</title>
+    <title>ROS学习笔记(持续更新) · guojh&#39;s Blog</title>
     <style type="text/css">
     @font-face {
         font-family: 'Oswald-Regular';
@@ -234,7 +234,7 @@
                 <a href="/" >guojh&#39;s Blog.</a>
             </div>
             <div class="post-title">
-                <a href="#" class="post-name">ROS学习笔记</a>
+                <a href="#" class="post-name">ROS学习笔记(持续更新)</a>
             </div>
     </div>
     
@@ -264,7 +264,7 @@ height:50vh;
         <h1 class="intro-title">
             <!-- 主页  -->
             
-            ROS学习笔记
+            ROS学习笔记(持续更新)
             <!-- 404 -->
             
         </h1>
@@ -291,7 +291,7 @@ height:50vh;
                 
                 
                     <div class="post-intro-read">
-                        <span>字数统计: <span class="post-count word-count">983</span>阅读时长: <span class="post-count reading-time">3 min</span></span>
+                        <span>字数统计: <span class="post-count word-count">1.4k</span>阅读时长: <span class="post-count reading-time">5 min</span></span>
                     </div>
                 
                 <div class="post-intro-meta">
@@ -423,7 +423,7 @@ height:50vh;
         <blockquote>
 <p>之前已经接触过一些ROS的使用，但是还没有系统地学习过，因此在此记录一下学习的笔记。学习ROS首先必须参考ROS wiki及ROS Answers，另外国内“古月居”的博客和“东方赤龙”的博客都可以参考学习，古月居的书《ROS机器人开发实践》也不错。不过，需知道ROS本身只是一个方便大家开发的工具罢了。</p>
 </blockquote>
-<h1 id="初识ROS"><a href="#初识ROS" class="headerlink" title="初识ROS"></a>初识ROS</h1><p>分布式网络，TCP/IP，模块间松耦合连接</p>
+<h1 id="1-初识ROS"><a href="#1-初识ROS" class="headerlink" title="1. 初识ROS"></a>1. 初识ROS</h1><p>分布式网络，TCP/IP，模块间松耦合连接</p>
 <p>三种通信机制：<br>1.基于发布/订阅topi通信（异步）</p>
 <ul>
 <li>talker注册</li>
@@ -439,18 +439,33 @@ height:50vh;
 <p>3.基于远程过程调用（RPC）的参数服务器</p>
 <p>不涉及TCP/UDP通信。<br>参数类似ROS中的全局变量，包含key和value，由ROS master进行管理。<br>需注意有时需要动态参数配置来通知listener参数已被更新。</p>
 <p>topic通信适用于不断更新、含较少逻辑处理的数据通信；service通信适用于数据量较少但有逻辑处理的数据交换。</p>
-<h1 id="ROS架构"><a href="#ROS架构" class="headerlink" title="ROS架构"></a>ROS架构</h1><p>分为三层：</p>
+<h1 id="2-ROS架构"><a href="#2-ROS架构" class="headerlink" title="2. ROS架构"></a>2. ROS架构</h1><p>分为三层：</p>
 <ul>
 <li>OS层。基于linux</li>
 <li>中间层。提供通信机制及一些库</li>
 <li>应用层。各功能包内模块以节点为单位</li>
 </ul>
-<h1 id="ROS基础"><a href="#ROS基础" class="headerlink" title="ROS基础"></a>ROS基础</h1><h2 id="创建工作空间和功能包"><a href="#创建工作空间和功能包" class="headerlink" title="创建工作空间和功能包"></a>创建工作空间和功能包</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p ~/catkin_ws/src </span><br><span class="line"><span class="built_in">cd</span> ~/catkin_ws/src</span><br><span class="line">catkin_init_workspace </span><br><span class="line"></span><br><span class="line"><span class="comment"># 在工作空间根目录编译，编译后自动出现build和devel文件夹及几个脚本文件，用于设置环境变量等</span></span><br><span class="line"><span class="built_in">cd</span> ~/catkin_ws/</span><br><span class="line">catkin_make</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行脚本文件使其生效</span></span><br><span class="line"><span class="built_in">source</span> devel/setup.bash</span><br><span class="line"></span><br><span class="line"><span class="comment">#　查看环境变量是否生效</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$ROS_PACKAGE_PATH</span> </span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果没添加上使用sudo gedit ~/.bashrc手动添加。或者使用下面命令。</span></span><br><span class="line"><span class="comment"># 将/WORKSPACE替换成自己的工作空间路径。这种方式对所有终端都有效，source只对当前终端有效！</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"source /WORKSPACE/devel/setup.bash"</span>&gt;&gt; ~/.bashrc </span><br><span class="line"></span><br><span class="line"><span class="comment"># 进入代码空间，创建功能包</span></span><br><span class="line"><span class="comment"># 创建完成后，代码空间src中会生产一个my_package功能包，其中已经包含package.xml和CMakeLists.txt文件。</span></span><br><span class="line"><span class="comment"># 在后续写代码时，就可以把源码放进功能包src文件夹中，然后写相应的CMakeLists.txt就可以了。具体见下面CLion教程。</span></span><br><span class="line"><span class="built_in">cd</span> ~/catkin_ws/src</span><br><span class="line">catkin_create_pkg my_package roscpp rospy std_msgs</span><br></pre></td></tr></table></figure>
-<h2 id="工作空间的覆盖"><a href="#工作空间的覆盖" class="headerlink" title="工作空间的覆盖"></a>工作空间的覆盖</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ROS中为解决同名功能包问题，存在覆盖机制。即$ROS_PACKAGE_PATH中记录的环境变量，最前面覆盖最后面的。</span></span><br><span class="line"><span class="comment"># rospack 查找功能包所放置的工作空间</span></span><br><span class="line">rospack find roscpp</span><br></pre></td></tr></table></figure>
-<h2 id="使用IDE运行及调试ROS程序"><a href="#使用IDE运行及调试ROS程序" class="headerlink" title="使用IDE运行及调试ROS程序"></a>使用IDE运行及调试ROS程序</h2><p>ROS支持许多IDE开发，具体可以看wiki上的<a href="http://wiki.ros.org/IDEs" target="_blank" rel="noopener">介绍</a>。CLion是一个个人觉得非常好用的跨平台c++IDE。<br>搭建CLion开发环境，搭建后可以利用CLion运行和调试程序，十分方便，具体见CLion<a href="https://www.jetbrains.com/help/clion/2018.3/ros-setup-tutorial.html" target="_blank" rel="noopener">官方教程</a><br>其中需要注意的是，每次必须从终端利用bash打开CLion;或者要改一个桌面快捷方式文件，使其每次通过bash启动。</p>
-<p>另外，还可以配置下编译路径。CLion默认在cmake-build-debug或cmake-build-release文件夹保存编译文件。可以通过File|Settings(Ctrl+Alt+S)|Build, Execution, Deployment|CMake改一下:<br>1.Generation path改为yourworkspace_folder/build<br>2.CMake options加上 -DCATKIN_DEVEL_PREFIX:PATH=yourworkspace_folder/devel</p>
-<h2 id="创建Publisher和Subscriber"><a href="#创建Publisher和Subscriber" class="headerlink" title="创建Publisher和Subscriber"></a>创建Publisher和Subscriber</h2><p>基于C++写一个ROS程序，深入理解发布和订阅机制:<br><a href="https://blog.csdn.net/yake827/article/details/44564057" target="_blank" rel="noopener">https://blog.csdn.net/yake827/article/details/44564057</a></p>
-<h1 id="ROS中常用组件"><a href="#ROS中常用组件" class="headerlink" title="ROS中常用组件"></a>ROS中常用组件</h1>
+<h1 id="3-ROS基础"><a href="#3-ROS基础" class="headerlink" title="3. ROS基础"></a>3. ROS基础</h1><h2 id="3-1-创建工作空间和功能包"><a href="#3-1-创建工作空间和功能包" class="headerlink" title="3.1 创建工作空间和功能包"></a>3.1 创建工作空间和功能包</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p ~/catkin_ws/src </span><br><span class="line"><span class="built_in">cd</span> ~/catkin_ws/src</span><br><span class="line">catkin_init_workspace </span><br><span class="line"></span><br><span class="line"><span class="comment"># 在工作空间根目录编译，编译后自动出现build和devel文件夹及几个脚本文件，用于设置环境变量等</span></span><br><span class="line"><span class="built_in">cd</span> ~/catkin_ws/</span><br><span class="line">catkin_make</span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行脚本文件使其生效</span></span><br><span class="line"><span class="built_in">source</span> devel/setup.bash</span><br><span class="line"></span><br><span class="line"><span class="comment">#　查看环境变量是否生效</span></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$ROS_PACKAGE_PATH</span> </span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果没添加上使用sudo gedit ~/.bashrc手动添加。或者使用下面命令。</span></span><br><span class="line"><span class="comment"># 这种方式对所有终端都有效，source只对当前终端有效！</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">"source ~/catkin_ws/devel/setup.bash"</span>&gt;&gt; ~/.bashrc </span><br><span class="line"><span class="built_in">source</span> ~/.bashrc</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进入代码空间，创建功能包</span></span><br><span class="line"><span class="comment"># 创建完成后，代码空间src中会生产一个my_package功能包，其中已经包含package.xml和CMakeLists.txt文件。</span></span><br><span class="line"><span class="comment"># 在后续写代码时，就可以把源码放进功能包src文件夹中，然后写相应的CMakeLists.txt就可以了。具体见下面CLion教程。</span></span><br><span class="line"><span class="built_in">cd</span> ~/catkin_ws/src</span><br><span class="line">catkin_create_pkg my_package roscpp rospy std_msgs</span><br></pre></td></tr></table></figure>
+<h2 id="3-2-工作空间的覆盖"><a href="#3-2-工作空间的覆盖" class="headerlink" title="3.2 工作空间的覆盖"></a>3.2 工作空间的覆盖</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ROS中为解决同名功能包问题，存在覆盖机制。即$ROS_PACKAGE_PATH中记录的环境变量，最前面覆盖最后面的。</span></span><br><span class="line"><span class="comment"># rospack 查找功能包所放置的工作空间</span></span><br><span class="line">rospack find roscpp</span><br></pre></td></tr></table></figure>
+<h2 id="3-3-使用IDE运行及调试ROS程序"><a href="#3-3-使用IDE运行及调试ROS程序" class="headerlink" title="3.3 使用IDE运行及调试ROS程序"></a>3.3 使用IDE运行及调试ROS程序</h2><p>ROS支持许多IDE开发，具体可以看wiki上的<a href="http://wiki.ros.org/IDEs" target="_blank" rel="noopener">介绍</a>。CLion是一个个人觉得非常好用的跨平台c++IDE。<br>搭建CLion开发环境，搭建后可以利用CLion运行和调试程序，十分方便，具体见CLion<a href="https://www.jetbrains.com/help/clion/2018.3/ros-setup-tutorial.html" target="_blank" rel="noopener">官方教程</a><br>其中需要注意的是，每次必须从终端利用bash打开CLion;或者要改一个桌面快捷方式文件，使其每次通过bash启动。</p>
+<p>另外，还可以配置下编译路径。CLion默认在cmake-build-debug或cmake-build-release文件夹保存编译文件。可以通过File|Settings(Ctrl+Alt+S)|Build, Execution, Deployment|CMake改一下:<br>1.Generation path改为/home/name/catkin_ws/build<br>2.CMake options加上 -DCATKIN_DEVEL_PREFIX:PATH=/home/name/catkin_ws/devel</p>
+<h2 id="3-4-创建Publisher和Subscriber"><a href="#3-4-创建Publisher和Subscriber" class="headerlink" title="3.4 创建Publisher和Subscriber"></a>3.4 创建Publisher和Subscriber</h2><p>基于C++写一个ROS程序，深入理解发布和订阅机制:<br><a href="https://blog.csdn.net/yake827/article/details/44564057" target="_blank" rel="noopener">https://blog.csdn.net/yake827/article/details/44564057</a></p>
+<h2 id="3-5-自定义话题消息"><a href="#3-5-自定义话题消息" class="headerlink" title="3.5 自定义话题消息"></a>3.5 自定义话题消息</h2><p>ROS的元功能包common_msgs提供了许多不同消息类型的功能包，如std_msgs、geometry_msgs、sensor_msgs等。当不能满足需求时，可以在项目下新建msg文件夹，并将自定义消息类型文件.msg放于其中。然后更改package.xml和CMakeLists.txt文件即可。</p>
+<p>话题消息编译与编程语言无关。</p>
+<h2 id="3-6-创建Server和Client"><a href="#3-6-创建Server和Client" class="headerlink" title="3.6 创建Server和Client"></a>3.6 创建Server和Client</h2><p>类似地，也可以自定义服务数据.srv放置于新建的srv文件夹。<br>创建Server过程类似创建Subscriber，而创建Client类似创建Publisher。</p>
+<h1 id="4-ROS中常用组件"><a href="#4-ROS中常用组件" class="headerlink" title="4. ROS中常用组件"></a>4. ROS中常用组件</h1><h2 id="4-1-launch启动文件"><a href="#4-1-launch启动文件" class="headerlink" title="4.1 launch启动文件"></a>4.1 launch启动文件</h2><p>利用xml文件同时启动和配置多节点，避免了每次打开新的终端输入命令。<br>重要的节点属性包括name/pkg/type/args/output等。<br>参数设置：</p>
+<ul>
+<li><code>&lt;param&gt;</code> 类似变量声明</li>
+<li><code>&lt;rosparam&gt;</code> 直接加载整个yaml文件</li>
+<li><code>&lt;arg&gt;</code> 类似launch文件内部的局部变量，仅限内部使用，与节点无关</li>
+</ul>
+<p>重映射：类似c++别名机制，如：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">remap</span> <span class="attr">from</span>=<span class="string">"/turtlebot/cmd_vel"</span> <span class="attr">to</span>=<span class="string">"/cmd_vel"</span> /&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>另外，也可以使用终端完成重映射，如之前运行lsd-slam时：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rosrun lsd_slam_core live_slam image:=/image_raw　camera_info:=/camera_info</span><br></pre></td></tr></table></figure></p>
+<p>嵌套复用。其中使用find命令查找当前包的路径，如：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">include</span> <span class="attr">file</span>=<span class="string">"$(find mypackage)/launch/other.launch"</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="4-2-TF坐标变换"><a href="#4-2-TF坐标变换" class="headerlink" title="4.2 TF坐标变换"></a>4.2 TF坐标变换</h2><h2 id="4-3-Qt工具箱"><a href="#4-3-Qt工具箱" class="headerlink" title="4.3 Qt工具箱"></a>4.3 Qt工具箱</h2><h2 id="4-4-rviz可视化平台"><a href="#4-4-rviz可视化平台" class="headerlink" title="4.4 rviz可视化平台"></a>4.4 rviz可视化平台</h2><p>配置好rviz后，可以在file|save config as保存.rviz文件。然后使用-d参数加载配置文件，从而可以避免每次重新配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rosrun rviz rviz -d &lt;path&gt;/rvizfile.rviz</span><br></pre></td></tr></table></figure>
+<p>或者还可以把这一步写进launch文件中，更加方便！</p>
+<h2 id="4-5-rosbag数据记录与回放"><a href="#4-5-rosbag数据记录与回放" class="headerlink" title="4.5 rosbag数据记录与回放"></a>4.5 rosbag数据记录与回放</h2>
     </article>
     <!-- license  -->
     
@@ -458,7 +473,7 @@ height:50vh;
             <p>原文作者：<a href="https://guojh.top">GJGJH</a>
             <p>原文链接：<a href="https://guojh.top/ROS_note.html">https://guojh.top/ROS_note.html</a>
             <p>发表日期：<a href="https://guojh.top/ROS_note.html">December 16th 2018, 11:43:18 pm</a>
-            <p>更新日期：<a href="https://guojh.top/ROS_note.html">December 16th 2018, 11:57:32 pm</a>
+            <p>更新日期：<a href="https://guojh.top/ROS_note.html">December 18th 2018, 1:38:37 pm</a>
             <p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
@@ -608,7 +623,7 @@ top:50vh;
         <div class="toc-catalog">
             <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
         </div>
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#初识ROS"><span class="toc-number">1.</span> <span class="toc-text">初识ROS</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ROS架构"><span class="toc-number">2.</span> <span class="toc-text">ROS架构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ROS基础"><span class="toc-number">3.</span> <span class="toc-text">ROS基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#创建工作空间和功能包"><span class="toc-number">3.1.</span> <span class="toc-text">创建工作空间和功能包</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#工作空间的覆盖"><span class="toc-number">3.2.</span> <span class="toc-text">工作空间的覆盖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用IDE运行及调试ROS程序"><span class="toc-number">3.3.</span> <span class="toc-text">使用IDE运行及调试ROS程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建Publisher和Subscriber"><span class="toc-number">3.4.</span> <span class="toc-text">创建Publisher和Subscriber</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ROS中常用组件"><span class="toc-number">4.</span> <span class="toc-text">ROS中常用组件</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-初识ROS"><span class="toc-number">1.</span> <span class="toc-text">1. 初识ROS</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-ROS架构"><span class="toc-number">2.</span> <span class="toc-text">2. ROS架构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-ROS基础"><span class="toc-number">3.</span> <span class="toc-text">3. ROS基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-创建工作空间和功能包"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 创建工作空间和功能包</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-工作空间的覆盖"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 工作空间的覆盖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-使用IDE运行及调试ROS程序"><span class="toc-number">3.3.</span> <span class="toc-text">3.3 使用IDE运行及调试ROS程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-4-创建Publisher和Subscriber"><span class="toc-number">3.4.</span> <span class="toc-text">3.4 创建Publisher和Subscriber</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-5-自定义话题消息"><span class="toc-number">3.5.</span> <span class="toc-text">3.5 自定义话题消息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-6-创建Server和Client"><span class="toc-number">3.6.</span> <span class="toc-text">3.6 创建Server和Client</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-ROS中常用组件"><span class="toc-number">4.</span> <span class="toc-text">4. ROS中常用组件</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-launch启动文件"><span class="toc-number">4.1.</span> <span class="toc-text">4.1 launch启动文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-TF坐标变换"><span class="toc-number">4.2.</span> <span class="toc-text">4.2 TF坐标变换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-Qt工具箱"><span class="toc-number">4.3.</span> <span class="toc-text">4.3 Qt工具箱</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-4-rviz可视化平台"><span class="toc-number">4.4.</span> <span class="toc-text">4.4 rviz可视化平台</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-5-rosbag数据记录与回放"><span class="toc-number">4.5.</span> <span class="toc-text">4.5 rosbag数据记录与回放</span></a></li></ol></li></ol>
     </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
@@ -684,7 +699,7 @@ top:50vh;
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">12/16</span><a class="archive-post-title" href= "/ROS_note.html" >ROS学习笔记</a>
+            <span class="archive-post-date">12/16</span><a class="archive-post-title" href= "/ROS_note.html" >ROS学习笔记(持续更新)</a>
         </li>
     
     
@@ -788,23 +803,7 @@ jsonContent:
     </div>
     <!-- async load share.js -->
     
-        <script src="/scripts/share.js" async></script>    
-     
-    <script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        tex2jax: {
-            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
-            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
-            processEscapes: true
-        }
-    });
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax();
-        for (var i = 0; i < all.length; ++i)
-            all[i].SourceElement().parentNode.className += ' has-jax';
-    });
-</script>
-<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+        <script src="/scripts/share.js" async></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
 <script type="text/x-mathjax-config">
   MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"]]}});
 </script>
@@ -821,8 +820,9 @@ jsonContent:
 <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
 <!-- End: Injected MathJax -->
-<!-- hexo-inject:end -->
-</body>
+<!-- hexo-inject:end -->    
+     
+    </body>
 </html>
 
 
