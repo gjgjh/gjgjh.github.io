@@ -291,7 +291,7 @@ height:50vh;
                 
                 
                     <div class="post-intro-read">
-                        <span>字数统计: <span class="post-count word-count">1.5k</span>阅读时长: <span class="post-count reading-time">5 min</span></span>
+                        <span>字数统计: <span class="post-count word-count">1.7k</span>阅读时长: <span class="post-count reading-time">6 min</span></span>
                     </div>
                 
                 <div class="post-intro-meta">
@@ -464,10 +464,20 @@ height:50vh;
 <p>另外，也可以使用终端完成重映射，如之前运行lsd-slam时：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rosrun lsd_slam_core live_slam image:=/image_raw　camera_info:=/camera_info</span><br></pre></td></tr></table></figure></p>
 <p>嵌套复用。其中使用find命令查找当前包的路径，如：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">include</span> <span class="attr">file</span>=<span class="string">"$(find mypackage)/launch/other.launch"</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
 <p>在launch中直接启动master，参数还可以为restart或no：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">master</span> <span class="attr">auto</span>=<span class="string">"start"</span>/&gt;</span></span><br></pre></td></tr></table></figure></p>
-<h2 id="4-2-TF坐标变换"><a href="#4-2-TF坐标变换" class="headerlink" title="4.2 TF坐标变换"></a>4.2 TF坐标变换</h2><h2 id="4-3-Qt工具箱"><a href="#4-3-Qt工具箱" class="headerlink" title="4.3 Qt工具箱"></a>4.3 Qt工具箱</h2><h2 id="4-4-rviz可视化平台"><a href="#4-4-rviz可视化平台" class="headerlink" title="4.4 rviz可视化平台"></a>4.4 rviz可视化平台</h2><p>配置好rviz后，可以在file|save config as保存.rviz文件。然后使用-d参数加载配置文件，从而可以避免每次重新配置：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rosrun rviz rviz -d &lt;path&gt;/rvizfile.rviz</span><br></pre></td></tr></table></figure>
+<h2 id="4-2-TF坐标变换"><a href="#4-2-TF坐标变换" class="headerlink" title="4.2 TF坐标变换"></a>4.2 TF坐标变换</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 一些TF工具</span></span><br><span class="line"><span class="comment"># 1.查看指定坐标系之间变换关系，即平移和旋转</span></span><br><span class="line">rosrun tf tf_echo &lt;source_frame&gt; &lt;target_frame&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2.显示TF树信息，并保存为pdf</span></span><br><span class="line">rosrun tf view_frames</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3.其他</span></span><br><span class="line">tf_monitor</span><br><span class="line">static_transform_publisher</span><br></pre></td></tr></table></figure>
+<p>通过创建TF广播器和TF监听器，<strong>实现乌龟跟随运动</strong></p>
+<h2 id="4-3-Qt工具箱"><a href="#4-3-Qt工具箱" class="headerlink" title="4.3 Qt工具箱"></a>4.3 Qt工具箱</h2><p>日志输出工具　rqt_console<br>计算图可视化工具 rqt_graph<br>数据绘图工具　rqt_plot<br>参数动态配置工具　rqt_reconfigure</p>
+<h2 id="4-4-rviz可视化平台"><a href="#4-4-rviz可视化平台" class="headerlink" title="4.4 rviz可视化平台"></a>4.4 rviz可视化平台</h2><p>配置好rviz后，可以在file|save config as保存.rviz文件。然后使用-d参数加载配置文件，从而可以避免每次重新配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">rosrun rviz rviz -d &lt;path&gt;/rvizfile.rviz</span><br><span class="line"></span><br><span class="line"><span class="comment"># for example</span></span><br><span class="line">rosrun rviz rviz -d `rospack find turtle_tf`/rviz/rvizfile.rviz</span><br></pre></td></tr></table></figure>
 <p>或者还可以把这一步写进launch文件中，更加方便！</p>
 <h2 id="4-5-rosbag数据记录与回放"><a href="#4-5-rosbag数据记录与回放" class="headerlink" title="4.5 rosbag数据记录与回放"></a>4.5 rosbag数据记录与回放</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看bag文件信息，时长duration，是否压缩等</span></span><br><span class="line">rosbag info &lt;your bagfile&gt;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 解压缩</span></span><br><span class="line">rosbag decompress &lt;your bagfile&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="4-5-Gazebo仿真"><a href="#4-5-Gazebo仿真" class="headerlink" title="4.5　Gazebo仿真"></a>4.5　Gazebo仿真</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rosrun gazebo_ros gazebo</span><br></pre></td></tr></table></figure>
+<p>如果没有真实机器人，则需仿真。仿真前，需构建仿真环境。两种方式：</p>
+<ul>
+<li>直接insert模型. 需连外网，或把模型提前下载到指定目录下；</li>
+<li>Building Editor. 在Edit菜单中</li>
+</ul>
+<h2 id="4-6-rosbag"><a href="#4-6-rosbag" class="headerlink" title="4.6 rosbag"></a>4.6 rosbag</h2><h1 id="5-机器人平台搭建"><a href="#5-机器人平台搭建" class="headerlink" title="5.机器人平台搭建"></a>5.机器人平台搭建</h1><h1 id="6-机器人建模与仿真"><a href="#6-机器人建模与仿真" class="headerlink" title="6.机器人建模与仿真"></a>6.机器人建模与仿真</h1><h1 id="7-SLAM"><a href="#7-SLAM" class="headerlink" title="7.SLAM"></a>7.SLAM</h1><h1 id="8-ROS进阶"><a href="#8-ROS进阶" class="headerlink" title="8.ROS进阶"></a>8.ROS进阶</h1><h1 id="9-ROS2"><a href="#9-ROS2" class="headerlink" title="9.ROS2"></a>9.ROS2</h1>
     </article>
     <!-- license  -->
     
@@ -475,7 +485,7 @@ height:50vh;
             <p>原文作者：<a href="https://guojh.top">GJGJH</a>
             <p>原文链接：<a href="https://guojh.top/ROS_note.html">https://guojh.top/ROS_note.html</a>
             <p>发表日期：<a href="https://guojh.top/ROS_note.html">December 16th 2018, 11:43:18 pm</a>
-            <p>更新日期：<a href="https://guojh.top/ROS_note.html">December 25th 2018, 11:28:56 pm</a>
+            <p>更新日期：<a href="https://guojh.top/ROS_note.html">December 26th 2018, 11:51:06 pm</a>
             <p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
@@ -625,7 +635,7 @@ top:50vh;
         <div class="toc-catalog">
             <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
         </div>
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-初识ROS"><span class="toc-number">1.</span> <span class="toc-text">1. 初识ROS</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-ROS架构"><span class="toc-number">2.</span> <span class="toc-text">2. ROS架构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-ROS基础"><span class="toc-number">3.</span> <span class="toc-text">3. ROS基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-创建工作空间和功能包"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 创建工作空间和功能包</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-工作空间的覆盖"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 工作空间的覆盖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-使用IDE运行及调试ROS程序"><span class="toc-number">3.3.</span> <span class="toc-text">3.3 使用IDE运行及调试ROS程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-4-创建Publisher和Subscriber"><span class="toc-number">3.4.</span> <span class="toc-text">3.4 创建Publisher和Subscriber</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-5-自定义话题消息"><span class="toc-number">3.5.</span> <span class="toc-text">3.5 自定义话题消息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-6-创建Server和Client"><span class="toc-number">3.6.</span> <span class="toc-text">3.6 创建Server和Client</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-ROS中常用组件"><span class="toc-number">4.</span> <span class="toc-text">4. ROS中常用组件</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-launch启动文件"><span class="toc-number">4.1.</span> <span class="toc-text">4.1 launch启动文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-TF坐标变换"><span class="toc-number">4.2.</span> <span class="toc-text">4.2 TF坐标变换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-Qt工具箱"><span class="toc-number">4.3.</span> <span class="toc-text">4.3 Qt工具箱</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-4-rviz可视化平台"><span class="toc-number">4.4.</span> <span class="toc-text">4.4 rviz可视化平台</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-5-rosbag数据记录与回放"><span class="toc-number">4.5.</span> <span class="toc-text">4.5 rosbag数据记录与回放</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-初识ROS"><span class="toc-number">1.</span> <span class="toc-text">1. 初识ROS</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2-ROS架构"><span class="toc-number">2.</span> <span class="toc-text">2. ROS架构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#3-ROS基础"><span class="toc-number">3.</span> <span class="toc-text">3. ROS基础</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-创建工作空间和功能包"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 创建工作空间和功能包</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-工作空间的覆盖"><span class="toc-number">3.2.</span> <span class="toc-text">3.2 工作空间的覆盖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-使用IDE运行及调试ROS程序"><span class="toc-number">3.3.</span> <span class="toc-text">3.3 使用IDE运行及调试ROS程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-4-创建Publisher和Subscriber"><span class="toc-number">3.4.</span> <span class="toc-text">3.4 创建Publisher和Subscriber</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-5-自定义话题消息"><span class="toc-number">3.5.</span> <span class="toc-text">3.5 自定义话题消息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-6-创建Server和Client"><span class="toc-number">3.6.</span> <span class="toc-text">3.6 创建Server和Client</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#4-ROS中常用组件"><span class="toc-number">4.</span> <span class="toc-text">4. ROS中常用组件</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-launch启动文件"><span class="toc-number">4.1.</span> <span class="toc-text">4.1 launch启动文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-TF坐标变换"><span class="toc-number">4.2.</span> <span class="toc-text">4.2 TF坐标变换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-Qt工具箱"><span class="toc-number">4.3.</span> <span class="toc-text">4.3 Qt工具箱</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-4-rviz可视化平台"><span class="toc-number">4.4.</span> <span class="toc-text">4.4 rviz可视化平台</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-5-rosbag数据记录与回放"><span class="toc-number">4.5.</span> <span class="toc-text">4.5 rosbag数据记录与回放</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-5-Gazebo仿真"><span class="toc-number">4.6.</span> <span class="toc-text">4.5　Gazebo仿真</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-6-rosbag"><span class="toc-number">4.7.</span> <span class="toc-text">4.6 rosbag</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#5-机器人平台搭建"><span class="toc-number">5.</span> <span class="toc-text">5.机器人平台搭建</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#6-机器人建模与仿真"><span class="toc-number">6.</span> <span class="toc-text">6.机器人建模与仿真</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#7-SLAM"><span class="toc-number">7.</span> <span class="toc-text">7.SLAM</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#8-ROS进阶"><span class="toc-number">8.</span> <span class="toc-text">8.ROS进阶</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#9-ROS2"><span class="toc-number">9.</span> <span class="toc-text">9.ROS2</span></a></li></ol>
     </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
@@ -638,8 +648,6 @@ top:50vh;
     <div class="sidebar-content sidebar-content-show-archive">
           <div class="sidebar-panel-archives">
     <!-- 在ejs中将archive按照时间排序 -->
-    
-    
     
     
     
@@ -733,11 +741,11 @@ top:50vh;
     
         <span class="sidebar-tag-name" data-tags="SLAM"><span class="iconfont-archer">&#xe606;</span>SLAM</span>
     
-        <span class="sidebar-tag-name" data-tags="LSDSLAM"><span class="iconfont-archer">&#xe606;</span>LSDSLAM</span>
+        <span class="sidebar-tag-name" data-tags="PTAM"><span class="iconfont-archer">&#xe606;</span>PTAM</span>
     
         <span class="sidebar-tag-name" data-tags="单目"><span class="iconfont-archer">&#xe606;</span>单目</span>
     
-        <span class="sidebar-tag-name" data-tags="PTAM"><span class="iconfont-archer">&#xe606;</span>PTAM</span>
+        <span class="sidebar-tag-name" data-tags="LSDSLAM"><span class="iconfont-archer">&#xe606;</span>LSDSLAM</span>
     
     </div>
     <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
