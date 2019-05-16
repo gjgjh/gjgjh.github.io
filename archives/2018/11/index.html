@@ -407,11 +407,9 @@ PTAM引入关键帧机制，不必精细处理每一张图
                 <span>基于ROS获取Android图像和惯导数据</span>
         </a>
         <div class="abstract-content">
-            0 　将手机与ROS连接首先，通过局域网将手机与ROS相连接。我使用的是hitcm博客的程序，具体可以参考他的博客。到这一步已经可以在电脑端做进一步的计算了，但是如果还想记录下来数据以便未来再次回放使用，则需要进一步处理。
-1　记录bagROS与手机相连后，使用rosbag命令开始记录数据：
-1rosbag record android/imu camera/image_raw # rosbag record &lt;topic-names&gt; or rosbag record -a 表示记录全部topic
-更多请参考ROS wiki 。最后，按ctrl+C结束记录。
-2　解析bag...
+            0 　将手机与ROS连接首先，通过局域网将手机与ROS相连接。我使用的是hitcm博客的程序，具体可以参考他的博客。到这一步已经可以订阅相关话题，并在程序中做相关计算了。但是如果还想记录下来手机传感器发布的数据，以便未来再次回放使用，则还需要进一步处理。
+1　记录bagROS与手机相连后，使用rosbag命令开始记录数据，这里指定只保存android/imu和camera/image_raw两个话题下的消息：
+1rosbag record android/imu camera/image_raw # rosbag record &lt;topic-names&gt; or rosbag ...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
@@ -573,9 +571,20 @@ PTAM引入关键帧机制，不必精细处理每一张图
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 5
+        Total : 6
         </div>
         <!-- search  -->
         
@@ -586,12 +595,26 @@ PTAM引入关键帧机制，不必精细处理每一张图
     
     
     
+    <div class="archive-year"> 2019 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/02</span><a class="archive-post-title" href= "/gtest.html" >Google Test(gtest)写c++单元测试</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
     <div class="archive-year"> 2018 </div>
     <ul class="year-list">
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">12/16</span><a class="archive-post-title" href= "/ROS_note.html" >ROS学习笔记(持续更新)</a>
+            <span class="archive-post-date">12/16</span><a class="archive-post-title" href= "/ROS_note.html" >ROS学习笔记</a>
         </li>
     
     
@@ -622,6 +645,8 @@ PTAM引入关键帧机制，不必精细处理每一张图
         <span class="sidebar-tag-name" data-tags="ROS"><span class="iconfont-archer">&#xe606;</span>ROS</span>
     
         <span class="sidebar-tag-name" data-tags="SLAM"><span class="iconfont-archer">&#xe606;</span>SLAM</span>
+    
+        <span class="sidebar-tag-name" data-tags="c++"><span class="iconfont-archer">&#xe606;</span>c++</span>
     
         <span class="sidebar-tag-name" data-tags="LSDSLAM"><span class="iconfont-archer">&#xe606;</span>LSDSLAM</span>
     
@@ -695,7 +720,22 @@ jsonContent:
     </div>
     <!-- async load share.js -->
      
-    </body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
 </html>
 
 

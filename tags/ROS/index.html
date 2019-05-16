@@ -365,21 +365,18 @@
     <article class="index-post">
         <a class="abstract-title" href = "/ROS_note.html" >
             
-                <span>ROS学习笔记(持续更新)</span>
+                <span>ROS学习笔记</span>
         </a>
         <div class="abstract-content">
             
-之前已经接触过一些ROS的使用，但是还没有系统地学习过，因此在此记录一下学习的笔记。学习ROS首先必须参考ROS wiki及ROS Answers，另外国内“古月居”的博客和“东方赤龙”的博客都可以参考学习，古月居的书《ROS机器人开发实践》也不错。不过，需知道ROS本身只是一个方便大家开发的工具罢了。
+之前已经接触过一些ROS的使用，但是还没有系统地学习过，因此在此记录一下学习的笔记。学习ROS首先必须参考ROS wiki及ROS Answers，另外国内“古月居”的博客和“东方赤龙”的博客都可以参考学习，本文使用古月居的书《ROS机器人开发实践》来系统学习ROS。不过，需知道ROS本身只是一个方便大家开发的工具罢了。
 
+书中相关学习代码在github上： https://github.com/gjgjh/ros_exploring
 1. 初识ROS分布式网络，TCP/IP，模块间松耦合连接
-三种通信机制：1.基于发布/订阅topi通信（异步）
+三种通信机制：1.基于发布/订阅topic通信（异步）
 
 talker注册
-listener注册
-ROS master进行信息匹配
-listener发送连接请求
-talker确认连接请求
-listener尝试与talker建立...
+listener...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
@@ -410,11 +407,9 @@ listener尝试与talker建立...
                 <span>基于ROS获取Android图像和惯导数据</span>
         </a>
         <div class="abstract-content">
-            0 　将手机与ROS连接首先，通过局域网将手机与ROS相连接。我使用的是hitcm博客的程序，具体可以参考他的博客。到这一步已经可以在电脑端做进一步的计算了，但是如果还想记录下来数据以便未来再次回放使用，则需要进一步处理。
-1　记录bagROS与手机相连后，使用rosbag命令开始记录数据：
-1rosbag record android/imu camera/image_raw # rosbag record &lt;topic-names&gt; or rosbag record -a 表示记录全部topic
-更多请参考ROS wiki 。最后，按ctrl+C结束记录。
-2　解析bag...
+            0 　将手机与ROS连接首先，通过局域网将手机与ROS相连接。我使用的是hitcm博客的程序，具体可以参考他的博客。到这一步已经可以订阅相关话题，并在程序中做相关计算了。但是如果还想记录下来手机传感器发布的数据，以便未来再次回放使用，则还需要进一步处理。
+1　记录bagROS与手机相连后，使用rosbag命令开始记录数据，这里指定只保存android/imu和camera/image_raw两个话题下的消息：
+1rosbag record android/imu camera/image_raw # rosbag record &lt;topic-names&gt; or rosbag ...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
@@ -576,9 +571,20 @@ listener尝试与talker建立...
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 5
+        Total : 6
         </div>
         <!-- search  -->
         
@@ -589,12 +595,26 @@ listener尝试与talker建立...
     
     
     
+    <div class="archive-year"> 2019 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/02</span><a class="archive-post-title" href= "/gtest.html" >Google Test(gtest)写c++单元测试</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
     <div class="archive-year"> 2018 </div>
     <ul class="year-list">
     
     
         <li class="archive-post-item">
-            <span class="archive-post-date">12/16</span><a class="archive-post-title" href= "/ROS_note.html" >ROS学习笔记(持续更新)</a>
+            <span class="archive-post-date">12/16</span><a class="archive-post-title" href= "/ROS_note.html" >ROS学习笔记</a>
         </li>
     
     
@@ -625,6 +645,8 @@ listener尝试与talker建立...
         <span class="sidebar-tag-name" data-tags="ROS"><span class="iconfont-archer">&#xe606;</span>ROS</span>
     
         <span class="sidebar-tag-name" data-tags="SLAM"><span class="iconfont-archer">&#xe606;</span>SLAM</span>
+    
+        <span class="sidebar-tag-name" data-tags="c++"><span class="iconfont-archer">&#xe606;</span>c++</span>
     
         <span class="sidebar-tag-name" data-tags="LSDSLAM"><span class="iconfont-archer">&#xe606;</span>LSDSLAM</span>
     
@@ -698,7 +720,22 @@ jsonContent:
     </div>
     <!-- async load share.js -->
      
-    </body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
 </html>
 
 
