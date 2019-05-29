@@ -289,7 +289,7 @@ height:50vh;
                 
                 
                     <div class="post-intro-read">
-                        <span>字数统计: <span class="post-count word-count">1.7k</span>阅读时长: <span class="post-count reading-time">6 min</span></span>
+                        <span>字数统计: <span class="post-count word-count">1.8k</span>阅读时长: <span class="post-count reading-time">6 min</span></span>
                     </div>
                 
                 <div class="post-intro-meta">
@@ -419,7 +419,7 @@ height:50vh;
             <main class="main post-page">
     <article class="article-entry">
         <h1 id="docker学习笔记"><a href="#docker学习笔记" class="headerlink" title="docker学习笔记"></a>docker学习笔记</h1><blockquote>
-<p>最近一直看到docker的身影，一方面为了将自己写的应用和依赖打包，另一方面是自己不想在mac上用虚拟机开发，所以开始学习下这种虚拟容器技术。本文参考资料包括《第一本Docker书》、Docker官网资料及相关博客。</p>
+<p>最近一直看到docker的身影，一方面为了将自己写的应用和依赖环境打包，另一方面是自己不想在mac上用虚拟机开发，所以开始学习下这种虚拟容器技术。本文参考资料包括《第一本Docker书》、Docker官网资料及相关博客。</p>
 </blockquote>
 <h2 id="1-docker基础概念"><a href="#1-docker基础概念" class="headerlink" title="1. docker基础概念"></a>1. docker基础概念</h2><h3 id="1-1-容器"><a href="#1-1-容器" class="headerlink" title="1.1 容器"></a>1.1 容器</h3><ul>
 <li>管理程序虚拟化：通过中间层将一台或多台独立的机器虚拟运行在物理硬件之上</li>
@@ -427,9 +427,16 @@ height:50vh;
 </ul>
 <p>容器只能运行与底层宿主机相同或相似的操作系统，因此在OS X和Windows运行则需要虚拟环境。</p>
 <p>优势：容器不需要模拟层和管理层，降低了开销。同一宿主机可以运行更多的容器，充分利用系统资源。</p>
-<h3 id="1-2-docker"><a href="#1-2-docker" class="headerlink" title="1.2 docker"></a>1.2 docker</h3><p><strong>docker</strong>是一个把开发的应用程序自动部署到容器的开源引擎，基于Go语言并遵从Apache2.0开源协议。</p>
-<p>用处：提供轻量化隔离环境。让开发者打包应用及依赖包到一个可移植的容器中，然后发布到任何流行的Linux机器上。</p>
-<p>docker组件：</p>
+<h3 id="1-2-docker"><a href="#1-2-docker" class="headerlink" title="1.2 docker"></a>1.2 docker</h3><p><strong>docker</strong>是一个把开发的应用程序自动部署到容器的开源引擎，基于Go语言并遵从Apache2.0开源协议。也被称为轻量级虚拟化技术。</p>
+<p><strong>用处：</strong></p>
+<ul>
+<li>开发人员可以轻松构建、运行并分享docker容器</li>
+<li>创建轻量化隔离环境，用于开发、测试等</li>
+<li>构建自动化和构建管理，方便协作者使用统一、一致的开发环境</li>
+<li>容器化的程序构建一次，可在各平台上运行</li>
+<li>等等</li>
+</ul>
+<p><strong>docker组件：</strong></p>
 <ul>
 <li><p>docker客户端和服务器，也称为docker引擎：</p>
 <p>docker客户端向服务器或守护进程发出请求，服务器或守护进程完成工作并返回结果；</p>
@@ -447,6 +454,7 @@ height:50vh;
 </li>
 </ul>
 <p>docker在各平台上安装可以参考官方网站 <a href="https://docs.docker.com/" target="_blank" rel="noopener">https://docs.docker.com/</a></p>
+<p>GitHub上一个很好的资源：docker-cheat-sheet <a href="https://github.com/wsargent/docker-cheat-sheet" target="_blank" rel="noopener">https://github.com/wsargent/docker-cheat-sheet</a></p>
 <h2 id="2-docker容器"><a href="#2-docker容器" class="headerlink" title="2. docker容器"></a>2. docker容器</h2><p>Ps: 以下命令可能需要root权限使用</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看docker是否正常工作</span></span><br><span class="line">docker info</span><br><span class="line"><span class="comment"># 查看帮助</span></span><br><span class="line">docker -h</span><br><span class="line">docker [命令] --<span class="built_in">help</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建并运行一个交互容器 -it；使用ubuntu镜像；最后是在容器运行什么命令</span></span><br><span class="line"><span class="comment"># 创建(但不运行)一个容器用docker create</span></span><br><span class="line">docker run -i -t ubuntu /bin/bash</span><br><span class="line"><span class="comment"># --name进行容器命名</span></span><br><span class="line">docker run --name bob_the_container -it ubuntu /bin/bash</span><br><span class="line"><span class="comment"># 退出交互容器</span></span><br><span class="line"><span class="built_in">exit</span></span><br></pre></td></tr></table></figure>
@@ -504,7 +512,7 @@ height:50vh;
             <p>原文作者：<a href="https://guojh.top">GJGJH</a>
             <p>原文链接：<a href="https://guojh.top/docker_learning.html">https://guojh.top/docker_learning.html</a>
             <p>发表日期：<a href="https://guojh.top/docker_learning.html">May 29th 2019, 5:27:39 pm</a>
-            <p>更新日期：<a href="https://guojh.top/docker_learning.html">May 29th 2019, 5:29:07 pm</a>
+            <p>更新日期：<a href="https://guojh.top/docker_learning.html">May 29th 2019, 9:04:51 pm</a>
             <p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
