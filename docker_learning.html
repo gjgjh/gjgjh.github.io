@@ -457,7 +457,7 @@ height:50vh;
 <p>GitHub上一个很好的资源：docker-cheat-sheet <a href="https://github.com/wsargent/docker-cheat-sheet" target="_blank" rel="noopener">https://github.com/wsargent/docker-cheat-sheet</a></p>
 <h2 id="2-docker容器"><a href="#2-docker容器" class="headerlink" title="2. docker容器"></a>2. docker容器</h2><p>Ps: 以下命令可能需要root权限使用</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看docker是否正常工作</span></span><br><span class="line">docker info</span><br><span class="line"><span class="comment"># 查看帮助</span></span><br><span class="line">docker -h</span><br><span class="line">docker [命令] --<span class="built_in">help</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建并运行一个交互容器 -it；使用ubuntu镜像；最后是在容器运行什么命令</span></span><br><span class="line"><span class="comment"># 创建(但不运行)一个容器用docker create</span></span><br><span class="line">docker run -i -t ubuntu /bin/bash</span><br><span class="line"><span class="comment"># --name进行容器命名</span></span><br><span class="line">docker run --name bob_the_container -it ubuntu /bin/bash</span><br><span class="line"><span class="comment"># 退出交互容器</span></span><br><span class="line"><span class="built_in">exit</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建并运行一个交互容器 -it；使用ubuntu镜像；最后是在容器运行什么命令. -i: interactive, -t: terminal</span></span><br><span class="line"><span class="comment"># 创建(但不运行)一个容器用docker create</span></span><br><span class="line">docker run -i -t ubuntu /bin/bash</span><br><span class="line"><span class="comment"># --name进行容器命名</span></span><br><span class="line">docker run --name bob_the_container -it ubuntu /bin/bash</span><br><span class="line"><span class="comment"># 退出交互容器</span></span><br><span class="line"><span class="built_in">exit</span></span><br></pre></td></tr></table></figure>
 <p>Tips：在这个ubuntu容器中安装软件包之前，最好先更换下源，网上有一些教程参考。</p>
 <p>守护式容器(daemonized container)没有交互式对话，适合运行应用程序及服务</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建并运行一个守护式容器 -d</span></span><br><span class="line">docker run --name daemon_dave -d ubuntu /bin/sh -c <span class="string">"while true; do echo hello docker; sleep 1; done"</span></span><br><span class="line"><span class="comment"># 获取容器日志;持续跟踪日志内容</span></span><br><span class="line">docker logs daemon_dave</span><br><span class="line">docker logs -f daemon_dave</span><br></pre></td></tr></table></figure>
@@ -512,7 +512,7 @@ height:50vh;
             <p>原文作者：<a href="https://guojh.top">GJGJH</a>
             <p>原文链接：<a href="https://guojh.top/docker_learning.html">https://guojh.top/docker_learning.html</a>
             <p>发表日期：<a href="https://guojh.top/docker_learning.html">May 29th 2019, 5:27:39 pm</a>
-            <p>更新日期：<a href="https://guojh.top/docker_learning.html">May 30th 2019, 1:37:01 pm</a>
+            <p>更新日期：<a href="https://guojh.top/docker_learning.html">January 5th 2020, 1:30:44 pm</a>
             <p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
@@ -780,12 +780,6 @@ top:50vh;
     
     
     
-    
-    
-    
-    
-    
-    
     <div class="total-and-search">
         <div class="total-archive">
         Total : 10
@@ -866,21 +860,21 @@ top:50vh;
         <div class="sidebar-panel-tags">
     <div class="sidebar-tags-name">
     
+        <span class="sidebar-tag-name" data-tags="ROS"><span class="iconfont-archer">&#xe606;</span>ROS</span>
+    
         <span class="sidebar-tag-name" data-tags="SLAM"><span class="iconfont-archer">&#xe606;</span>SLAM</span>
     
         <span class="sidebar-tag-name" data-tags="VinsMono"><span class="iconfont-archer">&#xe606;</span>VinsMono</span>
     
         <span class="sidebar-tag-name" data-tags="单目"><span class="iconfont-archer">&#xe606;</span>单目</span>
     
-        <span class="sidebar-tag-name" data-tags="docker"><span class="iconfont-archer">&#xe606;</span>docker</span>
-    
         <span class="sidebar-tag-name" data-tags="c++"><span class="iconfont-archer">&#xe606;</span>c++</span>
-    
-        <span class="sidebar-tag-name" data-tags="ROS"><span class="iconfont-archer">&#xe606;</span>ROS</span>
     
         <span class="sidebar-tag-name" data-tags="LSDSLAM"><span class="iconfont-archer">&#xe606;</span>LSDSLAM</span>
     
         <span class="sidebar-tag-name" data-tags="PTAM"><span class="iconfont-archer">&#xe606;</span>PTAM</span>
+    
+        <span class="sidebar-tag-name" data-tags="docker"><span class="iconfont-archer">&#xe606;</span>docker</span>
     
     </div>
     <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
