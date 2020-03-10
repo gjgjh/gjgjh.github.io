@@ -11,7 +11,7 @@
 
 
 <head>
-    <meta charset="utf-8">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
     <link rel="dns-prefetch" href="//cdn.bootcss.com" />
     <link rel="dns-prefetch" href="//cdn.mathjax.org" />
     <meta name="google-site-verification" content="vL0X5xI0HB-AD5a7F8H54LTQn09R7I8lU1SpQEdrb08" />
@@ -81,8 +81,6 @@
 
     <link rel="preload" href= "/css/style.css?v=20180824" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     <link rel="stylesheet" href= "/css/mobile.css?v=20180824" media="(max-width: 980px)">
-    
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     
     <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
 /* This file is meant as a standalone workflow for
@@ -217,11 +215,13 @@
     var s = document.getElementsByTagName("script")[0];
     s.parentNode.insertBefore(bp, s);
 })();
-</script>
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
     
+        <body class="home-body">
     
-<header class="header">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><header class="header index-header">
 
     <div class="read-progress"></div>
     <div class="header-sidebar-menu">&#xe775;</div>
@@ -237,21 +237,34 @@
 
 
 
+
+height:50vh;
 ">
     
     <!-- 主页  -->
+    
+    
+    <!-- 文章页  -->
             
     <div class="site-intro-placeholder"></div>
-    <div class="site-intro-img" style="background-image: url(/)"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/bg.jpg)"></div>
     <div class="site-intro-meta">
         <!-- 标题  -->
         <h1 class="intro-title">
             <!-- 主页  -->
             
+            guojh's Blog.
+            <!-- 文章页  -->
+            
         </h1>
         <!-- 副标题 -->
         <p class="intro-subtitle">
             <!-- 主页副标题  -->
+            
+            
+                it is our choices that show what we truly are
+            
+            <!-- 文章页  -->
             
         </p>
         <!-- 文章页meta -->
@@ -363,32 +376,70 @@
     
     
     <article class="index-post">
-        <a class="abstract-title" href = "/designPattern1.html" >
+        <a class="abstract-title" href = "/lsdslam2.html" >
             
-                <span>设计模式笔记(上)</span>
+                <span>LSDSLAM算法解析</span>
         </a>
         <div class="abstract-content">
-            设计模式笔记(上)
-个人学习设计模式笔记。主要参考《Head First设计模式》和Wikipedia，youtube上有个系列视频也非常值得一看
+            
+在阅读本文之前，最好先看过《视觉SLAM十四讲》中直接法(chap 8)和单目稠密建图(chap 13)部分，并对李群李代数和立体匹配相关知识有一些了解，这对于理解LSD-SLAM算法有一定帮助
 
-chap 1 设计模式入门—策略模式定义策略模式 Strategy Pattern 定义了算法簇，分别封装起来，让它们之间可以互相替换，此模式让算法的变化独立于使用算法的客户。
-分析
-环境(Context)：持有一个Strategy的引用
-抽象策略(Strategy)：这是一个抽象角色，通常由一个接口或抽象类实现。此角色给出所有的具体策略类所需的接口
-具体策略(ConcreteStrategy)：包装了相关的算法或行为
-
-利用继承设计子类行...
+LSD-SLAM算法主要在以下两个论文中提出：[1] 2013 Semi-dense Visual Odometry for a Monocular Camera[2] 2014 LSD-SLAM: Large-Scale Direct Monocular SLAM另外，以下是本文参考的比较好的LSD-SLAM算法解析的链接：[3] LSD-SLAM笔记之SE3Tracking[4] LSD...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
             <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2019/06/23</span>
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/10/02</span>
             </div>
             <!-- tags  -->
             
             <div class= abstract-tags >
     
-        <a class="post-tag" href="javascript:void(0);" data-tags = "c++">c++</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags = "SLAM">SLAM</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "单目">单目</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "LSDSLAM">LSDSLAM</a>
+    
+</div>
+            
+        </div>
+    </article>
+    
+    
+    
+    
+    
+    
+    <article class="index-post">
+        <a class="abstract-title" href = "/lsdslam.html" >
+            
+                <span>ubuntu16.04+ROS kinetic下跑LSDSLAM</span>
+        </a>
+        <div class="abstract-content">
+            LSD-SLAM是一个semi-dense的直接法SLAM算法。其主页见https://vision.in.tum.de/research/vslam/lsdslam?redirect=1其代码见https://github.com/tum-vision/lsd_slam
+官方在github上给出默认环境有两个
+
+ROS fuerte + Ubuntu 12.04
+ROS indigo + Ubuntu 14.04
+
+因此推荐使用上面的环境，出错较少。下面是我在ROS kinetic + Ubuntu 16.04环境下实现LSD-SLAM的过程
+1.安装ROS kinetic这个地方一般...
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/09/30</span>
+            </div>
+            <!-- tags  -->
+            
+            <div class= abstract-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "SLAM">SLAM</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "单目">单目</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "LSDSLAM">LSDSLAM</a>
     
 </div>
             
@@ -397,8 +448,102 @@ chap 1 设计模式入门—策略模式定义策略模式 Strategy Pattern 定�
     
     <!-- paginator  -->
     
+    <nav class="page-nav">
+        <a class="extend prev" rel="prev" href="/">&#60; PREV</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    </nav>
+    
 </main>
             <!-- profile -->
+            
+            <div class="profile">
+    <img class="profile-avatar" alt="avatar" src= /avatar/pic.jpg >
+    <div class="profile-name">GJGJH</div>
+    
+    
+    <div class="profile-social">
+        
+    
+        
+            
+                <a href="mailto:guojh_rs@qq.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="https://github.com/gjgjh" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="https://www.cnblogs.com/GJGJH/" class="iconfont-archer others" target="_blank" title=others></a>
+            
+        
+    
+        
+    
+
+    </div>
+    
+    
+        <div class="friends">
+            <div>FRIENDS</div>
+            
+                
+                    <span>
+                        <a href= http://www.slamcn.org/index.php/ target="_black">friendA</a>
+                    </span>
+                
+            
+                
+                    <span>
+                        <a href= //vision.in.tum.de target="_black">friendB</a>
+                    </span>
+                
+            
+                
+            
+        </div>
+    
+    
+        <div class="about-me">
+            <a href = "/about" >ABOUT ME</a>
+        </div>
+    
+</div>
             
         </div>
         <footer class="footer footer-unloaded">
@@ -809,7 +954,24 @@ jsonContent:
             all[i].SourceElement().parentNode.className += ' has-jax';
     });
 </script>
-<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"]]}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
 </body>
 </html>
 

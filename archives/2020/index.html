@@ -363,32 +363,73 @@
     
     
     <article class="index-post">
-        <a class="abstract-title" href = "/designPattern1.html" >
+        <a class="abstract-title" href = "/C++面试题.html" >
             
-                <span>设计模式笔记(上)</span>
+                <span>C++面试题</span>
         </a>
         <div class="abstract-content">
-            设计模式笔记(上)
-个人学习设计模式笔记。主要参考《Head First设计模式》和Wikipedia，youtube上有个系列视频也非常值得一看
+            C/C++高频题
+题目和答案均来自网络，本人只整理和修改了部分内容，如有侵权告知后必删。答案不一定准确，仅供参考。
 
-chap 1 设计模式入门—策略模式定义策略模式 Strategy Pattern 定义了算法簇，分别封装起来，让它们之间可以互相替换，此模式让算法的变化独立于使用算法的客户。
-分析
-环境(Context)：持有一个Strategy的引用
-抽象策略(Strategy)：这是一个抽象角色，通常由一个接口或抽象类实现。此角色给出所有的具体策略类所需的接口
-具体策略(ConcreteStrategy)：包装了相关的算法或行为
+C/C++基础引用和指针的区别？
+引用在定义的时候必须进行初始化，并且不能够改变。指针在定义的时候不一定要初始化，并且指向的空间可变。（注：引用总是表达代表一个对象，因此不能为NULL，而指针可以为空）。因此使用指针前最好检查，防止野指针。
 
-利用继承设计子类行...
+实现操作符operator[]时，其语法需求无法由pointers达成，必须返回引用类型。
+
+有多级指针，但是没有多级引用。
+引用底层是通过指针实现的；
+指针是一个实体，需要分配内存空间。引用只是变量的别名，不需要分配内存空间。si...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
             <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2019/06/23</span>
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2020/03/11</span>
             </div>
             <!-- tags  -->
             
             <div class= abstract-tags >
     
         <a class="post-tag" href="javascript:void(0);" data-tags = "c++">c++</a>
+    
+</div>
+            
+        </div>
+    </article>
+    
+    
+    
+    
+    
+    
+    <article class="index-post">
+        <a class="abstract-title" href = "/清华大学操作系统笔记.html" >
+            
+                <span>清华大学操作系统笔记</span>
+        </a>
+        <div class="abstract-content">
+            清华大学操作系统笔记前言B站 陈渝老师 清华大学 https://www.bilibili.com/video/av6538245
+相关资料：
+ 配套上机实验地址
+课程项目GitHub地址
+ 实验课地址
+操作系统结构、中断/异常与系统调用、OS启动、内存管理、进程/线程管理、调度、同步扶持、进程间通信、死锁处理、文件系统、I/O系统
+chap1 概述
+OS功能。OS提供管理（资源角度）、控制（用户角度）和服务（应用程序角度）。
+
+OS位置。硬件之上，应用软件之下。OS对外的接口是shell（GUI，CLI），内核是kernel。
+
+OS组成。CPU调度、物理内存、虚拟内存、文件系统、中断...
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2020/03/11</span>
+            </div>
+            <!-- tags  -->
+            
+            <div class= abstract-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "操作系统">操作系统</a>
     
 </div>
             

@@ -363,6 +363,85 @@
     
     
     <article class="index-post">
+        <a class="abstract-title" href = "/C++面试题.html" >
+            
+                <span>C++面试题</span>
+        </a>
+        <div class="abstract-content">
+            C/C++高频题
+题目和答案均来自网络，本人只整理和修改了部分内容，如有侵权告知后必删。答案不一定准确，仅供参考。
+
+C/C++基础引用和指针的区别？
+引用在定义的时候必须进行初始化，并且不能够改变。指针在定义的时候不一定要初始化，并且指向的空间可变。（注：引用总是表达代表一个对象，因此不能为NULL，而指针可以为空）。因此使用指针前最好检查，防止野指针。
+
+实现操作符operator[]时，其语法需求无法由pointers达成，必须返回引用类型。
+
+有多级指针，但是没有多级引用。
+引用底层是通过指针实现的；
+指针是一个实体，需要分配内存空间。引用只是变量的别名，不需要分配内存空间。si...
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2020/03/11</span>
+            </div>
+            <!-- tags  -->
+            
+            <div class= abstract-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "c++">c++</a>
+    
+</div>
+            
+        </div>
+    </article>
+    
+    
+    
+    
+    
+    
+    <article class="index-post">
+        <a class="abstract-title" href = "/清华大学操作系统笔记.html" >
+            
+                <span>清华大学操作系统笔记</span>
+        </a>
+        <div class="abstract-content">
+            清华大学操作系统笔记前言B站 陈渝老师 清华大学 https://www.bilibili.com/video/av6538245
+相关资料：
+ 配套上机实验地址
+课程项目GitHub地址
+ 实验课地址
+操作系统结构、中断/异常与系统调用、OS启动、内存管理、进程/线程管理、调度、同步扶持、进程间通信、死锁处理、文件系统、I/O系统
+chap1 概述
+OS功能。OS提供管理（资源角度）、控制（用户角度）和服务（应用程序角度）。
+
+OS位置。硬件之上，应用软件之下。OS对外的接口是shell（GUI，CLI），内核是kernel。
+
+OS组成。CPU调度、物理内存、虚拟内存、文件系统、中断...
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2020/03/11</span>
+            </div>
+            <!-- tags  -->
+            
+            <div class= abstract-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "操作系统">操作系统</a>
+    
+</div>
+            
+        </div>
+    </article>
+    
+    
+    
+    
+    
+    
+    <article class="index-post">
         <a class="abstract-title" href = "/designPattern2.html" >
             
                 <span>设计模式笔记(下)</span>
@@ -647,83 +726,11 @@ PTAM引入关键帧机制，不必精细处理每一张图
         </div>
     </article>
     
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/lsdslam2.html" >
-            
-                <span>LSDSLAM算法解析</span>
-        </a>
-        <div class="abstract-content">
-            
-在阅读本文之前，最好先看过《视觉SLAM十四讲》中直接法(chap 8)和单目稠密建图(chap 13)部分，并对李群李代数和立体匹配相关知识有一些了解，这对于理解LSD-SLAM算法有一定帮助
-
-LSD-SLAM算法主要在以下两个论文中提出：[1] 2013 Semi-dense Visual Odometry for a Monocular Camera[2] 2014 LSD-SLAM: Large-Scale Direct Monocular SLAM另外，以下是本文参考的比较好的LSD-SLAM算法解析的链接：[3] LSD-SLAM笔记之SE3Tracking[4] LSD...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/10/02</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "SLAM">SLAM</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "单目">单目</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "LSDSLAM">LSDSLAM</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/lsdslam.html" >
-            
-                <span>ubuntu16.04+ROS kinetic下跑LSDSLAM</span>
-        </a>
-        <div class="abstract-content">
-            LSD-SLAM是一个semi-dense的直接法SLAM算法。其主页见https://vision.in.tum.de/research/vslam/lsdslam?redirect=1其代码见https://github.com/tum-vision/lsd_slam
-官方在github上给出默认环境有两个
-
-ROS fuerte + Ubuntu 12.04
-ROS indigo + Ubuntu 14.04
-
-因此推荐使用上面的环境，出错较少。下面是我在ROS kinetic + Ubuntu 16.04环境下实现LSD-SLAM的过程
-1.安装ROS kinetic这个地方一般...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/09/30</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "SLAM">SLAM</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "单目">单目</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "LSDSLAM">LSDSLAM</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
     <!-- paginator  -->
+    
+    <nav class="page-nav">
+        <span class="page-number current">1</span><a class="page-number" href="/archives/page/2/">2</a><a class="extend next" rel="next" href="/archives/page/2/">NEXT &#62;</a>
+    </nav>
     
 </main>
             <!-- profile -->
@@ -920,9 +927,29 @@ ROS indigo + Ubuntu 14.04
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 10
+        Total : 12
         </div>
         <!-- search  -->
         
@@ -932,6 +959,25 @@ ROS indigo + Ubuntu 14.04
     
     
     
+    
+    <div class="archive-year"> 2020 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/11</span><a class="archive-post-title" href= "/清华大学操作系统笔记.html" >清华大学操作系统笔记</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/11</span><a class="archive-post-title" href= "/C++面试题.html" >C++面试题</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
     
     <div class="archive-year"> 2019 </div>
     <ul class="year-list">
@@ -1004,17 +1050,19 @@ ROS indigo + Ubuntu 14.04
     
         <span class="sidebar-tag-name" data-tags="SLAM"><span class="iconfont-archer">&#xe606;</span>SLAM</span>
     
-        <span class="sidebar-tag-name" data-tags="c++"><span class="iconfont-archer">&#xe606;</span>c++</span>
-    
         <span class="sidebar-tag-name" data-tags="VinsMono"><span class="iconfont-archer">&#xe606;</span>VinsMono</span>
     
         <span class="sidebar-tag-name" data-tags="单目"><span class="iconfont-archer">&#xe606;</span>单目</span>
+    
+        <span class="sidebar-tag-name" data-tags="c++"><span class="iconfont-archer">&#xe606;</span>c++</span>
     
         <span class="sidebar-tag-name" data-tags="docker"><span class="iconfont-archer">&#xe606;</span>docker</span>
     
         <span class="sidebar-tag-name" data-tags="LSDSLAM"><span class="iconfont-archer">&#xe606;</span>LSDSLAM</span>
     
         <span class="sidebar-tag-name" data-tags="PTAM"><span class="iconfont-archer">&#xe606;</span>PTAM</span>
+    
+        <span class="sidebar-tag-name" data-tags="操作系统"><span class="iconfont-archer">&#xe606;</span>操作系统</span>
     
     </div>
     <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
