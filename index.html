@@ -376,6 +376,45 @@ height:50vh;
     
     
     <article class="index-post">
+        <a class="abstract-title" href = "/操作系统面试题.html" >
+            
+                <span>操作系统面试题</span>
+        </a>
+        <div class="abstract-content">
+            操作系统高频题
+题目和答案均来自网络，本人只整理和修改了部分内容，如有侵权告知后必删。答案不一定准确，仅供参考。
+
+OS基础OS四个特征？
+并发、共享、虚拟、异步
+
+内存管理进程和线程什么是进程？
+定义：一个具有一定独立功能的程序在一个数据集合上的一次动态执行过程
+进程可以认为是程序执行的一个实例，进程是系统进行资源分配的最小单位，且每个进程拥有独立的地址空间；
+一个进程无法直接访问另一个进程的变量和数据结构，如果希望去访问另一个进程的资源，需要使用IPC，比如：管道、消息队列等
+线程是进程的一个实体，是进程的一条执行路径；比进程更小的独立运行的基本单位，线程也被称为轻量级进程，一个程序...
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2020/03/12</span>
+            </div>
+            <!-- tags  -->
+            
+            <div class= abstract-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "操作系统">操作系统</a>
+    
+</div>
+            
+        </div>
+    </article>
+    
+    
+    
+    
+    
+    
+    <article class="index-post">
         <a class="abstract-title" href = "/C++面试题.html" >
             
                 <span>C++面试题</span>
@@ -420,18 +459,18 @@ C/C++基础引用和指针的区别？
                 <span>清华大学操作系统笔记</span>
         </a>
         <div class="abstract-content">
-            清华大学操作系统笔记前言B站 陈渝老师 清华大学 https://www.bilibili.com/video/av6538245
+            清华大学操作系统笔记
+除了课程笔记外，还加入了一些补充内容
+
+前言B站 陈渝老师 清华大学 https://www.bilibili.com/video/av6538245
 相关资料：
  配套上机实验地址
 课程项目GitHub地址
  实验课地址
 操作系统结构、中断/异常与系统调用、OS启动、内存管理、进程/线程管理、调度、同步扶持、进程间通信、死锁处理、文件系统、I/O系统
-chap1 概述
-OS功能。OS提供管理（资源角度）、控制（用户角度）和服务（应用程序角度）。
-
-OS位置。硬件之上，应用软件之下。OS对外的接口是shell（GUI，CLI），内核是kernel。
-
-OS组成。CPU调度、物理内存、虚拟内存、文件系统、中断...
+chap1 OS概述功能OS提供管理（资源角度）、控制（用户角度）和服务（应用程序角度）。
+位置硬件之上，应用软件之下。OS对外的接口是shell（GUI，CLI），内核是kernel。
+组成CPU调度、物理内存、虚...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
@@ -700,39 +739,6 @@ PTAM引入关键帧机制，不必精细处理每一张图
         <a class="post-tag" href="javascript:void(0);" data-tags = "单目">单目</a>
     
         <a class="post-tag" href="javascript:void(0);" data-tags = "PTAM">PTAM</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/ros1.html" >
-            
-                <span>基于ROS获取Android图像和惯导数据</span>
-        </a>
-        <div class="abstract-content">
-            0 　将手机与ROS连接首先，通过局域网将手机与ROS相连接。我使用的是hitcm博客的程序，具体可以参考他的博客。到这一步已经可以订阅相关话题，并在程序中做相关计算了。但是如果还想记录下来手机传感器发布的数据，以便未来再次回放使用，则还需要进一步处理。
-1　记录bagROS与手机相连后，使用rosbag命令开始记录数据，这里指定只保存android/imu和camera/image_raw两个话题下的消息：
-1rosbag record android/imu camera/image_raw # rosbag record &lt;topic-names&gt; or rosbag ...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/11/01</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "ROS">ROS</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "SLAM">SLAM</a>
     
 </div>
             
@@ -1050,9 +1056,24 @@ PTAM引入关键帧机制，不必精细处理每一张图
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 12
+        Total : 13
         </div>
         <!-- search  -->
         
@@ -1065,6 +1086,11 @@ PTAM引入关键帧机制，不必精细处理每一张图
     
     <div class="archive-year"> 2020 </div>
     <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/12</span><a class="archive-post-title" href= "/操作系统面试题.html" >操作系统面试题</a>
+        </li>
     
     
         <li class="archive-post-item">

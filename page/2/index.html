@@ -376,6 +376,39 @@ height:50vh;
     
     
     <article class="index-post">
+        <a class="abstract-title" href = "/ros1.html" >
+            
+                <span>基于ROS获取Android图像和惯导数据</span>
+        </a>
+        <div class="abstract-content">
+            0 　将手机与ROS连接首先，通过局域网将手机与ROS相连接。我使用的是hitcm博客的程序，具体可以参考他的博客。到这一步已经可以订阅相关话题，并在程序中做相关计算了。但是如果还想记录下来手机传感器发布的数据，以便未来再次回放使用，则还需要进一步处理。
+1　记录bagROS与手机相连后，使用rosbag命令开始记录数据，这里指定只保存android/imu和camera/image_raw两个话题下的消息：
+1rosbag record android/imu camera/image_raw # rosbag record &lt;topic-names&gt; or rosbag ...
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/11/01</span>
+            </div>
+            <!-- tags  -->
+            
+            <div class= abstract-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "ROS">ROS</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "SLAM">SLAM</a>
+    
+</div>
+            
+        </div>
+    </article>
+    
+    
+    
+    
+    
+    
+    <article class="index-post">
         <a class="abstract-title" href = "/lsdslam2.html" >
             
                 <span>LSDSLAM算法解析</span>
@@ -757,9 +790,24 @@ ROS indigo + Ubuntu 14.04
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 12
+        Total : 13
         </div>
         <!-- search  -->
         
@@ -772,6 +820,11 @@ ROS indigo + Ubuntu 14.04
     
     <div class="archive-year"> 2020 </div>
     <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/12</span><a class="archive-post-title" href= "/操作系统面试题.html" >操作系统面试题</a>
+        </li>
     
     
         <li class="archive-post-item">
