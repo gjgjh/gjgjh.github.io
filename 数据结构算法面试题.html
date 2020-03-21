@@ -11,7 +11,7 @@
 
 
 <head>
-    <meta charset="utf-8">
+    <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="utf-8">
     <link rel="dns-prefetch" href="//cdn.bootcss.com" />
     <link rel="dns-prefetch" href="//cdn.mathjax.org" />
     <meta name="google-site-verification" content="vL0X5xI0HB-AD5a7F8H54LTQn09R7I8lU1SpQEdrb08" />
@@ -26,7 +26,7 @@
     <meta name="description" content="">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <title>guojh&#39;s Blog</title>
+    <title>数据结构算法面试题 · guojh&#39;s Blog</title>
     <style type="text/css">
     @font-face {
         font-family: 'Oswald-Regular';
@@ -217,15 +217,26 @@
     var s = document.getElementsByTagName("script")[0];
     s.parentNode.insertBefore(bp, s);
 })();
-</script>
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </head>
     
+        <body class="post-body">
     
-<header class="header">
+    
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><header class="header">
 
     <div class="read-progress"></div>
     <div class="header-sidebar-menu">&#xe775;</div>
     <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >guojh&#39;s Blog.</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">数据结构算法面试题</a>
+            </div>
+    </div>
     
     <a class="home-link" href=/>guojh's Blog.</a>
 </header>
@@ -237,24 +248,74 @@
 
 
 
+
+height:50vh;
 ">
     
     <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
             
     <div class="site-intro-placeholder"></div>
-    <div class="site-intro-img" style="background-image: url(/)"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/index-bg.jpg)"></div>
     <div class="site-intro-meta">
         <!-- 标题  -->
         <h1 class="intro-title">
             <!-- 主页  -->
+            
+            数据结构算法面试题
+            <!-- 404 -->
             
         </h1>
         <!-- 副标题 -->
         <p class="intro-subtitle">
             <!-- 主页副标题  -->
             
+            
+            <!-- 404 -->
+            
         </p>
         <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "c++">c++</a>
+    
+</div>
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">53</span>阅读时长: <span class="post-count reading-time">1 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2020/03/13</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
         
     </div>
 </div>
@@ -355,189 +416,69 @@
 </script>        
         <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
         <div class="container container-unloaded">
-            <main class="main index-page">
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/designPattern2.html" >
-            
-                <span>设计模式笔记(下)</span>
-        </a>
-        <div class="abstract-content">
-            设计模式笔记(下)
-个人学习设计模式笔记。主要参考《Head First设计模式》和Wikipedia，youtube上有个系列视频也非常值得一看
+            <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="数据结构和算法高频题"><a href="#数据结构和算法高频题" class="headerlink" title="数据结构和算法高频题"></a>数据结构和算法高频题</h1><blockquote>
+<p>题目和答案均来自网络，本人只整理和修改了部分内容，如有侵权告知后必删。答案不一定准确，仅供参考。</p>
+</blockquote>
 
-chap 7 随遇而安—适配器模式与外观模式适配器模式定义适配器模式Adapter Pattern 将一个类的接口，转换成客户期望的另一个接口。适配器让原本接口不兼容的类可以合作无间。
-分析
-目标Target：接口类；
-适配器Adapter：实现目标接口；
-被适配者Adaptee：适配器的调用委托给被适配者。
-
-这种组合的方式属于对象适配器，还有一种利用多重继承的方式，叫类适配器。即Adapter同时继承Target和Adaptee。对象适...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2019/09/24</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "c++">c++</a>
-    
-</div>
-            
-        </div>
     </article>
+    <!-- license  -->
     
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/designPattern1.html" >
-            
-                <span>设计模式笔记(上)</span>
-        </a>
-        <div class="abstract-content">
-            设计模式笔记(上)
-个人学习设计模式笔记。主要参考《Head First设计模式》和Wikipedia，youtube上有个系列视频也非常值得一看
-
-chap 1 设计模式入门—策略模式定义策略模式 Strategy Pattern 定义了算法簇，分别封装起来，让它们之间可以互相替换，此模式让算法的变化独立于使用算法的客户。
-分析
-环境(Context)：持有一个Strategy的引用
-抽象策略(Strategy)：这是一个抽象角色，通常由一个接口或抽象类实现。此角色给出所有的具体策略类所需的接口
-具体策略(ConcreteStrategy)：包装了相关的算法或行为
-
-利用继承设计子类行...
+        <div class="license-wrapper">
+            <p>原文作者：<a href="gjgjh.github.io">GJGJH</a>
+            <p>原文链接：<a href="gjgjh.github.io/数据结构算法面试题.html">gjgjh.github.io/数据结构算法面试题.html</a>
+            <p>发表日期：<a href="gjgjh.github.io/数据结构算法面试题.html">March 13th 2020, 7:34:25 am</a>
+            <p>更新日期：<a href="gjgjh.github.io/数据结构算法面试题.html">March 13th 2020, 7:35:08 am</a>
+            <p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2019/06/23</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "c++">c++</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/docker_learning.html" >
-            
-                <span>docker学习笔记</span>
-        </a>
-        <div class="abstract-content">
-            docker学习笔记
-最近一直看到docker的身影，一方面为了将自己写的应用和依赖环境打包，另一方面是自己不想在mac上用虚拟机开发，所以开始学习下这种虚拟容器技术。本文参考资料包括《第一本Docker书》、Docker官网资料及相关博客。
-
-1. docker基础概念1.1 容器
-管理程序虚拟化：通过中间层将一台或多台独立的机器虚拟运行在物理硬件之上
-容器虚拟化：直接运行在操作系统内核之上的用户空间。”操作系统级虚拟化”
-
-容器只能运行与底层宿主机相同或相似的操作系统，因此在OS X和Windows运行则需要虚拟环境。
-优势：容器不需要模拟层和管理层，降低了开销。同一宿主机可以运行更...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2019/05/29</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "docker">docker</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/VinsMono.html" >
-            
-                <span>小觅深度版Ubuntu下跑vins-mono</span>
-        </a>
-        <div class="abstract-content">
-            最近实验室新买了小觅深度版相机（型号D1000-IR-120/Color），这里记录一下跑vins-mono的过程。由于虚拟机usb可能出现不兼容问题，我使用的是双系统的Ubuntu16.04，对应ROS版本为kinetic。
-1.安装ROSUbuntu16.04对应的ros版本为kinetic，安装的方法网上已有很多，比如可以参考此博客。如果安装出错，请换个源或者用VPN试试。推荐安装ros-kinetic-desktop-full全套版，pcl和opencv库等会直接包含在里面下载。
-2.编译小觅SDK12345678cd ~git clone https://github.com/...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2019/05/16</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "SLAM">SLAM</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "VinsMono">VinsMono</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "单目">单目</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/gtest.html" >
-            
-                <span>Google Test(gtest)写c++单元测试</span>
-        </a>
-        <div class="abstract-content">
-            Google Test（gtest）是谷歌开源的用于c++单元测试的框架，其github主页：https://github.com/google/googletest
-单元测试（unit testing），是指对软件中的最小可测试单元进行检查和验证。比如我们可以对程序中的一个文件、函数或一个类进行单元测试。下面以ubuntu为例进行简单的学习使用，此外windows和mac下也可以使用gtest。
-1 安装gtest123456sudo apt-get install libgtest-dev # 安装源文件sudo apt-get install cmakecd /usr/src/gt...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2019/03/02</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "c++">c++</a>
-    
-</div>
-            
-        </div>
-    </article>
     
     <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/操作系统面试题.html" title= "操作系统面试题">
+                    <div class="prevTitle">操作系统面试题</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
     
+    
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
+    
+    
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src='//unpkg.com/valine/dist/Valine.min.js'></script>
+    <div id="comment"></div>
+    <script>
+    new Valine({
+        el: '#comment' ,
+        notify:false, 
+        verify:false, 
+        appId: "vEsG0NCF7Jz5JgoyY8GH1dNu-gzGzoHsz",
+        appKey: "JYaNvQI75spAea0risy1tC5k",
+        placeholder: "",
+        path:window.location.pathname, 
+        avatar:'mm' 
+    });
+    </script>
+
+
+    <!-- 评论 -->
+
+
 </main>
             <!-- profile -->
             
@@ -622,6 +563,24 @@ chap 1 设计模式入门—策略模式定义策略模式 Strategy Pattern 定�
 </footer>
     </div>
     <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#数据结构和算法高频题"><span class="toc-number">1.</span> <span class="toc-text">数据结构和算法高频题</span></a></li></ol>
+    </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
     <div class="sidebar sidebar-hide">
@@ -979,6 +938,8 @@ jsonContent:
     
     </div>
     <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
      
     <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
@@ -994,7 +955,24 @@ jsonContent:
             all[i].SourceElement().parentNode.className += ' has-jax';
     });
 </script>
-<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({"tex2jax":{"inlineMath":[["$","$"]]}});
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
 </body>
 </html>
 
