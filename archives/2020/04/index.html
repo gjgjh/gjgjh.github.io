@@ -363,66 +363,30 @@
     
     
     <article class="index-post">
-        <a class="abstract-title" href = "/docker_learning.html" >
+        <a class="abstract-title" href = "/数据结构算法面试题.html" >
             
-                <span>docker学习笔记</span>
+                <span>数据结构算法面试题</span>
         </a>
         <div class="abstract-content">
-            docker学习笔记
-最近一直看到docker的身影，在SLAM中主要是为了将各种依赖环境和源码等打包，感觉十分方便。所以我开始学习下这种虚拟容器技术。本文参考资料包括《第一本Docker书》、Docker官网资料及相关博客。
+            数据结构算法高频题
+在面试中，由于时间的限制，一般不会出太难的题（比如堆排一般面试只会问复杂度，不会手撕的），这和笔试是不同的。因此必须有针对性地学习和总结，把常见基础题掌握好，再去追求一些很trick的题。另外，一题多解时，注意分析算法复杂度。
 
-1. docker基础概念1.1 容器
-管理程序虚拟化：通过中间层将一台或多台独立的机器虚拟运行在物理硬件之上
-容器虚拟化：直接运行在操作系统内核之上的用户空间。”操作系统级虚拟化”
+数组
+152. Maximum Product Subarray 乘积最大子序列
 
-容器只能运行与底层宿主机相同或相似的操作系统，因此在OS X和Windows运行则需要虚拟环境。
-优势：容器不需要模拟层和管理层，降低了开销。同一宿主机可以运行更多的容器，充分利...
+经典的子序列问题变种，Kadane算法。本题需要考虑nums[i]正负号，因此需要两个值：localMin和localMax。53. Maximum Subarray
+localMin=min(localMin*nums[i], nums[i]); globa...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
             <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2019/05/29</span>
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2020/04/04</span>
             </div>
             <!-- tags  -->
             
             <div class= abstract-tags >
     
-        <a class="post-tag" href="javascript:void(0);" data-tags = "docker">docker</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/VinsMono.html" >
-            
-                <span>小觅深度版Ubuntu下跑vins-mono</span>
-        </a>
-        <div class="abstract-content">
-            最近实验室新买了小觅深度版相机（型号D1000-IR-120/Color），这里记录一下跑vins-mono的过程。由于虚拟机usb可能出现不兼容问题，我使用的是双系统的Ubuntu16.04，对应ROS版本为kinetic。
-1.安装ROSUbuntu16.04对应的ros版本为kinetic，安装的方法网上已有很多，比如可以参考此博客。如果安装出错，请换个源或者用VPN试试。推荐安装ros-kinetic-desktop-full全套版，pcl和opencv库等会直接包含在里面下载。
-2.编译小觅SDK12345678cd ~git clone https://github.com/...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2019/05/16</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "SLAM">SLAM</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "VinsMono">VinsMono</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "单目">单目</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags = "c++">c++</a>
     
 </div>
             
