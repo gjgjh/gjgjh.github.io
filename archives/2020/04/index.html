@@ -369,13 +369,24 @@
         </a>
         <div class="abstract-content">
             数据结构算法高频题
-在面试中，由于时间的限制，一般不会出太难的题（比如堆排一般面试只会问复杂度，不会手撕的），这和笔试是不同的。因此必须有针对性地学习和总结，把常见基础题掌握好，再去追求一些很trick的题。另外，一题多解时，注意分析算法复杂度。
+在面试中，由于时间的限制，一般不会出太难的题，这和笔试是不同的。因此必须有针对性地学习和总结，比如分专题学习总结。把常见基础题掌握好，再去追求一些很trick的题。一题多解时，还要注意分析算法复杂度。另外，STL容器、算法等API要多熟悉。
 
 数组
-152. Maximum Product Subarray 乘积最大子序列
+多总结
 
-经典的子序列问题变种，Kadane算法。本题需要考虑nums[i]正负号，因此需要两个值：localMin和localMax。53. Maximum Subarray
-localMin=min(localMin*nums[i], nums[i]); globa...
+
+88. Merge Sorted Array 合并两个有序数组
+
+由后往前合并。空间O(1)，时间O(n)
+从前往后合并。空间O(n)，时间O(n)
+
+
+169. Majority Element 求众数
+
+经典投票算法，模拟投票选举的过程，不同的数字抵消
+
+
+209. Minimum Size Subarra...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
@@ -640,6 +651,12 @@ localMin=min(localMin*nums[i], nums[i]); globa...
     
     
     
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
         Total : 14
@@ -753,6 +770,8 @@ localMin=min(localMin*nums[i], nums[i]); globa...
     
         <span class="sidebar-tag-name" data-tags="SLAM"><span class="iconfont-archer">&#xe606;</span>SLAM</span>
     
+        <span class="sidebar-tag-name" data-tags="docker"><span class="iconfont-archer">&#xe606;</span>docker</span>
+    
         <span class="sidebar-tag-name" data-tags="VinsMono"><span class="iconfont-archer">&#xe606;</span>VinsMono</span>
     
         <span class="sidebar-tag-name" data-tags="单目"><span class="iconfont-archer">&#xe606;</span>单目</span>
@@ -764,8 +783,6 @@ localMin=min(localMin*nums[i], nums[i]); globa...
         <span class="sidebar-tag-name" data-tags="PTAM"><span class="iconfont-archer">&#xe606;</span>PTAM</span>
     
         <span class="sidebar-tag-name" data-tags="操作系统"><span class="iconfont-archer">&#xe606;</span>操作系统</span>
-    
-        <span class="sidebar-tag-name" data-tags="docker"><span class="iconfont-archer">&#xe606;</span>docker</span>
     
     </div>
     <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
