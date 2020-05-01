@@ -363,33 +363,35 @@
     
     
     <article class="index-post">
-        <a class="abstract-title" href = "/ptam.html" >
+        <a class="abstract-title" href = "/自定义Profile工具.html" >
             
-                <span>PTAM学习</span>
+                <span>自定义Profile工具</span>
         </a>
         <div class="abstract-content">
-            PTAM算法是2007年提出的经典的单目特征点法SLAM，同时也是早期将SLAM和AR结合起来的工作之一。虽然PTAM几乎已经过时，但其在整个SLAM发展过程中占有重要地位：
+            自定义Profile工具
+许多IDE都有Profile功能，那么如何自定义一个Profile工具，并进行可视化呢？
 
-PTAM首先提出将定位(Tracking)和建图(Mapping)分为两个线程并行进行
-计算资源因此得到了释放，所以PTAM也是第一个使用非线性优化的方案，精度自然更高
-PTAM引入关键帧机制，不必精细处理每一张图
+本文为个人总结，主要参考：
 
-在今天的众多先进的SLAM算法中仍可见PTAM的影子，因此学习一下PTAM还是很有必要的。在学习算法之前，先跑一下代码，对算法有一个直观的感受。我使用的环境是ubuntu16.04+ROS kine...
+How to measure performance visually
+
+Chrome Tracing as Profiler Frontend
+
+Timing your code
+
+自定义Profile类Profile主要包含两个功能：计时和格式化输出结果。计时主要用到chrono类，而格式化输出按照Chrome Tracing Format格式输出即可。直接看代码，代码部分不难理解，注意多线程部分即可：
+12345678910111213...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
             <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2018/11/12</span>
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2020/05/01</span>
             </div>
             <!-- tags  -->
             
             <div class= abstract-tags >
     
-        <a class="post-tag" href="javascript:void(0);" data-tags = "SLAM">SLAM</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "单目">单目</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "PTAM">PTAM</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags = "c++">c++</a>
     
 </div>
             
@@ -649,9 +651,22 @@ PTAM引入关键帧机制，不必精细处理每一张图
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 14
+        Total : 15
         </div>
         <!-- search  -->
         
@@ -664,6 +679,11 @@ PTAM引入关键帧机制，不必精细处理每一张图
     
     <div class="archive-year"> 2020 </div>
     <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/01</span><a class="archive-post-title" href= "/自定义Profile工具.html" >自定义Profile工具</a>
+        </li>
     
     
         <li class="archive-post-item">
@@ -758,21 +778,13 @@ PTAM引入关键帧机制，不必精细处理每一张图
         <div class="sidebar-panel-tags">
     <div class="sidebar-tags-name">
     
+        <span class="sidebar-tag-name" data-tags="c++"><span class="iconfont-archer">&#xe606;</span>c++</span>
+    
         <span class="sidebar-tag-name" data-tags="ROS"><span class="iconfont-archer">&#xe606;</span>ROS</span>
     
         <span class="sidebar-tag-name" data-tags="SLAM"><span class="iconfont-archer">&#xe606;</span>SLAM</span>
     
         <span class="sidebar-tag-name" data-tags="docker"><span class="iconfont-archer">&#xe606;</span>docker</span>
-    
-        <span class="sidebar-tag-name" data-tags="VinsMono"><span class="iconfont-archer">&#xe606;</span>VinsMono</span>
-    
-        <span class="sidebar-tag-name" data-tags="单目"><span class="iconfont-archer">&#xe606;</span>单目</span>
-    
-        <span class="sidebar-tag-name" data-tags="c++"><span class="iconfont-archer">&#xe606;</span>c++</span>
-    
-        <span class="sidebar-tag-name" data-tags="LSDSLAM"><span class="iconfont-archer">&#xe606;</span>LSDSLAM</span>
-    
-        <span class="sidebar-tag-name" data-tags="PTAM"><span class="iconfont-archer">&#xe606;</span>PTAM</span>
     
         <span class="sidebar-tag-name" data-tags="操作系统"><span class="iconfont-archer">&#xe606;</span>操作系统</span>
     
