@@ -379,7 +379,7 @@ optional
 模板类，用于表示一个对象可能存在也可能不存在。
 优点：
 显然也可以用一个额外的bool值来表示对象是否存在，但optional可读性高
-显然也可以用一个pointer表示对象，如果为空指针表示不存在，否则表示对象存在。但这需要动态申请内存，效率上比在栈上分配内存要低很多。虽然定义了operator() and operator-&gt;()操作符，但optional使用栈来管理对象，*效率更高。
+显然也可以用一个pointer表示对象，如果为空指针表示不存在，否则表示对象存在。但这需要动态申请内存，效率上比在栈上分配内存要低很多。虽然定义了operator*() and operator-&gt;()操作符，但optional使用栈来管理对象，效率更高。
 
 
 
@@ -717,9 +717,20 @@ Timing your code
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 16
+        Total : 17
         </div>
         <!-- search  -->
         
@@ -732,6 +743,11 @@ Timing your code
     
     <div class="archive-year"> 2020 </div>
     <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/01</span><a class="archive-post-title" href= "/分解投影矩阵P.html" >From P to K[R|t]</a>
+        </li>
     
     
         <li class="archive-post-item">
@@ -836,11 +852,11 @@ Timing your code
         <div class="sidebar-panel-tags">
     <div class="sidebar-tags-name">
     
+        <span class="sidebar-tag-name" data-tags="C++"><span class="iconfont-archer">&#xe606;</span>C++</span>
+    
         <span class="sidebar-tag-name" data-tags="ROS"><span class="iconfont-archer">&#xe606;</span>ROS</span>
     
         <span class="sidebar-tag-name" data-tags="SLAM"><span class="iconfont-archer">&#xe606;</span>SLAM</span>
-    
-        <span class="sidebar-tag-name" data-tags="C++"><span class="iconfont-archer">&#xe606;</span>C++</span>
     
         <span class="sidebar-tag-name" data-tags="Docker"><span class="iconfont-archer">&#xe606;</span>Docker</span>
     

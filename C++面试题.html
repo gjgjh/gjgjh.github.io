@@ -289,7 +289,7 @@ height:50vh;
                 
                 
                     <div class="post-intro-read">
-                        <span>字数统计: <span class="post-count word-count">24.8k</span>阅读时长: <span class="post-count reading-time">90 min</span></span>
+                        <span>字数统计: <span class="post-count word-count">24.9k</span>阅读时长: <span class="post-count reading-time">90 min</span></span>
                     </div>
                 
                 <div class="post-intro-meta">
@@ -689,7 +689,7 @@ height:50vh;
 <ul>
 <li>人工进行代码审查</li>
 <li>写一个工具，监控内存分配和释放情况（<strong>通过重载operator new</strong>）。参考：<a href="https://www.youtube.com/watch?v=sLlGEUO_EGE&amp;list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb&amp;index=85&amp;t=0s" target="_blank" rel="noopener">Track memory allocation in C++</a></li>
-<li>使用编译器或第三方工具来检查。如现代编译器gcc，clang都带有一些<strong>Sanitizer</strong>（memorySanitizer, leadSanitizer等），编译时必须手动加上一些flag。或者使用第三方工具如<strong>valgrind</strong>。</li>
+<li>使用编译器或第三方工具来检查。如现代编译器gcc，clang都带有一些<strong>Sanitizer</strong>（memorySanitizer, leadSanitizer等），编译时必须手动加上一些flag。或者使用第三方<strong>动态分析工具（程序运行时检查代码）</strong>如<strong>valgrind</strong>。</li>
 </ul>
 </li>
 <li><p>解决方法：智能指针。</p>
@@ -724,7 +724,11 @@ height:50vh;
 <li>delete先进行对象析构</li>
 <li>delete operator再调用operator delete（operator delete[]）函数</li>
 </ul>
-<p>假设指针p指向new[]分配的内存。因为要4字节存储数组大小，实际分配的内存地址为[p-4]，系统记录的也是这个地址。delete[]实际释放的就是<strong>p-4指向的内存</strong>。而delete会直接释放p指向的内存，这个内存根本没有被系统记录，所以会崩溃。</p>
+<p>假设指针p指向new[]分配的内存。因为要4字节存储数组大小，实际分配的内存地址为[p-4]，系统记录的也是这个地址。delete[]实际释放的就是<strong>p-4指向的内存</strong>。而delete会直接释放p指向的内存（并且至多会调用一次析构函数），这个内存根本没有被系统记录，所以会产生未定义行为。</p>
+<hr>
+<ul>
+<li>参考：《ECPP》item16</li>
+</ul>
 <h3 id="malloc申请的存储空间能用delete释放吗？"><a href="#malloc申请的存储空间能用delete释放吗？" class="headerlink" title="malloc申请的存储空间能用delete释放吗？"></a>malloc申请的存储空间能用delete释放吗？</h3><ul>
 <li><p>不能。</p>
 </li>
@@ -777,7 +781,7 @@ height:50vh;
 </ul>
 <hr>
 <ul>
-<li>参考：<a href="https://www.learncpp.com/cpp-tutorial/15-7-circular-dependency-issues-with-stdshared_ptr-and-stdweak_ptr/" target="_blank" rel="noopener">Circular dependency issues with std::shared_ptr, and std::weak_ptr</a></li>
+<li>参考：<a href="https://www.learncpp.com/cpp-tutorial/15-7-circular-dependency-issues-with-stdshared_ptr-and-stdweak_ptr/" target="_blank" rel="noopener">Circular dependency issues with std::shared_ptr, and std::weak_ptr</a>，《ECPP》item13，item17</li>
 </ul>
 <h3 id="手写实现智能指针类"><a href="#手写实现智能指针类" class="headerlink" title="手写实现智能指针类?"></a>手写实现智能指针类?</h3><ul>
 <li>shared_ptr:</li>
@@ -882,7 +886,7 @@ height:50vh;
 <h3 id="define与const、typedef、inline使用方法？"><a href="#define与const、typedef、inline使用方法？" class="headerlink" title="define与const、typedef、inline使用方法？"></a>define与const、typedef、inline使用方法？</h3><ul>
 <li><p>define与const区别：</p>
 <ul>
-<li><strong>作用阶段</strong>: const在编译阶段其作用，有类型检查，define在预编译阶段起作用</li>
+<li><strong>作用阶段</strong>: const在编译阶段其作用，有类型检查，define在预处理阶段起作用</li>
 <li><strong>功能</strong>: define可以配合条件预编译指令, 完成特殊的逻辑, 例如防止重复引入头文件</li>
 <li><strong>作用域</strong>: define没有作用域限制，而const定义的变量通常有作用域的限制</li>
 <li><strong>存储位置</strong>: const定义的是变量, 会储存在数据段空间, define是宏替换, 其值会储存在<strong>代码段</strong></li>
@@ -890,15 +894,23 @@ height:50vh;
 </ul>
 </li>
 <li>define 和typedef的区别：<ul>
-<li>作用阶段：typedef在编译阶段有效，有类型检查，define在预编译阶段起作用</li>
+<li>作用阶段：typedef在编译阶段有效，有类型检查，define在预处理阶段起作用</li>
 <li>功能：typedef用来定义类型的别名，define不只是可以为类型取别名，还可以定义常量、变量、编译开关等</li>
 <li>作用域：define没有作用域限制，typedef有</li>
 </ul>
 </li>
-<li>define 与inline的区别：<ul>
-<li>作用阶段：inline在编译阶段有效，有类型检查，define在预编译阶段起作用</li>
+<li><p>define 与inline的区别：</p>
+<ul>
+<li>作用阶段：inline在编译阶段有效，有类型检查，define在预处理阶段起作用</li>
+<li>define可读性、类型安全、可预料行为上都不如inline</li>
 </ul>
 </li>
+<li><p><strong>应该尽可能使用const，inline，enum</strong>，而不是define。预处理阶段只是简单的字符替换，虽然功能很多且<strong>适用性</strong>很广，但<strong>灵活性</strong>不如编译阶段起作用的几个关键字。</p>
+</li>
+</ul>
+<hr>
+<ul>
+<li>参考：《ECPP》item2</li>
 </ul>
 <h3 id="include的顺序以及尖括号和双引号的区别？"><a href="#include的顺序以及尖括号和双引号的区别？" class="headerlink" title="include的顺序以及尖括号和双引号的区别？"></a>include的顺序以及尖括号和双引号的区别？</h3><ul>
 <li><p>尖括号：编译器在存储标准头文件的主机系统查找</p>
@@ -1342,6 +1354,10 @@ height:50vh;
 <li>虚函数用于实现运行时的多态，或者称为晚绑定或动态绑定。而内联函数用于提高效率。内联函数的原理是，在编译期间，对调用内联函数的地方的代码替换成函数代码。内联函数对于程序中需要频繁使用和调用的小函数非常有用。</li>
 <li>虚函数要求在<strong>运行时</strong>进行类型确定，而内联函数要求在<strong>编译期</strong>完成相关的函数替换；因此不能。</li>
 </ul>
+<hr>
+<ul>
+<li>参考：《ECPP》item30</li>
+</ul>
 <h3 id="类成员初始化方式？为什么用成员初始化列表会快一些？"><a href="#类成员初始化方式？为什么用成员初始化列表会快一些？" class="headerlink" title="类成员初始化方式？为什么用成员初始化列表会快一些？"></a>类成员初始化方式？为什么用成员初始化列表会快一些？</h3><ul>
 <li><p>赋值初始化，通过在函数体内进行赋值初始化；</p>
 <p>相当于先初始化一次，然后进行赋值。</p>
@@ -1387,6 +1403,10 @@ height:50vh;
 <h3 id="析构函数为什么要是虚函数？"><a href="#析构函数为什么要是虚函数？" class="headerlink" title="析构函数为什么要是虚函数？"></a>析构函数为什么要是虚函数？</h3><ul>
 <li>在使用多态语义时，确保正确的析构顺序</li>
 </ul>
+<hr>
+<ul>
+<li>参考：《ECPP》item7</li>
+</ul>
 <h3 id="析构函数的作用？"><a href="#析构函数的作用？" class="headerlink" title="析构函数的作用？"></a>析构函数的作用？</h3><ul>
 <li>析构函数与构造函数同名，但该函数前面加~。 析构函数没有参数，也没有返回值，而且不能重载，在一个类中只能有一个析构函数。 </li>
 <li>用于释放对象分配的内存空间。在对象生命周期结束时，编译器会自动调用析构函数，按一定顺序析构释放资源。</li>
@@ -1401,9 +1421,9 @@ height:50vh;
 <li>此外，当对象析构时，会调用<strong>基类和成员变量</strong>的析构函数。</li>
 </ul>
 <h3 id="构造函数和析构函数可以调用虚函数吗，为什么？"><a href="#构造函数和析构函数可以调用虚函数吗，为什么？" class="headerlink" title="构造函数和析构函数可以调用虚函数吗，为什么？"></a>构造函数和析构函数可以调用虚函数吗，为什么？</h3><ul>
-<li>在构造函数和析构函数中最好不要调用虚函数；</li>
-<li>构造函数或者析构函数调用虚函数并不会发挥虚函数动态绑定的特性，跟普通函数没区别；</li>
-<li>即使构造函数或者析构函数如果能成功调用虚函数， 程序的运行结果也是不可控的。</li>
+<li>不可以。ctor和dtor中不允许使用virtual函数，其内的函数也不许调用virtual函数。</li>
+<li>在派生对象的基类部分构造期间，<strong>对象的类型是基类</strong>而不是派生类，此时<strong>virtual函数失效</strong>。</li>
+<li>析构期间同理。</li>
 </ul>
 <hr>
 <ul>
@@ -1411,7 +1431,15 @@ height:50vh;
 </ul>
 <h3 id="构造函数析构函数可否抛出异常？"><a href="#构造函数析构函数可否抛出异常？" class="headerlink" title="构造函数析构函数可否抛出异常？"></a>构造函数析构函数可否抛出异常？</h3><ul>
 <li>C++只会析构已经完成的对象，对象只有在其构造函数执行完毕才算是完全构造妥当。在构造函数中发生异常，控制权转出构造函数之外（类似goto破坏了程序结构）。因此，在对象b的构造函数中发生异常，对象b的析构函数不会被调用。因此会造成<strong>内存泄漏</strong>。</li>
-<li>解决：使用<strong>智能指针</strong>管理堆内存，免除了抛出异常时发生资源泄漏的危机，不再需要在析构函数中手动释放资源</li>
+<li>解决：<ul>
+<li>使用<strong>智能指针</strong>管理堆内存，免除了抛出异常时发生资源泄漏的危机，不再需要在析构函数中手动释放资源</li>
+<li>捕捉异常，并正确处理资源释放等工作，<strong>不要抛出异常</strong></li>
+</ul>
+</li>
+</ul>
+<hr>
+<ul>
+<li>参考：《ECPP》item8</li>
 </ul>
 <h3 id="类如何实现只能静态分配和只能动态分配？"><a href="#类如何实现只能静态分配和只能动态分配？" class="headerlink" title="类如何实现只能静态分配和只能动态分配？"></a>类如何实现只能静态分配和只能动态分配？</h3><ul>
 <li>只能静态分配（禁止new）：new operator总会调用<strong>operator new</strong>，后者可以自己声明为private即可（或=delete）。同理可以禁止operator delete以及它们的数组形式。</li>
@@ -1926,7 +1954,7 @@ height:50vh;
             <p>原文作者：<a href="gjgjh.github.io">GJGJH</a>
             <p>原文链接：<a href="gjgjh.github.io/C++面试题.html">gjgjh.github.io/C++面试题.html</a>
             <p>发表日期：<a href="gjgjh.github.io/C++面试题.html">March 11th 2020, 7:50:25 am</a>
-            <p>更新日期：<a href="gjgjh.github.io/C++面试题.html">May 3rd 2020, 10:22:24 am</a>
+            <p>更新日期：<a href="gjgjh.github.io/C++面试题.html">June 27th 2020, 4:07:16 pm</a>
             <p>版权声明：本文采用<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
     
@@ -2272,9 +2300,20 @@ top:50vh;
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 16
+        Total : 17
         </div>
         <!-- search  -->
         
@@ -2287,6 +2326,11 @@ top:50vh;
     
     <div class="archive-year"> 2020 </div>
     <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/01</span><a class="archive-post-title" href= "/分解投影矩阵P.html" >From P to K[R|t]</a>
+        </li>
     
     
         <li class="archive-post-item">
@@ -2391,11 +2435,11 @@ top:50vh;
         <div class="sidebar-panel-tags">
     <div class="sidebar-tags-name">
     
+        <span class="sidebar-tag-name" data-tags="C++"><span class="iconfont-archer">&#xe606;</span>C++</span>
+    
         <span class="sidebar-tag-name" data-tags="ROS"><span class="iconfont-archer">&#xe606;</span>ROS</span>
     
         <span class="sidebar-tag-name" data-tags="SLAM"><span class="iconfont-archer">&#xe606;</span>SLAM</span>
-    
-        <span class="sidebar-tag-name" data-tags="C++"><span class="iconfont-archer">&#xe606;</span>C++</span>
     
         <span class="sidebar-tag-name" data-tags="Docker"><span class="iconfont-archer">&#xe606;</span>Docker</span>
     
