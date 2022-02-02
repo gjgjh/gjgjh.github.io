@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="">
+    <!-- title -->
+
+
+    
+
+<!-- keywords -->
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="author" content="GJGJH">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="GJGJH">
+    
+        <meta name="keywords" content="hexo,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="">
+    <meta name="description" content="设计模式笔记(下)  个人学习设计模式笔记。主要参考《Head First设计模式》和Wikipedia，youtube上有个系列视频也非常值得一看  chap 7 随遇而安—适配器模式与外观模式 适配器模式 定义 适配器模式Adapter Pattern 将一个类的接口，转换成客户期望的另一个接口。适配器让原本接口不兼容的类可以合作无间。 分析  目标Target：接口类； 适配器Adapter">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式笔记(下)">
+<meta property="og:url" content="https://gjgjh.github.io/designPattern2.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="设计模式笔记(下)  个人学习设计模式笔记。主要参考《Head First设计模式》和Wikipedia，youtube上有个系列视频也非常值得一看  chap 7 随遇而安—适配器模式与外观模式 适配器模式 定义 适配器模式Adapter Pattern 将一个类的接口，转换成客户期望的另一个接口。适配器让原本接口不兼容的类可以合作无间。 分析  目标Target：接口类； 适配器Adapter">
+<meta property="og:locale">
+<meta property="article:published_time" content="2019-09-24T02:00:05.000Z">
+<meta property="article:modified_time" content="2022-02-02T11:37:38.113Z">
+<meta property="article:author" content="GJGJH">
+<meta property="article:tag" content="C++">
+<meta name="twitter:card" content="summary">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="icon" href="/assets/favicon.ico">
+    
+    <title>设计模式笔记(下) · guojh&#39;s Blog</title>
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+    (function (w) {
+        'use strict'
+        // rel=preload support test
+        if (!w.loadCSS) {
+            w.loadCSS = function () {}
+        }
+        // define on the loadCSS obj
+        var rp = (loadCSS.relpreload = {})
+        // rel=preload feature support test
+        // runs once and returns a function for compat purposes
+        rp.support = (function () {
+            var ret
+            try {
+                ret = w.document.createElement('link').relList.supports('preload')
+            } catch (e) {
+                ret = false
+            }
+            return function () {
+                return ret
+            }
+        })()
+
+        // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+        // then change that media back to its intended value on load
+        rp.bindMediaToggle = function (link) {
+            // remember existing media attr for ultimate state, or default to 'all'
+            var finalMedia = link.media || 'all'
+
+            function enableStylesheet() {
+                link.media = finalMedia
+            }
+
+            // bind load handlers to enable media
+            if (link.addEventListener) {
+                link.addEventListener('load', enableStylesheet)
+            } else if (link.attachEvent) {
+                link.attachEvent('onload', enableStylesheet)
+            }
+
+            // Set rel and non-applicable media type to start an async request
+            // note: timeout allows this to happen async to let rendering continue in IE
+            setTimeout(function () {
+                link.rel = 'stylesheet'
+                link.media = 'only x'
+            })
+            // also enable media after 3 seconds,
+            // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+            setTimeout(enableStylesheet, 3000)
+        }
+
+        // loop through link elements in DOM
+        rp.poly = function () {
+            // double check this to prevent external calls from running
+            if (rp.support()) {
+                return
+            }
+            var links = w.document.getElementsByTagName('link')
+            for (var i = 0; i < links.length; i++) {
+                var link = links[i]
+                // qualify links to those with rel=preload and as=style attrs
+                if (
+                    link.rel === 'preload' &&
+                    link.getAttribute('as') === 'style' &&
+                    !link.getAttribute('data-loadcss')
+                ) {
+                    // prevent rerunning on link
+                    link.setAttribute('data-loadcss', true)
+                    // bind listeners to toggle media back
+                    rp.bindMediaToggle(link)
+                }
+            }
+        }
+
+        // if unsupported, run the polyfill
+        if (!rp.support()) {
+            // run once at least
+            rp.poly()
+
+            // rerun poly on an interval until onload
+            var run = w.setInterval(rp.poly, 500)
+            if (w.addEventListener) {
+                w.addEventListener('load', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            } else if (w.attachEvent) {
+                w.attachEvent('onload', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            }
+        }
+
+        // commonjs
+        if (typeof exports !== 'undefined') {
+            exports.loadCSS = loadCSS
+        } else {
+            w.loadCSS = loadCSS
+        }
+    })(typeof global !== 'undefined' ? global : this)
+</script>
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+</style>
+
+    <link rel="preload" href="/css/style.css?v=20211217" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="/css/dark.css?v=20211217" as="style">
+    <link rel="stylesheet" href="/css/dark.css">
+    <link rel="stylesheet" href="/css/mobile.css?v=20211217" media="(max-width: 960px)">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" as="script">
+    <link rel="preload" href="/scripts/main.js?v=20211217" as="script">
+    <link rel="preload" href="/scripts/dark.js?v=20211217" as="script">
+    <link rel="preload" href="/font/Oswald-Regular.ttf" as="font" crossorigin>
+    <link rel="preload" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" as="font" crossorigin>
+    <!-- algolia -->
+    
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ == undefined) {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js" />')
+        }
+    </script>
+    
+        <body class="post-body">
+    
+        <!-- header -->
+        <header class="header header-mobile">
+    <!-- top read progress line -->
+    <div class="header-element">
+        <div class="read-progress"></div>
+    </div>
+    <!-- sidebar menu button -->
+    <div class="header-element">
+        
+            <div class="header-sidebar-menu">
+        
+            
+                <div style="padding-left: 1px;">&#xe775;</div>
+            
+        </div>
+    </div>
+    <!-- header actions -->
+    <div class="header-actions">
+        <!-- theme mode switch button -->
+        <span class="header-theme-btn header-element">
+            <i class="fas fa-adjust"></i>
+        </span>
+        <!-- back to home page text -->
+        <span class="home-link header-element">
+            <a href=/>guojh's Blog.</a>
+        </span>
+    </div>
+    <!-- toggle banner for post layout -->
+    
+        
+            <div class="banner">
+        
+            <div class="blog-title header-element">
+                <a href="/">guojh&#39;s Blog.</a>
+            </div>
+            <div class="post-title header-element">
+                <a href="#" class="post-name">设计模式笔记(下)</a>
+            </div>
+        </div>
+    
+</header>
+
+        <!-- fixed footer -->
+        <footer class="footer-fixed">
+    <!-- back to top button -->
+    <div class="footer-fixed-element">
+        
+            <div class="back-top back-top-hidden">
+        
+        
+            <div>&#xe639;</div>
+        
+        </div>
+    </div>
+</footer>
+
+        <!-- wrapper -->
+        <div class="wrapper">
+            <div class="site-intro" style="
+
+
+
+
+
+
+
+    height:50vh;
+
+">
+    
+    <!-- 主页  -->
+    
+        
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/index-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+                设计模式笔记(下)
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+                
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页 meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="C++">C++</a>
+    
+</div>
+
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">2.8k</span>阅读时长: <span class="post-count reading-time">12 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <!-- 撰写日期 -->
+                    <span class="iconfont-archer post-intro-calander">&#xe676;</span>
+                    <span class="post-intro-time">2019/09/24</span>
+                    <!-- busuanzi -->
+                    
+                        <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                            <span class="iconfont-archer post-intro-busuanzi">&#xe602;</span>
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    
+                    <!-- 文章分享 -->
+                    <span class="share-wrapper">
+                        <span class="iconfont-archer share-icon">&#xe71d;</span>
+                        <span class="share-text">Share</span>
+                        <ul class="share-list">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+
+            <script>
+  // get user agent
+  function getBrowserVersions() {
+    var u = window.navigator.userAgent
+    return {
+      userAgent: u,
+      trident: u.indexOf('Trident') > -1, //IE内核
+      presto: u.indexOf('Presto') > -1, //opera内核
+      webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+      gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+      mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+      ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+      android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+      iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+      iPad: u.indexOf('iPad') > -1, //是否为iPad
+      webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+      weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+      uc: u.indexOf('UCBrowser') > -1, //是否为android下的UC浏览器
+    }
+  }
+  var browser = {
+    versions: getBrowserVersions(),
+  }
+  console.log('userAgent: ' + browser.versions.userAgent)
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded')
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document
+        .getElementsByClassName('intro-title')[0]
+        .classList.add('intro-fade-in')
+      document
+        .getElementsByClassName('intro-subtitle')[0]
+        .classList.add('intro-fade-in')
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in')
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb() {
+    if (browser.versions.uc) {
+      console.log('UCBrowser')
+      fontLoaded()
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular'],
+        },
+        loading: function () {
+          // 所有字体开始加载
+          // console.log('font loading');
+        },
+        active: function () {
+          // 所有字体已渲染
+          fontLoaded()
+        },
+        inactive: function () {
+          // 字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout')
+          fontLoaded()
+        },
+        timeout: 5000, // Set the timeout to two seconds
+      })
+    }
+  }
+
+  function asyncErr() {
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0]
+    o.src = u
+    if (cb) {
+      o.addEventListener(
+        'load',
+        function (e) {
+          cb(null, e)
+        },
+        false
+      )
+    }
+    if (err) {
+      o.addEventListener(
+        'error',
+        function (e) {
+          err(null, e)
+        },
+        false
+      )
+    }
+    s.parentNode.insertBefore(o, s)
+  }
+
+  var asyncLoadWithFallBack = function (arr, success, reject) {
+    var currReject = function () {
+      reject()
+      arr.shift()
+      if (arr.length) async(arr[0], success, currReject)
+    }
+
+    async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack(
+    [
+      'https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js',
+      'https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js',
+      "/lib/webfontloader.min.js",
+    ],
+    asyncCb,
+    asyncErr
+  )
+</script>
+
+            <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+            <div class="container container-unloaded">
+                <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="设计模式笔记下">设计模式笔记(下)</h1>
+<blockquote>
+<p>个人学习设计模式笔记。主要参考《Head
+First设计模式》和Wikipedia，youtube上有个<a
+target="_blank" rel="noopener" href="https://www.youtube.com/playlist?list=PLrhzvIcii6GNjpARdnO4ueTUAVR9eMBpc">系列视频</a>也非常值得一看</p>
+</blockquote>
+<h2 id="chap-7-随遇而安适配器模式与外观模式">chap 7
+随遇而安—适配器模式与外观模式</h2>
+<h3 id="适配器模式">适配器模式</h3>
+<h4 id="定义">定义</h4>
+<p><strong>适配器模式Adapter Pattern</strong>
+将一个类的接口，转换成客户期望的另一个接口。适配器让原本接口不兼容的类可以合作无间。</p>
+<h4 id="分析">分析</h4>
+<ul>
+<li><strong>目标Target：</strong>接口类；</li>
+<li><strong>适配器Adapter：</strong>实现目标接口；</li>
+<li><strong>被适配者Adaptee：</strong>适配器的调用委托给被适配者。</li>
+</ul>
+<p>这种组合的方式属于<strong>对象适配器</strong>，还有一种利用多重继承的方式，叫<strong>类适配器</strong>。即Adapter同时继承Target和Adaptee。对象适配器使用组合，更有弹性，还可以适配被适配类的子类；而类适配器使用继承，不需要重新实现整个被适配者，但不灵活。</p>
+<h4 id="uml">UML</h4>
+<p>https://en.wikipedia.org/wiki/Adapter_pattern</p>
+<h4 id="代码">代码</h4>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;memory&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// target</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Duck</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">typedef</span> std::shared_ptr&lt;Duck&gt; Ptr;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">quack</span><span class="params">()</span></span>=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">virtual</span> ~<span class="built_in">Duck</span>() &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// adaptee</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Turkey</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">typedef</span> std::shared_ptr&lt;Turkey&gt; Ptr;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">gobble</span><span class="params">()</span></span>=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">virtual</span> ~<span class="built_in">Turkey</span>() &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WildTurkey</span>:</span><span class="keyword">public</span> Turkey&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">gobble</span><span class="params">()</span> <span class="keyword">override</span> </span>&#123;</span><br><span class="line">        std::cout&lt;&lt;<span class="string">&quot;Gobble gobble\n&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// adapter</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TurkeyAdapter</span>:</span><span class="keyword">public</span> Duck&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">TurkeyAdapter</span>(<span class="keyword">const</span> Turkey::Ptr &amp;turkey) : <span class="built_in">turkey_</span>(turkey) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">quack</span><span class="params">()</span> <span class="keyword">override</span> </span>&#123;</span><br><span class="line">        turkey_-&gt;<span class="built_in">gobble</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    Turkey::Ptr turkey_;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// test</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="function">Turkey::Ptr <span class="title">wildTurkey</span><span class="params">(<span class="keyword">new</span> WildTurkey)</span></span>;</span><br><span class="line">    <span class="function">Duck::Ptr <span class="title">turkeyAdapter</span><span class="params">(<span class="keyword">new</span> TurkeyAdapter(wildTurkey))</span></span>;</span><br><span class="line">    turkeyAdapter-&gt;<span class="built_in">quack</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="外观模式">外观模式</h3>
+<h4 id="定义-1">定义</h4>
+<p><strong>外观模式Facade Pattern</strong>
+提供了一个统一的接口，用来访问子系统中的一群接口。外观定义了一个高层接口，让子系统更容易使用。</p>
+<h4 id="分析-1">分析</h4>
+<p>结构上三者类似，但<strong>目的不同</strong>：适配器将一个对象包装起来以改变其接口；装饰者将一个对象包装起来以增加新的行为和责任；外观将一群对象包装起来以简化接口。</p>
+<p>适配器一般只适配一个类，但实际也可以适配许多类来提供一个接口；装饰者一般只包装一个类；外观一般"封装"多个类。</p>
+<p><strong>设计原则</strong></p>
+<ul>
+<li>只和朋友交谈(最少知识原则)。</li>
+</ul>
+<h4 id="uml-1">UML</h4>
+<p>https://en.wikipedia.org/wiki/Facade_pattern</p>
+<h4 id="代码-1">代码</h4>
+<p>略</p>
+<h2 id="chap8-封装算法模板方法模式">chap8 封装算法—模板方法模式</h2>
+<h3 id="定义-2">定义</h3>
+<p><strong>模板方法模式Template method pattern</strong>
+在一个方法中定义了一个算法的骨架，而将一些步骤延迟到子类中。模板方法使得子类可以在不改变算法结构的情况下，重新定义算法中的某些步骤。</p>
+<h3 id="分析-2">分析</h3>
+<ul>
+<li><strong>抽象类：</strong>定义算法的框架。包括一些必须子类实现的步骤（抽象方法）、一些可以缺省实现的步骤（虚函数），及一些强制默认实现的步骤（final）；</li>
+<li><strong>具体类：</strong>抽象类的子类，根据实际需要实现相应步骤。</li>
+</ul>
+<p>模板方法模式用于封装算法，把一些步骤的实现<strong>强制延迟</strong>到子类，一些缺省实现的步骤叫做"钩子hook"，还有一些强制默认实现的步骤声明为final。</p>
+<p>策略模式和模板方法模式都封装算法，一个用组合，一个用继承。</p>
+<p>工厂方法是模板方法的一个特殊版本。</p>
+<p><strong>设计原则</strong></p>
+<ul>
+<li>好莱坞原则：别调用(打电话给)我们，我们会调用(打电话给)你。</li>
+</ul>
+<p>即将决策权放在高层模块中，当需要的时候，自然会去调用子类。</p>
+<h3 id="uml-2">UML</h3>
+<p>https://en.wikipedia.org/wiki/Template_method_pattern</p>
+<h3 id="代码-2">代码</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// abstract class</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Beverage</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">boilWater</span><span class="params">()</span></span>&#123;std::cout&lt;&lt;<span class="string">&quot;Boiling water\n&quot;</span>;&#125;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">brew</span><span class="params">()</span></span>=<span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">pourInCup</span><span class="params">()</span></span>&#123;&#125; <span class="comment">// hook</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">prepare</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="built_in">boilWater</span>();</span><br><span class="line">        <span class="built_in">brew</span>();</span><br><span class="line">        <span class="built_in">pourInCup</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// concrete class</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Coffee</span>:</span><span class="keyword">public</span> Beverage&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">brew</span><span class="params">()</span> <span class="keyword">override</span> </span>&#123;</span><br><span class="line">        std::cout&lt;&lt;<span class="string">&quot;Dripping coffee through filter\n&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">pourInCup</span><span class="params">()</span> <span class="keyword">override</span> </span>&#123;</span><br><span class="line">        std::cout&lt;&lt;<span class="string">&quot;Pouring into cup\n&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Tea</span>:</span><span class="keyword">public</span> Beverage&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">brew</span><span class="params">()</span> <span class="keyword">override</span> </span>&#123;</span><br><span class="line">        std::cout&lt;&lt;<span class="string">&quot;Steeping the tea\n&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Coffee coffee;</span><br><span class="line">    Tea tea;</span><br><span class="line">    coffee.<span class="built_in">prepare</span>();</span><br><span class="line">    std::cout&lt;&lt;std::endl;</span><br><span class="line">    tea.<span class="built_in">prepare</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="chap9-管理良好的集合迭代器与组合模式">chap9
+管理良好的集合—迭代器与组合模式</h2>
+<h3 id="迭代器模式">迭代器模式</h3>
+<h4 id="定义-3">定义</h4>
+<p><strong>迭代器模式Iterator pattern</strong>
+提供一种方法顺序访问一个集合对象中各个元素，而又不暴露其内部的表示。</p>
+<h4 id="分析-3">分析</h4>
+<p>迭代器模式在许多语言(c++，java，python等)中都已存在。简单地说，就是将遍历各元素的工作封装进一个对象中。</p>
+<h4 id="uml-3">UML</h4>
+<p>https://en.wikipedia.org/wiki/Iterator_pattern</p>
+<h4 id="代码-3">代码</h4>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;memory&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// iterator</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IIterator</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">typedef</span> std::shared_ptr&lt;IIterator&gt; Ptr;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">bool</span> <span class="title">hasNext</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> std::string <span class="title">next</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">virtual</span> ~<span class="built_in">IIterator</span>() &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// aggregate</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IContainer</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> IIterator::Ptr <span class="title">createIterator</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">virtual</span> ~<span class="built_in">IContainer</span>() &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// concrete iterator</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BookIterator</span> :</span> <span class="keyword">public</span> IIterator &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line"></span><br><span class="line">    <span class="built_in">BookIterator</span>(<span class="keyword">const</span> std::vector&lt;std::string&gt; &amp;books) : <span class="built_in">books_</span>(books) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">hasNext</span><span class="params">()</span> <span class="keyword">override</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (position_ &gt;= books_.<span class="built_in">size</span>())</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">std::string <span class="title">next</span><span class="params">()</span> <span class="keyword">override</span> </span>&#123;</span><br><span class="line">        std::string book = books_[position_];</span><br><span class="line">        ++position_;</span><br><span class="line">        <span class="keyword">return</span> book;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">int</span> position_ = <span class="number">0</span>;</span><br><span class="line">    std::vector&lt;std::string&gt; books_;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// concrete aggregate</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BooksCollection</span> :</span> <span class="keyword">public</span> IContainer &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">BooksCollection</span>(<span class="keyword">const</span> std::vector&lt;std::string&gt; &amp;books) : <span class="built_in">books_</span>(books) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">IIterator::Ptr <span class="title">createIterator</span><span class="params">()</span> <span class="keyword">override</span> </span>&#123;</span><br><span class="line">        <span class="keyword">auto</span> iter = std::make_shared&lt;BookIterator&gt;(books_);</span><br><span class="line">        <span class="keyword">return</span> iter;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::vector&lt;std::string&gt; books_;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::vector&lt;std::string&gt; books&#123;<span class="string">&quot;Harry Potter&quot;</span>, <span class="string">&quot;C++ primer&quot;</span>, <span class="string">&quot;Design Pattern&quot;</span>&#125;;</span><br><span class="line">    <span class="function">BooksCollection <span class="title">booksCollection</span><span class="params">(books)</span></span>;</span><br><span class="line">    <span class="keyword">auto</span> iter = booksCollection.<span class="built_in">createIterator</span>();</span><br><span class="line">    <span class="keyword">while</span> (iter-&gt;<span class="built_in">hasNext</span>())</span><br><span class="line">        std::cout &lt;&lt; iter-&gt;<span class="built_in">next</span>() &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="组合模式">组合模式</h3>
+<h4 id="定义-4">定义</h4>
+<p><strong>组合模式Composite pattern</strong>
+允许你将对象组合成树形结构来表现"整体/部分"层次结构。组合能让客户以一致的方式处理个别对象以及对象组合。</p>
+<h4 id="分析-4">分析</h4>
+<ul>
+<li><strong>Component</strong>: 组合接口</li>
+<li><strong>Leaf</strong>: 叶节点，实现组合接口</li>
+<li><strong>Composite</strong>:
+组合节点，增加子节点管理方法，并委托方法给所有子节点</li>
+</ul>
+<p>组合模式允许客户对个别对象以及组合对象一视同仁。</p>
+<p><strong>设计原则</strong></p>
+<ul>
+<li>单一责任：一个类应该只有一个引起变化的原因。</li>
+</ul>
+<h4 id="uml-4">UML</h4>
+<p>https://en.wikipedia.org/wiki/Composite_pattern</p>
+<h4 id="代码-4">代码</h4>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;memory&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// component</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graphic</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">typedef</span> std::shared_ptr&lt;Graphic&gt; Ptr;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">virtual</span> ~<span class="built_in">Graphic</span>() &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// composite</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CompositeGraphic</span> :</span> <span class="keyword">public</span> Graphic &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">add</span><span class="params">(Graphic::Ptr graphic)</span> </span>&#123;</span><br><span class="line">        childGraphics_.<span class="built_in">push_back</span>(graphic);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">()</span> <span class="keyword">override</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> graphic:childGraphics_)</span><br><span class="line">            graphic-&gt;<span class="built_in">print</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::vector&lt;Graphic::Ptr&gt; childGraphics_;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// leaf</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Ellipse</span> :</span> <span class="keyword">public</span> Graphic &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">()</span> <span class="keyword">override</span> </span>&#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;Ellipse\n&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//Initialize three ellipses</span></span><br><span class="line">    <span class="keyword">auto</span> ellipse1 = std::make_shared&lt;Ellipse&gt;();</span><br><span class="line">    <span class="keyword">auto</span> ellipse2 = std::make_shared&lt;Ellipse&gt;();</span><br><span class="line">    <span class="keyword">auto</span> ellipse3 = std::make_shared&lt;Ellipse&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//Creates two composites containing the ellipses</span></span><br><span class="line">    <span class="keyword">auto</span> graphic2 = std::make_shared&lt;CompositeGraphic&gt;();</span><br><span class="line">    graphic2-&gt;<span class="built_in">add</span>(ellipse1);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">auto</span> graphic3 = std::make_shared&lt;CompositeGraphic&gt;();</span><br><span class="line">    graphic3-&gt;<span class="built_in">add</span>(ellipse2);</span><br><span class="line">    graphic3-&gt;<span class="built_in">add</span>(ellipse3);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//Create another graphics that contains two graphics</span></span><br><span class="line">    <span class="keyword">auto</span> graphic1 = std::make_shared&lt;CompositeGraphic&gt;();</span><br><span class="line">    graphic1-&gt;<span class="built_in">add</span>(graphic2);</span><br><span class="line">    graphic1-&gt;<span class="built_in">add</span>(graphic3);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//Prints the complete graphic (Three times the string &quot;Ellipse&quot;)</span></span><br><span class="line">    graphic1-&gt;<span class="built_in">print</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="chap10-事物的状态状态模式">chap10 事物的状态—状态模式</h2>
+<h3 id="定义-5">定义</h3>
+<p><strong>状态模式State pattern</strong>
+允许对象在内部状态改变时改变它的行为，对象看起来好像修改了它的类。</p>
+<h3 id="分析-5">分析</h3>
+<ul>
+<li><strong>上下文Context</strong>：包含一些状态的引用，并将行为委托给当前状态对象</li>
+<li><strong>状态State</strong>：定义所有具体状态的共同接口或抽象类</li>
+</ul>
+<p>状态模式与有限状态机(finite-state
+machine)概念类似，但使用类来表示状态，避免了使用许多条件判断语句，更加有弹性。</p>
+<p>状态模式与策略模式类似，仍使用组合composition+委托delegation的形式。但是，策略模式通常会用行为或算法来配置Context类，从而主动控制使用什么样的行为；而状态模式的Context类对象随着时间改变，进而产生不同的行为。</p>
+<h3 id="uml-5">UML</h3>
+<p>https://en.wikipedia.org/wiki/State_pattern</p>
+<h3 id="代码-5">代码</h3>
+<p>代码中需要注意前向声明和方法定义的位置</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;memory&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;boost/algorithm/string.hpp&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">State</span>;</span> <span class="comment">// forward declaration</span></span><br><span class="line"><span class="comment">// Context</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">StateContext</span> :</span> <span class="keyword">public</span> std::enable_shared_from_this&lt;StateContext&gt; &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">using</span> Ptr=std::shared_ptr&lt;StateContext&gt;;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">StateContext</span>();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">setState</span><span class="params">(<span class="keyword">const</span> std::shared_ptr&lt;State&gt; &amp;newState)</span> </span>&#123;</span><br><span class="line">        state_ = newState;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">writeName</span><span class="params">(std::string name)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::shared_ptr&lt;State&gt; state_;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// State</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">State</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">writeName</span><span class="params">(<span class="keyword">const</span> StateContext::Ptr &amp;context, std::string name)</span> </span>= <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">virtual</span> ~<span class="built_in">State</span>() &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ConcreteStateA</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LowerCaseState</span> :</span> <span class="keyword">public</span> State &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">writeName</span><span class="params">(<span class="keyword">const</span> StateContext::Ptr &amp;context, std::string name)</span> <span class="keyword">override</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ConcreteStateB</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MultipleUpperCaseState</span> :</span> <span class="keyword">public</span> State &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">writeName</span><span class="params">(<span class="keyword">const</span> StateContext::Ptr &amp;context, std::string name)</span> <span class="keyword">override</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">int</span> count_ = <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// definations</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">StateContext::writeName</span><span class="params">(std::string name)</span> </span>&#123;</span><br><span class="line">    state_-&gt;<span class="built_in">writeName</span>(<span class="built_in">shared_from_this</span>(), name);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">StateContext::<span class="built_in">StateContext</span>() &#123;</span><br><span class="line">    state_ = std::make_shared&lt;LowerCaseState&gt;();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">LowerCaseState::writeName</span><span class="params">(<span class="keyword">const</span> StateContext::Ptr &amp;context, std::string name)</span> </span>&#123;</span><br><span class="line">    std::cout &lt;&lt; boost::algorithm::<span class="built_in">to_lower_copy</span>(name) &lt;&lt; std::endl;</span><br><span class="line">    context-&gt;<span class="built_in">setState</span>(std::make_shared&lt;MultipleUpperCaseState&gt;());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MultipleUpperCaseState::writeName</span><span class="params">(<span class="keyword">const</span> StateContext::Ptr &amp;context, std::string name)</span> </span>&#123;</span><br><span class="line">    std::cout &lt;&lt; boost::algorithm::<span class="built_in">to_upper_copy</span>(name) &lt;&lt; std::endl;</span><br><span class="line">    <span class="comment">// Change state after StateMultipleUpperCase&#x27;s writeName() gets invoked twice</span></span><br><span class="line">    <span class="keyword">if</span> (++count_ &gt; <span class="number">1</span>) &#123;</span><br><span class="line">        context-&gt;<span class="built_in">setState</span>(std::make_shared&lt;LowerCaseState&gt;());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">auto</span> context = std::make_shared&lt;StateContext&gt;();</span><br><span class="line"></span><br><span class="line">    context-&gt;<span class="built_in">writeName</span>(<span class="string">&quot;Monday&quot;</span>);</span><br><span class="line">    context-&gt;<span class="built_in">writeName</span>(<span class="string">&quot;Tuesday&quot;</span>);</span><br><span class="line">    context-&gt;<span class="built_in">writeName</span>(<span class="string">&quot;Wednesday&quot;</span>);</span><br><span class="line">    context-&gt;<span class="built_in">writeName</span>(<span class="string">&quot;Thursday&quot;</span>);</span><br><span class="line">    context-&gt;<span class="built_in">writeName</span>(<span class="string">&quot;Friday&quot;</span>);</span><br><span class="line">    context-&gt;<span class="built_in">writeName</span>(<span class="string">&quot;Saturday&quot;</span>);</span><br><span class="line">    context-&gt;<span class="built_in">writeName</span>(<span class="string">&quot;Sunday&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* output:</span></span><br><span class="line"><span class="comment">    monday</span></span><br><span class="line"><span class="comment">    TUESDAY</span></span><br><span class="line"><span class="comment">    WEDNESDAY</span></span><br><span class="line"><span class="comment">    thursday</span></span><br><span class="line"><span class="comment">    FRIDAY</span></span><br><span class="line"><span class="comment">    SATURDAY</span></span><br><span class="line"><span class="comment">    sunday</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="chap11-控制对象访问代理模式">chap11 控制对象访问—代理模式</h2>
+<h3 id="定义-6">定义</h3>
+<p><strong>代理模式Proxy pattern</strong>
+对另一个对象提供一个替身或占位符以控制对这个对象的访问。</p>
+<h3 id="分析-6">分析</h3>
+<ul>
+<li>远程代理：控制访问远程对象</li>
+</ul>
+<p>Java远程方法调用(Remote Method
+Invocation，RMI)支持存储于不同地址空间的程序级对象之间彼此进行通信，实现远程对象之间的无缝远程调用。</p>
+<ul>
+<li>虚拟代理：控制访问开销大的资源</li>
+<li>保护代理：基于权限控制对资源的访问</li>
+</ul>
+<p>装饰者增加对象行为，代理控制对象的访问。</p>
+<p>适配器改变对象适配的接口，而代理实现相同的接口。但保护代理会只提供客户部分接口。</p>
+<h3 id="uml-6">UML</h3>
+<p>https://en.wikipedia.org/wiki/Proxy_pattern</p>
+<h3 id="代码-6">代码</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;memory&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// subject</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ICar</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="keyword">virtual</span> ~<span class="built_in">ICar</span>() &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">DriveCar</span><span class="params">()</span> </span>= <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// real subject</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Car</span> :</span> <span class="keyword">public</span> ICar &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">DriveCar</span><span class="params">()</span> <span class="keyword">override</span> </span>&#123; std::cout &lt;&lt; <span class="string">&quot;Car has been driven!&quot;</span> &lt;&lt; std::endl; &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// proxy</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ProxyCar</span> :</span> <span class="keyword">public</span> ICar &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">ProxyCar</span>(<span class="keyword">int</span> driver_age) : <span class="built_in">driver_age_</span>(driver_age) &#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">DriveCar</span><span class="params">()</span> <span class="keyword">override</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (driver_age_ &gt; <span class="number">16</span>) &#123;</span><br><span class="line">            real_car_-&gt;<span class="built_in">DriveCar</span>();</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            std::cout &lt;&lt; <span class="string">&quot;Sorry, the driver is too young to drive.&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    std::unique_ptr&lt;ICar&gt; real_car_ = std::make_unique&lt;Car&gt;();</span><br><span class="line">    <span class="keyword">int</span> driver_age_;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::unique_ptr&lt;ICar&gt; car = std::make_unique&lt;ProxyCar&gt;(<span class="number">16</span>);</span><br><span class="line">    car-&gt;<span class="built_in">DriveCar</span>();</span><br><span class="line"></span><br><span class="line">    car = std::make_unique&lt;ProxyCar&gt;(<span class="number">25</span>);</span><br><span class="line">    car-&gt;<span class="built_in">DriveCar</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="chap12-复合模式模式的模式">chap12 复合模式—模式的模式</h2>
+<p>MVC模式</p>
+<ul>
+<li>模型M：处理。模型利用<strong>观察者</strong>让控制器和视图随状态改变而更新</li>
+<li>视图V：输出。视图是GUI组件的<strong>组合</strong></li>
+<li>控制器C：输入。视图和控制器实现<strong>策略模式</strong></li>
+</ul>
+<p>设计模式分类</p>
+<ul>
+<li><p>创建型。涉及对象实例化，这类模式都提供一个方法，将客户从所需要实例化的对象中解耦。</p>
+<p><strong>Abstract Factory</strong>、Builder、<strong>Factory
+Method</strong>、Prototype、<strong>Singleton</strong></p></li>
+<li><p>行为型。涉及类和对象如何交互及分配职责。</p>
+<p>Chain Of
+Responsibility、<strong>Command</strong>、Interpreter、<strong>Iterator</strong>、Mediator、Memento、<strong>Observer</strong>、<strong>State</strong>、<strong>Strategy</strong>、<strong>Template
+Method</strong>、Visitor</p></li>
+<li><p>结构型。让你把类或对象组合到更大的结构中。</p>
+<p><strong>Adapter</strong>、Bridge、<strong>Composite</strong>、<strong>Decorator</strong>、<strong>Facade</strong>、Flyweight、<strong>Proxy</strong></p></li>
+</ul>
+<blockquote>
+<p>个人理解错误的地方还请不吝赐教，转载请标明出处</p>
+</blockquote>
+
+    </article>
+    <!-- license -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://gjgjh.github.io">GJGJH</a>
+            <p>原文链接：<a href="https://gjgjh.github.io/designPattern2.html">https://gjgjh.github.io/designPattern2.html</a>
+            <p>发表日期：<a href="https://gjgjh.github.io/designPattern2.html">September 24th 2019, 10:00:05 am</a>
+            <p>更新日期：<a href="https://gjgjh.github.io/designPattern2.html">February 2nd 2022, 7:37:38 pm</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href="/%E6%B8%85%E5%8D%8E%E5%A4%A7%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%94%E8%AE%B0.html" title="清华大学操作系统笔记">
+                    <div class="nextTitle">清华大学操作系统笔记</div>
+                </a>
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href="/designPattern1.html" title="设计模式笔记(上)">
+                    <div class="prevTitle">设计模式笔记(上)</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- comment -->
+    
+        <div class="post-comment">
+            <!-- 来必力 City 版安装代码 -->
+
+
+            
+
+            
+
+            
+
+            <!-- utteranc评论 -->
+
+
+            <!-- partial('_partial/comment/changyan') -->
+            <!--PC版-->
+
+
+            
+            
+
+            
+
+        </div>
+    
+    <!-- timeliness note -->
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
+    
+    <!-- Mathjax -->
+    
+</main>
+
+                <!-- profile -->
+                
+            </div>
+            <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+        <div class="social">
+            
+    
+        
+            
+                <a href="mailto:guojh_rs@pku.edu.cn" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="https://github.com/gjgjh" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+
+        </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- website approve for Chinese user -->
+    
+    <!-- 不蒜子  -->
+    
+        <div class="busuanzi-container">
+            
+             
+                <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+            
+        </div>
+    	
+</footer>
+
+        </div>
+        <!-- toc -->
+        
+            <div class="toc-wrapper toc-wrapper-loding" style=
+
+
+
+
+
+
+
+    top:50vh;
+
+>
+                <div class="toc-catalog">
+                    <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+                </div>
+                <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AC%94%E8%AE%B0%E4%B8%8B"><span class="toc-number">1.</span> <span class="toc-text">设计模式笔记(下)</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#chap-7-%E9%9A%8F%E9%81%87%E8%80%8C%E5%AE%89%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F%E4%B8%8E%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.1.</span> <span class="toc-text">chap 7
+随遇而安—适配器模式与外观模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.1.1.</span> <span class="toc-text">适配器模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E6%9E%90"><span class="toc-number">1.1.1.2.</span> <span class="toc-text">分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#uml"><span class="toc-number">1.1.1.3.</span> <span class="toc-text">UML</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81"><span class="toc-number">1.1.1.4.</span> <span class="toc-text">代码</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%96%E8%A7%82%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.1.2.</span> <span class="toc-text">外观模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-1"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E6%9E%90-1"><span class="toc-number">1.1.2.2.</span> <span class="toc-text">分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#uml-1"><span class="toc-number">1.1.2.3.</span> <span class="toc-text">UML</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81-1"><span class="toc-number">1.1.2.4.</span> <span class="toc-text">代码</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#chap8-%E5%B0%81%E8%A3%85%E7%AE%97%E6%B3%95%E6%A8%A1%E6%9D%BF%E6%96%B9%E6%B3%95%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.2.</span> <span class="toc-text">chap8 封装算法—模板方法模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-2"><span class="toc-number">1.2.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E6%9E%90-2"><span class="toc-number">1.2.2.</span> <span class="toc-text">分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#uml-2"><span class="toc-number">1.2.3.</span> <span class="toc-text">UML</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81-2"><span class="toc-number">1.2.4.</span> <span class="toc-text">代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#chap9-%E7%AE%A1%E7%90%86%E8%89%AF%E5%A5%BD%E7%9A%84%E9%9B%86%E5%90%88%E8%BF%AD%E4%BB%A3%E5%99%A8%E4%B8%8E%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.3.</span> <span class="toc-text">chap9
+管理良好的集合—迭代器与组合模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%AD%E4%BB%A3%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.3.1.</span> <span class="toc-text">迭代器模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-3"><span class="toc-number">1.3.1.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E6%9E%90-3"><span class="toc-number">1.3.1.2.</span> <span class="toc-text">分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#uml-3"><span class="toc-number">1.3.1.3.</span> <span class="toc-text">UML</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81-3"><span class="toc-number">1.3.1.4.</span> <span class="toc-text">代码</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%84%E5%90%88%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.3.2.</span> <span class="toc-text">组合模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-4"><span class="toc-number">1.3.2.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E6%9E%90-4"><span class="toc-number">1.3.2.2.</span> <span class="toc-text">分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#uml-4"><span class="toc-number">1.3.2.3.</span> <span class="toc-text">UML</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81-4"><span class="toc-number">1.3.2.4.</span> <span class="toc-text">代码</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#chap10-%E4%BA%8B%E7%89%A9%E7%9A%84%E7%8A%B6%E6%80%81%E7%8A%B6%E6%80%81%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.4.</span> <span class="toc-text">chap10 事物的状态—状态模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-5"><span class="toc-number">1.4.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E6%9E%90-5"><span class="toc-number">1.4.2.</span> <span class="toc-text">分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#uml-5"><span class="toc-number">1.4.3.</span> <span class="toc-text">UML</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81-5"><span class="toc-number">1.4.4.</span> <span class="toc-text">代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#chap11-%E6%8E%A7%E5%88%B6%E5%AF%B9%E8%B1%A1%E8%AE%BF%E9%97%AE%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.5.</span> <span class="toc-text">chap11 控制对象访问—代理模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89-6"><span class="toc-number">1.5.1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E6%9E%90-6"><span class="toc-number">1.5.2.</span> <span class="toc-text">分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#uml-6"><span class="toc-number">1.5.3.</span> <span class="toc-text">UML</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81-6"><span class="toc-number">1.5.4.</span> <span class="toc-text">代码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#chap12-%E5%A4%8D%E5%90%88%E6%A8%A1%E5%BC%8F%E6%A8%A1%E5%BC%8F%E7%9A%84%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.6.</span> <span class="toc-text">chap12 复合模式—模式的模式</span></a></li></ol></li></ol>
+            </div>
+        
+        <!-- sidebar -->
+        <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+        <div class="sidebar-panel-archives">
+    <!-- 在 ejs 中将 archive 按照时间排序 -->
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 18
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+        
+            
+            
+            <div class="archive-year"> 2020 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/18</span>
+            <a class="archive-post-title" href="/pybind11.html">pybind11</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/01</span>
+            <a class="archive-post-title" href="/%E5%88%86%E8%A7%A3%E6%8A%95%E5%BD%B1%E7%9F%A9%E9%98%B5P.html">From P to K[R|t]</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/04</span>
+            <a class="archive-post-title" href="/C++17%E7%9B%B8%E5%85%B3.html">C++17相关</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/01</span>
+            <a class="archive-post-title" href="/%E8%87%AA%E5%AE%9A%E4%B9%89Profile%E5%B7%A5%E5%85%B7.html">自定义Profile工具</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/04</span>
+            <a class="archive-post-title" href="/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AE%97%E6%B3%95%E9%9D%A2%E8%AF%95%E9%A2%98.html">数据结构算法面试题</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/12</span>
+            <a class="archive-post-title" href="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E9%9D%A2%E8%AF%95%E9%A2%98.html">操作系统面试题</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/11</span>
+            <a class="archive-post-title" href="/%E6%B8%85%E5%8D%8E%E5%A4%A7%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%94%E8%AE%B0.html">清华大学操作系统笔记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/11</span>
+            <a class="archive-post-title" href="/C++%E9%9D%A2%E8%AF%95%E9%A2%98.html">C++面试题</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2019 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/24</span>
+            <a class="archive-post-title" href="/designPattern2.html">设计模式笔记(下)</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/23</span>
+            <a class="archive-post-title" href="/designPattern1.html">设计模式笔记(上)</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/29</span>
+            <a class="archive-post-title" href="/docker_learning.html">Docker学习笔记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/16</span>
+            <a class="archive-post-title" href="/VinsMono.html">小觅深度版Ubuntu下跑vins-mono</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/02</span>
+            <a class="archive-post-title" href="/gtest.html">Google Test(gtest)写c++单元测试</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2018 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/16</span>
+            <a class="archive-post-title" href="/ROS_note.html">ROS学习笔记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/12</span>
+            <a class="archive-post-title" href="/ptam.html">PTAM学习</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/01</span>
+            <a class="archive-post-title" href="/ros1.html">基于ROS获取Android图像和惯导数据</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/02</span>
+            <a class="archive-post-title" href="/lsdslam2.html">LSDSLAM算法解析</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/30</span>
+            <a class="archive-post-title" href="/lsdslam.html">ubuntu16.04+ROS kinetic下跑LSDSLAM</a>
+        </li>
+    
+    </div>
+</div>
+
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+        
+            <span class="sidebar-tag-name" data-tags="C++">
+                <span class="iconfont-archer">&#xe606;</span>
+                C++
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="SLAM">
+                <span class="iconfont-archer">&#xe606;</span>
+                SLAM
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="Docker">
+                <span class="iconfont-archer">&#xe606;</span>
+                Docker
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="ROS">
+                <span class="iconfont-archer">&#xe606;</span>
+                ROS
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="操作系统">
+                <span class="iconfont-archer">&#xe606;</span>
+                操作系统
+            </span>
+        
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+        缺失模块，请参考主题文档进行安装配置：https://github.com/fi3ework/hexo-theme-archer#%E5%AE%89%E8%A3%85%E4%B8%BB%E9%A2%98
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+
+    </div>
+</div>
+
+        <!-- site-meta -->
+        <script>
+    var siteMetaRoot = "/"
+    if (siteMetaRoot === "undefined") {
+        siteMetaRoot = '/'
+    }
+    var siteMeta = {
+        url: "https://gjgjh.github.io",
+        root: siteMetaRoot,
+        author: "GJGJH"
+    }
+</script>
+
+        <!-- import experimental options here -->
+        <!-- Custom Font -->
+
+
+        <!-- main func -->
+        <script src="/scripts/main.js?v=20211217"></script>
+        <!-- dark mode -->
+        <script src="/scripts/dark.js?v=20211217"></script>
+        <!-- fancybox -->
+        <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" defer></script>
+        <!-- algolia -->
+        
+        <!-- busuanzi -->
+        
+            <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+        
+        <!-- CNZZ -->
+        
+        <!-- async load share.js -->
+        
+            <script src="/scripts/share.js?v=20211217" async></script>
+        
+        <!-- mermaid -->
+        
+    </body>
+</html>

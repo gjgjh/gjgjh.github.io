@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="">
+    <!-- title -->
+
+
+    
+
+<!-- keywords -->
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="author" content="GJGJH">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="GJGJH">
+    
+        <meta name="keywords" content="hexo,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="">
+    <meta name="description" content="最近实验室新买了小觅深度版相机（型号D1000-IR-120&#x2F;Color），这里记录一下跑vins-mono的过程。由于虚拟机usb可能出现不兼容问题，我使用的是双系统的Ubuntu16.04，对应ROS版本为kinetic。 1.安装ROS Ubuntu16.04对应的ros版本为kinetic，安装的方法网上已有很多，比如可以参考此博客。如果安装出错，请换个源或者用VPN试试。推荐安装ros-">
+<meta property="og:type" content="article">
+<meta property="og:title" content="小觅深度版Ubuntu下跑vins-mono">
+<meta property="og:url" content="https://gjgjh.github.io/VinsMono.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="最近实验室新买了小觅深度版相机（型号D1000-IR-120&#x2F;Color），这里记录一下跑vins-mono的过程。由于虚拟机usb可能出现不兼容问题，我使用的是双系统的Ubuntu16.04，对应ROS版本为kinetic。 1.安装ROS Ubuntu16.04对应的ros版本为kinetic，安装的方法网上已有很多，比如可以参考此博客。如果安装出错，请换个源或者用VPN试试。推荐安装ros-">
+<meta property="og:locale">
+<meta property="article:published_time" content="2019-05-16T10:32:40.000Z">
+<meta property="article:modified_time" content="2022-02-02T11:37:38.113Z">
+<meta property="article:author" content="GJGJH">
+<meta property="article:tag" content="SLAM">
+<meta name="twitter:card" content="summary">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="icon" href="/assets/favicon.ico">
+    
+    <title>小觅深度版Ubuntu下跑vins-mono · guojh&#39;s Blog</title>
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+    (function (w) {
+        'use strict'
+        // rel=preload support test
+        if (!w.loadCSS) {
+            w.loadCSS = function () {}
+        }
+        // define on the loadCSS obj
+        var rp = (loadCSS.relpreload = {})
+        // rel=preload feature support test
+        // runs once and returns a function for compat purposes
+        rp.support = (function () {
+            var ret
+            try {
+                ret = w.document.createElement('link').relList.supports('preload')
+            } catch (e) {
+                ret = false
+            }
+            return function () {
+                return ret
+            }
+        })()
+
+        // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+        // then change that media back to its intended value on load
+        rp.bindMediaToggle = function (link) {
+            // remember existing media attr for ultimate state, or default to 'all'
+            var finalMedia = link.media || 'all'
+
+            function enableStylesheet() {
+                link.media = finalMedia
+            }
+
+            // bind load handlers to enable media
+            if (link.addEventListener) {
+                link.addEventListener('load', enableStylesheet)
+            } else if (link.attachEvent) {
+                link.attachEvent('onload', enableStylesheet)
+            }
+
+            // Set rel and non-applicable media type to start an async request
+            // note: timeout allows this to happen async to let rendering continue in IE
+            setTimeout(function () {
+                link.rel = 'stylesheet'
+                link.media = 'only x'
+            })
+            // also enable media after 3 seconds,
+            // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+            setTimeout(enableStylesheet, 3000)
+        }
+
+        // loop through link elements in DOM
+        rp.poly = function () {
+            // double check this to prevent external calls from running
+            if (rp.support()) {
+                return
+            }
+            var links = w.document.getElementsByTagName('link')
+            for (var i = 0; i < links.length; i++) {
+                var link = links[i]
+                // qualify links to those with rel=preload and as=style attrs
+                if (
+                    link.rel === 'preload' &&
+                    link.getAttribute('as') === 'style' &&
+                    !link.getAttribute('data-loadcss')
+                ) {
+                    // prevent rerunning on link
+                    link.setAttribute('data-loadcss', true)
+                    // bind listeners to toggle media back
+                    rp.bindMediaToggle(link)
+                }
+            }
+        }
+
+        // if unsupported, run the polyfill
+        if (!rp.support()) {
+            // run once at least
+            rp.poly()
+
+            // rerun poly on an interval until onload
+            var run = w.setInterval(rp.poly, 500)
+            if (w.addEventListener) {
+                w.addEventListener('load', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            } else if (w.attachEvent) {
+                w.attachEvent('onload', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            }
+        }
+
+        // commonjs
+        if (typeof exports !== 'undefined') {
+            exports.loadCSS = loadCSS
+        } else {
+            w.loadCSS = loadCSS
+        }
+    })(typeof global !== 'undefined' ? global : this)
+</script>
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+</style>
+
+    <link rel="preload" href="/css/style.css?v=20211217" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="/css/dark.css?v=20211217" as="style">
+    <link rel="stylesheet" href="/css/dark.css">
+    <link rel="stylesheet" href="/css/mobile.css?v=20211217" media="(max-width: 960px)">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" as="script">
+    <link rel="preload" href="/scripts/main.js?v=20211217" as="script">
+    <link rel="preload" href="/scripts/dark.js?v=20211217" as="script">
+    <link rel="preload" href="/font/Oswald-Regular.ttf" as="font" crossorigin>
+    <link rel="preload" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" as="font" crossorigin>
+    <!-- algolia -->
+    
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ == undefined) {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js" />')
+        }
+    </script>
+    
+        <body class="post-body">
+    
+        <!-- header -->
+        <header class="header header-mobile">
+    <!-- top read progress line -->
+    <div class="header-element">
+        <div class="read-progress"></div>
+    </div>
+    <!-- sidebar menu button -->
+    <div class="header-element">
+        
+            <div class="header-sidebar-menu">
+        
+            
+                <div style="padding-left: 1px;">&#xe775;</div>
+            
+        </div>
+    </div>
+    <!-- header actions -->
+    <div class="header-actions">
+        <!-- theme mode switch button -->
+        <span class="header-theme-btn header-element">
+            <i class="fas fa-adjust"></i>
+        </span>
+        <!-- back to home page text -->
+        <span class="home-link header-element">
+            <a href=/>guojh's Blog.</a>
+        </span>
+    </div>
+    <!-- toggle banner for post layout -->
+    
+        
+            <div class="banner">
+        
+            <div class="blog-title header-element">
+                <a href="/">guojh&#39;s Blog.</a>
+            </div>
+            <div class="post-title header-element">
+                <a href="#" class="post-name">小觅深度版Ubuntu下跑vins-mono</a>
+            </div>
+        </div>
+    
+</header>
+
+        <!-- fixed footer -->
+        <footer class="footer-fixed">
+    <!-- back to top button -->
+    <div class="footer-fixed-element">
+        
+            <div class="back-top back-top-hidden">
+        
+        
+            <div>&#xe639;</div>
+        
+        </div>
+    </div>
+</footer>
+
+        <!-- wrapper -->
+        <div class="wrapper">
+            <div class="site-intro" style="
+
+
+
+
+
+
+
+    height:50vh;
+
+">
+    
+    <!-- 主页  -->
+    
+        
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/index-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+                小觅深度版Ubuntu下跑vins-mono
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+                
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页 meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="SLAM">SLAM</a>
+    
+</div>
+
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">1.2k</span>阅读时长: <span class="post-count reading-time">6 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <!-- 撰写日期 -->
+                    <span class="iconfont-archer post-intro-calander">&#xe676;</span>
+                    <span class="post-intro-time">2019/05/16</span>
+                    <!-- busuanzi -->
+                    
+                        <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                            <span class="iconfont-archer post-intro-busuanzi">&#xe602;</span>
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    
+                    <!-- 文章分享 -->
+                    <span class="share-wrapper">
+                        <span class="iconfont-archer share-icon">&#xe71d;</span>
+                        <span class="share-text">Share</span>
+                        <ul class="share-list">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+
+            <script>
+  // get user agent
+  function getBrowserVersions() {
+    var u = window.navigator.userAgent
+    return {
+      userAgent: u,
+      trident: u.indexOf('Trident') > -1, //IE内核
+      presto: u.indexOf('Presto') > -1, //opera内核
+      webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+      gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+      mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+      ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+      android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+      iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+      iPad: u.indexOf('iPad') > -1, //是否为iPad
+      webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+      weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+      uc: u.indexOf('UCBrowser') > -1, //是否为android下的UC浏览器
+    }
+  }
+  var browser = {
+    versions: getBrowserVersions(),
+  }
+  console.log('userAgent: ' + browser.versions.userAgent)
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded')
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document
+        .getElementsByClassName('intro-title')[0]
+        .classList.add('intro-fade-in')
+      document
+        .getElementsByClassName('intro-subtitle')[0]
+        .classList.add('intro-fade-in')
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in')
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb() {
+    if (browser.versions.uc) {
+      console.log('UCBrowser')
+      fontLoaded()
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular'],
+        },
+        loading: function () {
+          // 所有字体开始加载
+          // console.log('font loading');
+        },
+        active: function () {
+          // 所有字体已渲染
+          fontLoaded()
+        },
+        inactive: function () {
+          // 字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout')
+          fontLoaded()
+        },
+        timeout: 5000, // Set the timeout to two seconds
+      })
+    }
+  }
+
+  function asyncErr() {
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0]
+    o.src = u
+    if (cb) {
+      o.addEventListener(
+        'load',
+        function (e) {
+          cb(null, e)
+        },
+        false
+      )
+    }
+    if (err) {
+      o.addEventListener(
+        'error',
+        function (e) {
+          err(null, e)
+        },
+        false
+      )
+    }
+    s.parentNode.insertBefore(o, s)
+  }
+
+  var asyncLoadWithFallBack = function (arr, success, reject) {
+    var currReject = function () {
+      reject()
+      arr.shift()
+      if (arr.length) async(arr[0], success, currReject)
+    }
+
+    async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack(
+    [
+      'https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js',
+      'https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js',
+      "/lib/webfontloader.min.js",
+    ],
+    asyncCb,
+    asyncErr
+  )
+</script>
+
+            <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+            <div class="container container-unloaded">
+                <main class="main post-page">
+    <article class="article-entry">
+        <p>最近实验室新买了小觅深度版相机（型号D1000-IR-120/Color），这里记录一下跑vins-mono的过程。由于虚拟机usb可能出现不兼容问题，我使用的是双系统的Ubuntu16.04，对应ROS版本为kinetic。</p>
+<h2 id="安装ros">1.安装ROS</h2>
+<p>Ubuntu16.04对应的ros版本为kinetic，安装的方法网上已有很多，比如可以参考此<a
+target="_blank" rel="noopener" href="https://www.cnblogs.com/liu-fa/p/5779206.html">博客</a>。如果安装出错，请换个源或者用VPN试试。推荐安装ros-kinetic-desktop-full全套版，pcl和opencv库等会直接包含在里面下载。</p>
+<h2 id="编译小觅sdk">2.编译小觅SDK</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/slightech/MYNT-EYE-D-SDK.git</span><br><span class="line"><span class="built_in">cd</span> MYNT-EYE-D-SDK</span><br><span class="line">make init</span><br><span class="line">make ros</span><br><span class="line">make all</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;source ~/MYNT-EYE-D-SDK/wrappers/ros/devel/setup.bash&quot;</span> &gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></table></figure>
+<p>编译完成后，就可以运行samples中的例程了，同时可以运行ros节点发布及可视化图像和imu数据。需要注意ros默认设置的帧率和图像分辨率是必须使用usb3.0的，如果要使用usb2.0，就必须更改.launch文件中分辨率和帧率两个地方。这部分具体的操作及参数设置方法，可以参考小觅深度版SDK<a
+target="_blank" rel="noopener" href="https://mynt-eye-d-sdk.readthedocs.io/zh_CN/latest/index.html">官方文档</a>，其专门提供了图像分辨率支持列表。</p>
+<p>另外，因为跑vins-mono只会用到左目影像和imu，所以最好更改.launch文件，将红外结构光关掉。</p>
+<h2 id="编译vins-mono">3.编译vins-mono</h2>
+<p>首先安装依赖库ceres</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install liblapack-dev libsuitesparse-dev libcxsparse3.1.4 libgflags-dev libgoogle-glog-dev libgtest-dev</span><br><span class="line">git <span class="built_in">clone</span> https://github.com/ceres-solver/ceres-solver</span><br><span class="line"><span class="built_in">cd</span> ceres-solver</span><br><span class="line">mkdir build</span><br><span class="line"><span class="built_in">cd</span> build</span><br><span class="line">cmake ..</span><br><span class="line">make -j4</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+<p>然后开始编译vins-mono</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p ~/catkin_ws/src</span><br><span class="line"><span class="built_in">cd</span> ~/catkin_ws/src</span><br><span class="line">git <span class="built_in">clone</span> -b mynteye https://github.com/slightech/MYNT-EYE-VINS-Sample.git</span><br><span class="line"><span class="built_in">cd</span> ~/catkin_ws</span><br><span class="line">catkin_make -j4</span><br><span class="line"><span class="built_in">source</span> devel/setup.bash</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;source ~/catkin_ws/devel/setup.bash&quot;</span> &gt;&gt; ~/.bashrc</span><br><span class="line"><span class="built_in">source</span> ~/.bashrc</span><br></pre></td></tr></table></figure>
+<p>编译成功后，在运行之前，还必须要更改vins的默认参数（位于MYNT-EYE-VINS-Sample/config/mynteye/mynteye_d_config.yaml）。主要更改话题名称及保存路径、相机内参、畸变系数、是否开启回环检测、相机到imu的外参、及imu参数几个地方。前面几个参数可以通过运行小觅SDK例程得到(./samples/_output/bin/get_img_params和./samples/_output/bin/get_imu_params)，而imu参数我是通过询问小觅技术人员得到的默认值，下面是我的设置，仅供参考。这部分如果设置有误，很可能在初始化成功后很快出现漂移现象。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">%YAML:1.0</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#common parameters</span></span><br><span class="line"><span class="attr">imu_topic:</span> <span class="string">&quot;/mynteye/imu/data_raw&quot;</span></span><br><span class="line"><span class="attr">image_topic:</span> <span class="string">&quot;/mynteye/left/image_mono&quot;</span></span><br><span class="line"><span class="attr">output_path:</span> <span class="string">&quot;/home/gjh/catkin_ws/src/MYNT-EYE-VINS-Sample/config/mynteye&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#camera calibration, please replace it with your own calibration file.</span></span><br><span class="line"><span class="attr">model_type:</span> <span class="string">PINHOLE</span></span><br><span class="line"><span class="attr">camera_name:</span> <span class="string">camera</span></span><br><span class="line"><span class="attr">image_width:</span> <span class="number">640</span></span><br><span class="line"><span class="attr">image_height:</span> <span class="number">480</span></span><br><span class="line"><span class="attr">distortion_parameters:</span></span><br><span class="line">   <span class="attr">k1:</span> <span class="number">-0.29901885986328125</span></span><br><span class="line">   <span class="attr">k2:</span> <span class="number">0.08110046386718750</span></span><br><span class="line">   <span class="attr">p1:</span> <span class="number">-0.00021743774414062</span></span><br><span class="line">   <span class="attr">p2:</span> <span class="number">-0.00006866455078125</span></span><br><span class="line"><span class="attr">projection_parameters:</span></span><br><span class="line">   <span class="attr">fx:</span> <span class="number">354.25241088867187500</span></span><br><span class="line">   <span class="attr">fy:</span> <span class="number">354.28451538085937500</span></span><br><span class="line">   <span class="attr">cx:</span> <span class="number">326.56863403320312500</span></span><br><span class="line">   <span class="attr">cy:</span> <span class="number">254.24504089355468750</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Extrinsic parameter between IMU and Camera.</span></span><br><span class="line"><span class="attr">estimate_extrinsic:</span> <span class="number">0</span>   <span class="comment"># 0  Have an accurate extrinsic parameters. We will trust the following imu^R_cam, imu^T_cam, don&#x27;t change it.</span></span><br><span class="line">                        <span class="comment"># 1  Have an initial guess about extrinsic parameters. We will optimize around your initial guess.</span></span><br><span class="line">                        <span class="comment"># 2  Don&#x27;t know anything about extrinsic parameters. You don&#x27;t need to give R,T. We will try to calibrate it. Do some rotation movement at beginning.                        </span></span><br><span class="line"><span class="comment">#If you choose 0 or 1, you should write down the following matrix.</span></span><br><span class="line"><span class="comment">#Rotation from camera frame to imu frame, imu^R_cam</span></span><br><span class="line"><span class="attr">extrinsicRotation:</span> <span class="type">!!opencv</span><span class="string">-matrix</span></span><br><span class="line">   <span class="attr">rows:</span> <span class="number">3</span></span><br><span class="line">   <span class="attr">cols:</span> <span class="number">3</span></span><br><span class="line">   <span class="attr">dt:</span> <span class="string">d</span></span><br><span class="line">   <span class="attr">data:</span> [ <span class="number">0.99996652</span>,  <span class="number">0.00430873</span>,  <span class="number">0.00695718</span>,</span><br><span class="line">           <span class="number">0.00434878</span>,  <span class="number">-0.99997401</span>,  <span class="number">-0.00575128</span>, </span><br><span class="line">           <span class="number">0.00693222</span>,  <span class="number">0.00578135</span>,  <span class="number">-0.99995926</span>]</span><br><span class="line"><span class="comment">#Translation from camera frame to imu frame, imu^T_cam</span></span><br><span class="line"><span class="attr">extrinsicTranslation:</span> <span class="type">!!opencv</span><span class="string">-matrix</span></span><br><span class="line">   <span class="attr">rows:</span> <span class="number">3</span></span><br><span class="line">   <span class="attr">cols:</span> <span class="number">1</span></span><br><span class="line">   <span class="attr">dt:</span> <span class="string">d</span></span><br><span class="line">   <span class="attr">data:</span> [<span class="number">-0.04777362000000000108</span>,<span class="number">-0.00223730999999999991</span>, <span class="number">-0.00160071000000000008</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">#feature traker paprameters</span></span><br><span class="line"><span class="attr">max_cnt:</span> <span class="number">150</span>            <span class="comment"># max feature number in feature tracking</span></span><br><span class="line"><span class="attr">min_dist:</span> <span class="number">30</span>            <span class="comment"># min distance between two features </span></span><br><span class="line"><span class="attr">freq:</span> <span class="number">10</span>                <span class="comment"># frequence (Hz) of publish tracking result. At least 10Hz for good estimation. If set 0, the frequence will be same as raw image </span></span><br><span class="line"><span class="attr">F_threshold:</span> <span class="number">1.0</span>        <span class="comment"># ransac threshold (pixel)</span></span><br><span class="line"><span class="attr">show_track:</span> <span class="number">1</span>           <span class="comment"># publish tracking image as topic</span></span><br><span class="line"><span class="attr">equalize:</span> <span class="number">1</span>             <span class="comment"># if image is too dark or light, trun on equalize to find enough features</span></span><br><span class="line"><span class="attr">fisheye:</span> <span class="number">0</span>              <span class="comment"># if using fisheye, trun on it. A circle mask will be loaded to remove edge noisy points</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#optimization parameters</span></span><br><span class="line"><span class="attr">max_solver_time:</span> <span class="number">0.04</span>  <span class="comment"># max solver itration time (ms), to guarantee real time</span></span><br><span class="line"><span class="attr">max_num_iterations:</span> <span class="number">8</span>   <span class="comment"># max solver itrations, to guarantee real time</span></span><br><span class="line"><span class="attr">keyframe_parallax:</span> <span class="number">10.0</span> <span class="comment"># keyframe selection threshold (pixel)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#imu parameters (discrete case) The more accurate parameters you provide, the better performance</span></span><br><span class="line"><span class="attr">acc_n:</span> <span class="number">2.1657228523252730e-02</span>   <span class="comment"># accelerometer measurement noise standard deviation.</span></span><br><span class="line"><span class="attr">gyr_n:</span> <span class="number">2.1923690143745844e-03</span>   <span class="comment"># gyroscope measurement noise standard deviation.</span></span><br><span class="line"><span class="attr">acc_w:</span> <span class="number">3.8153871149178200e-04</span>   <span class="comment"># accelerometer bias random work noise standard deviation.</span></span><br><span class="line"><span class="attr">gyr_w:</span> <span class="number">1.4221215955051228e-05</span>   <span class="comment"># gyroscope bias random work noise standard deviation.</span></span><br><span class="line"></span><br><span class="line"><span class="attr">g_norm:</span> <span class="number">9.806</span>   <span class="comment"># gravity magnitude</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#loop closure parameters</span></span><br><span class="line"><span class="attr">loop_closure:</span> <span class="number">1</span>                    <span class="comment"># start loop closure</span></span><br><span class="line"><span class="attr">load_previous_pose_graph:</span> <span class="number">0</span>        <span class="comment"># load and reuse previous pose graph; load from &#x27;pose_graph_save_path&#x27;</span></span><br><span class="line"><span class="attr">fast_relocalization:</span> <span class="number">0</span>             <span class="comment"># useful in real-time and large project</span></span><br><span class="line"><span class="attr">pose_graph_save_path:</span> <span class="string">&quot;/home/gjh/catkin_ws/src/MYNT-EYE-VINS-Sample/config/mynteye/pose_graph/&quot;</span> <span class="comment"># save and load path</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#unsynchronization parameters</span></span><br><span class="line"><span class="attr">estimate_td:</span> <span class="number">0</span>                      <span class="comment"># online estimate time offset between camera and imu</span></span><br><span class="line"><span class="attr">td:</span> <span class="number">0</span>                       <span class="comment"># initial value of time offset. unit: s. readed image clock + td = real image clock (IMU clock)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#rolling shutter parameters</span></span><br><span class="line"><span class="attr">rolling_shutter:</span> <span class="number">0</span>                  <span class="comment"># 0: global shutter camera, 1: rolling shutter camera</span></span><br><span class="line"><span class="attr">rolling_shutter_tr:</span> <span class="number">0</span>               <span class="comment"># unit: s. rolling shutter read out time per frame (from data sheet). </span></span><br><span class="line"></span><br><span class="line"><span class="comment">#visualization parameters</span></span><br><span class="line"><span class="attr">save_image:</span> <span class="number">1</span>                   <span class="comment"># save image in pose graph for visualization prupose; you can close this function by setting 0 </span></span><br><span class="line"><span class="attr">visualize_imu_forward:</span> <span class="number">0</span>        <span class="comment"># output imu forward propogation to achieve low latency and high frequence results</span></span><br><span class="line"><span class="attr">visualize_camera_size:</span> <span class="number">0.4</span>      <span class="comment"># size of camera marker in RVIZ</span></span><br></pre></td></tr></table></figure>
+<h2 id="运行vins-mono">4.运行vins-mono</h2>
+<p>插入小觅相机后，分别在两个终端运行小觅相机及vins-mono</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">roscore</span><br><span class="line">roslaunch mynt_eye_ros_wrapper mynteye.launch</span><br><span class="line">roslaunch vins_estimator mynteye_d.launch</span><br></pre></td></tr></table></figure>
+<p>在初始化的过程中，缓慢移动相机。最后附上我自己的实验结果图。</p>
+<p><img
+src="https://raw.githubusercontent.com/gjgjh/myblog_images/master/vinsmono.png" /></p>
+<p>如果要跑数据集，也可以方便的使用以下命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">roscore</span><br><span class="line">roslaunch vins_estimator euroc.launch</span><br><span class="line">rosbag play MH_05_difficult.bag</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>个人理解错误的地方还请不吝赐教，转载请标明出处</p>
+</blockquote>
+
+    </article>
+    <!-- license -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://gjgjh.github.io">GJGJH</a>
+            <p>原文链接：<a href="https://gjgjh.github.io/VinsMono.html">https://gjgjh.github.io/VinsMono.html</a>
+            <p>发表日期：<a href="https://gjgjh.github.io/VinsMono.html">May 16th 2019, 6:32:40 pm</a>
+            <p>更新日期：<a href="https://gjgjh.github.io/VinsMono.html">February 2nd 2022, 7:37:38 pm</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href="/docker_learning.html" title="Docker学习笔记">
+                    <div class="nextTitle">Docker学习笔记</div>
+                </a>
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href="/gtest.html" title="Google Test(gtest)写c++单元测试">
+                    <div class="prevTitle">Google Test(gtest)写c++单元测试</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- comment -->
+    
+        <div class="post-comment">
+            <!-- 来必力 City 版安装代码 -->
+
+
+            
+
+            
+
+            
+
+            <!-- utteranc评论 -->
+
+
+            <!-- partial('_partial/comment/changyan') -->
+            <!--PC版-->
+
+
+            
+            
+
+            
+
+        </div>
+    
+    <!-- timeliness note -->
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
+    
+    <!-- Mathjax -->
+    
+</main>
+
+                <!-- profile -->
+                
+            </div>
+            <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+        <div class="social">
+            
+    
+        
+            
+                <a href="mailto:guojh_rs@pku.edu.cn" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="https://github.com/gjgjh" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+
+        </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- website approve for Chinese user -->
+    
+    <!-- 不蒜子  -->
+    
+        <div class="busuanzi-container">
+            
+             
+                <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+            
+        </div>
+    	
+</footer>
+
+        </div>
+        <!-- toc -->
+        
+            <div class="toc-wrapper toc-wrapper-loding" style=
+
+
+
+
+
+
+
+    top:50vh;
+
+>
+                <div class="toc-catalog">
+                    <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+                </div>
+                <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85ros"><span class="toc-number">1.</span> <span class="toc-text">1.安装ROS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E5%B0%8F%E8%A7%85sdk"><span class="toc-number">2.</span> <span class="toc-text">2.编译小觅SDK</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%AF%91vins-mono"><span class="toc-number">3.</span> <span class="toc-text">3.编译vins-mono</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%90%E8%A1%8Cvins-mono"><span class="toc-number">4.</span> <span class="toc-text">4.运行vins-mono</span></a></li></ol>
+            </div>
+        
+        <!-- sidebar -->
+        <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+        <div class="sidebar-panel-archives">
+    <!-- 在 ejs 中将 archive 按照时间排序 -->
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 18
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+        
+            
+            
+            <div class="archive-year"> 2020 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/18</span>
+            <a class="archive-post-title" href="/pybind11.html">pybind11</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/01</span>
+            <a class="archive-post-title" href="/%E5%88%86%E8%A7%A3%E6%8A%95%E5%BD%B1%E7%9F%A9%E9%98%B5P.html">From P to K[R|t]</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/04</span>
+            <a class="archive-post-title" href="/C++17%E7%9B%B8%E5%85%B3.html">C++17相关</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/01</span>
+            <a class="archive-post-title" href="/%E8%87%AA%E5%AE%9A%E4%B9%89Profile%E5%B7%A5%E5%85%B7.html">自定义Profile工具</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/04</span>
+            <a class="archive-post-title" href="/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AE%97%E6%B3%95%E9%9D%A2%E8%AF%95%E9%A2%98.html">数据结构算法面试题</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/12</span>
+            <a class="archive-post-title" href="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E9%9D%A2%E8%AF%95%E9%A2%98.html">操作系统面试题</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/11</span>
+            <a class="archive-post-title" href="/%E6%B8%85%E5%8D%8E%E5%A4%A7%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%94%E8%AE%B0.html">清华大学操作系统笔记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/11</span>
+            <a class="archive-post-title" href="/C++%E9%9D%A2%E8%AF%95%E9%A2%98.html">C++面试题</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2019 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/24</span>
+            <a class="archive-post-title" href="/designPattern2.html">设计模式笔记(下)</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/23</span>
+            <a class="archive-post-title" href="/designPattern1.html">设计模式笔记(上)</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/29</span>
+            <a class="archive-post-title" href="/docker_learning.html">Docker学习笔记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/16</span>
+            <a class="archive-post-title" href="/VinsMono.html">小觅深度版Ubuntu下跑vins-mono</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/02</span>
+            <a class="archive-post-title" href="/gtest.html">Google Test(gtest)写c++单元测试</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2018 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/16</span>
+            <a class="archive-post-title" href="/ROS_note.html">ROS学习笔记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/12</span>
+            <a class="archive-post-title" href="/ptam.html">PTAM学习</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/01</span>
+            <a class="archive-post-title" href="/ros1.html">基于ROS获取Android图像和惯导数据</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/02</span>
+            <a class="archive-post-title" href="/lsdslam2.html">LSDSLAM算法解析</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/30</span>
+            <a class="archive-post-title" href="/lsdslam.html">ubuntu16.04+ROS kinetic下跑LSDSLAM</a>
+        </li>
+    
+    </div>
+</div>
+
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+        
+            <span class="sidebar-tag-name" data-tags="C++">
+                <span class="iconfont-archer">&#xe606;</span>
+                C++
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="SLAM">
+                <span class="iconfont-archer">&#xe606;</span>
+                SLAM
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="Docker">
+                <span class="iconfont-archer">&#xe606;</span>
+                Docker
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="ROS">
+                <span class="iconfont-archer">&#xe606;</span>
+                ROS
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="操作系统">
+                <span class="iconfont-archer">&#xe606;</span>
+                操作系统
+            </span>
+        
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+        缺失模块，请参考主题文档进行安装配置：https://github.com/fi3ework/hexo-theme-archer#%E5%AE%89%E8%A3%85%E4%B8%BB%E9%A2%98
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+
+    </div>
+</div>
+
+        <!-- site-meta -->
+        <script>
+    var siteMetaRoot = "/"
+    if (siteMetaRoot === "undefined") {
+        siteMetaRoot = '/'
+    }
+    var siteMeta = {
+        url: "https://gjgjh.github.io",
+        root: siteMetaRoot,
+        author: "GJGJH"
+    }
+</script>
+
+        <!-- import experimental options here -->
+        <!-- Custom Font -->
+
+
+        <!-- main func -->
+        <script src="/scripts/main.js?v=20211217"></script>
+        <!-- dark mode -->
+        <script src="/scripts/dark.js?v=20211217"></script>
+        <!-- fancybox -->
+        <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" defer></script>
+        <!-- algolia -->
+        
+        <!-- busuanzi -->
+        
+            <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+        
+        <!-- CNZZ -->
+        
+        <!-- async load share.js -->
+        
+            <script src="/scripts/share.js?v=20211217" async></script>
+        
+        <!-- mermaid -->
+        
+    </body>
+</html>

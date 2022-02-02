@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="">
+    <!-- title -->
+
+
+    
+
+<!-- keywords -->
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="author" content="GJGJH">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="GJGJH">
+    
+        <meta name="keywords" content="hexo,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="">
+    <meta name="description" content="在阅读本文之前，最好先看过《视觉SLAM十四讲》中直接法(chap 8)和单目稠密建图(chap 13)部分，并对李群李代数和立体匹配相关知识有一些了解，这对于理解LSD-SLAM算法有一定帮助  LSD-SLAM算法主要在以下两个论文中提出： [1] 2013 Semi-dense Visual Odometry for a Monocular Camera [2] 2014 LSD-SLAM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LSDSLAM算法解析">
+<meta property="og:url" content="https://gjgjh.github.io/lsdslam2.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="在阅读本文之前，最好先看过《视觉SLAM十四讲》中直接法(chap 8)和单目稠密建图(chap 13)部分，并对李群李代数和立体匹配相关知识有一些了解，这对于理解LSD-SLAM算法有一定帮助  LSD-SLAM算法主要在以下两个论文中提出： [1] 2013 Semi-dense Visual Odometry for a Monocular Camera [2] 2014 LSD-SLAM">
+<meta property="og:locale">
+<meta property="article:published_time" content="2018-10-02T06:22:39.000Z">
+<meta property="article:modified_time" content="2022-02-02T11:37:38.114Z">
+<meta property="article:author" content="GJGJH">
+<meta property="article:tag" content="SLAM">
+<meta name="twitter:card" content="summary">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <link rel="icon" href="/assets/favicon.ico">
+    
+    <title>LSDSLAM算法解析 · guojh&#39;s Blog</title>
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+    (function (w) {
+        'use strict'
+        // rel=preload support test
+        if (!w.loadCSS) {
+            w.loadCSS = function () {}
+        }
+        // define on the loadCSS obj
+        var rp = (loadCSS.relpreload = {})
+        // rel=preload feature support test
+        // runs once and returns a function for compat purposes
+        rp.support = (function () {
+            var ret
+            try {
+                ret = w.document.createElement('link').relList.supports('preload')
+            } catch (e) {
+                ret = false
+            }
+            return function () {
+                return ret
+            }
+        })()
+
+        // if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+        // then change that media back to its intended value on load
+        rp.bindMediaToggle = function (link) {
+            // remember existing media attr for ultimate state, or default to 'all'
+            var finalMedia = link.media || 'all'
+
+            function enableStylesheet() {
+                link.media = finalMedia
+            }
+
+            // bind load handlers to enable media
+            if (link.addEventListener) {
+                link.addEventListener('load', enableStylesheet)
+            } else if (link.attachEvent) {
+                link.attachEvent('onload', enableStylesheet)
+            }
+
+            // Set rel and non-applicable media type to start an async request
+            // note: timeout allows this to happen async to let rendering continue in IE
+            setTimeout(function () {
+                link.rel = 'stylesheet'
+                link.media = 'only x'
+            })
+            // also enable media after 3 seconds,
+            // which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+            setTimeout(enableStylesheet, 3000)
+        }
+
+        // loop through link elements in DOM
+        rp.poly = function () {
+            // double check this to prevent external calls from running
+            if (rp.support()) {
+                return
+            }
+            var links = w.document.getElementsByTagName('link')
+            for (var i = 0; i < links.length; i++) {
+                var link = links[i]
+                // qualify links to those with rel=preload and as=style attrs
+                if (
+                    link.rel === 'preload' &&
+                    link.getAttribute('as') === 'style' &&
+                    !link.getAttribute('data-loadcss')
+                ) {
+                    // prevent rerunning on link
+                    link.setAttribute('data-loadcss', true)
+                    // bind listeners to toggle media back
+                    rp.bindMediaToggle(link)
+                }
+            }
+        }
+
+        // if unsupported, run the polyfill
+        if (!rp.support()) {
+            // run once at least
+            rp.poly()
+
+            // rerun poly on an interval until onload
+            var run = w.setInterval(rp.poly, 500)
+            if (w.addEventListener) {
+                w.addEventListener('load', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            } else if (w.attachEvent) {
+                w.attachEvent('onload', function () {
+                    rp.poly()
+                    w.clearInterval(run)
+                })
+            }
+        }
+
+        // commonjs
+        if (typeof exports !== 'undefined') {
+            exports.loadCSS = loadCSS
+        } else {
+            w.loadCSS = loadCSS
+        }
+    })(typeof global !== 'undefined' ? global : this)
+</script>
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+</style>
+
+    <link rel="preload" href="/css/style.css?v=20211217" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="/css/dark.css?v=20211217" as="style">
+    <link rel="stylesheet" href="/css/dark.css">
+    <link rel="stylesheet" href="/css/mobile.css?v=20211217" media="(max-width: 960px)">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" as="script">
+    <link rel="preload" href="/scripts/main.js?v=20211217" as="script">
+    <link rel="preload" href="/scripts/dark.js?v=20211217" as="script">
+    <link rel="preload" href="/font/Oswald-Regular.ttf" as="font" crossorigin>
+    <link rel="preload" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" as="font" crossorigin>
+    <!-- algolia -->
+    
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ == undefined) {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js" />')
+        }
+    </script>
+    
+        <body class="post-body">
+    
+        <!-- header -->
+        <header class="header header-mobile">
+    <!-- top read progress line -->
+    <div class="header-element">
+        <div class="read-progress"></div>
+    </div>
+    <!-- sidebar menu button -->
+    <div class="header-element">
+        
+            <div class="header-sidebar-menu">
+        
+            
+                <div style="padding-left: 1px;">&#xe775;</div>
+            
+        </div>
+    </div>
+    <!-- header actions -->
+    <div class="header-actions">
+        <!-- theme mode switch button -->
+        <span class="header-theme-btn header-element">
+            <i class="fas fa-adjust"></i>
+        </span>
+        <!-- back to home page text -->
+        <span class="home-link header-element">
+            <a href=/>guojh's Blog.</a>
+        </span>
+    </div>
+    <!-- toggle banner for post layout -->
+    
+        
+            <div class="banner">
+        
+            <div class="blog-title header-element">
+                <a href="/">guojh&#39;s Blog.</a>
+            </div>
+            <div class="post-title header-element">
+                <a href="#" class="post-name">LSDSLAM算法解析</a>
+            </div>
+        </div>
+    
+</header>
+
+        <!-- fixed footer -->
+        <footer class="footer-fixed">
+    <!-- back to top button -->
+    <div class="footer-fixed-element">
+        
+            <div class="back-top back-top-hidden">
+        
+        
+            <div>&#xe639;</div>
+        
+        </div>
+    </div>
+</footer>
+
+        <!-- wrapper -->
+        <div class="wrapper">
+            <div class="site-intro" style="
+
+
+
+
+
+
+
+    height:50vh;
+
+">
+    
+    <!-- 主页  -->
+    
+        
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/index-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+                LSDSLAM算法解析
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+                
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页 meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags="SLAM">SLAM</a>
+    
+</div>
+
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">5.7k</span>阅读时长: <span class="post-count reading-time">22 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <!-- 撰写日期 -->
+                    <span class="iconfont-archer post-intro-calander">&#xe676;</span>
+                    <span class="post-intro-time">2018/10/02</span>
+                    <!-- busuanzi -->
+                    
+                        <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                            <span class="iconfont-archer post-intro-busuanzi">&#xe602;</span>
+                            <span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    
+                    <!-- 文章分享 -->
+                    <span class="share-wrapper">
+                        <span class="iconfont-archer share-icon">&#xe71d;</span>
+                        <span class="share-text">Share</span>
+                        <ul class="share-list">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+
+            <script>
+  // get user agent
+  function getBrowserVersions() {
+    var u = window.navigator.userAgent
+    return {
+      userAgent: u,
+      trident: u.indexOf('Trident') > -1, //IE内核
+      presto: u.indexOf('Presto') > -1, //opera内核
+      webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+      gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+      mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+      ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+      android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+      iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+      iPad: u.indexOf('iPad') > -1, //是否为iPad
+      webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+      weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+      uc: u.indexOf('UCBrowser') > -1, //是否为android下的UC浏览器
+    }
+  }
+  var browser = {
+    versions: getBrowserVersions(),
+  }
+  console.log('userAgent: ' + browser.versions.userAgent)
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded')
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document
+        .getElementsByClassName('intro-title')[0]
+        .classList.add('intro-fade-in')
+      document
+        .getElementsByClassName('intro-subtitle')[0]
+        .classList.add('intro-fade-in')
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in')
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb() {
+    if (browser.versions.uc) {
+      console.log('UCBrowser')
+      fontLoaded()
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular'],
+        },
+        loading: function () {
+          // 所有字体开始加载
+          // console.log('font loading');
+        },
+        active: function () {
+          // 所有字体已渲染
+          fontLoaded()
+        },
+        inactive: function () {
+          // 字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout')
+          fontLoaded()
+        },
+        timeout: 5000, // Set the timeout to two seconds
+      })
+    }
+  }
+
+  function asyncErr() {
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document,
+      t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0]
+    o.src = u
+    if (cb) {
+      o.addEventListener(
+        'load',
+        function (e) {
+          cb(null, e)
+        },
+        false
+      )
+    }
+    if (err) {
+      o.addEventListener(
+        'error',
+        function (e) {
+          err(null, e)
+        },
+        false
+      )
+    }
+    s.parentNode.insertBefore(o, s)
+  }
+
+  var asyncLoadWithFallBack = function (arr, success, reject) {
+    var currReject = function () {
+      reject()
+      arr.shift()
+      if (arr.length) async(arr[0], success, currReject)
+    }
+
+    async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack(
+    [
+      'https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js',
+      'https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js',
+      "/lib/webfontloader.min.js",
+    ],
+    asyncCb,
+    asyncErr
+  )
+</script>
+
+            <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+            <div class="container container-unloaded">
+                <main class="main post-page">
+    <article class="article-entry">
+        <blockquote>
+<p>在阅读本文之前，最好先看过《视觉SLAM十四讲》中直接法(chap
+8)和单目稠密建图(chap
+13)部分，并对李群李代数和立体匹配相关知识有一些了解，这对于理解LSD-SLAM算法有一定帮助</p>
+</blockquote>
+<p>LSD-SLAM算法主要在以下两个论文中提出： [1] 2013 <a
+target="_blank" rel="noopener" href="https://vision.in.tum.de/_media/spezial/bib/engel2013iccv.pdf">Semi-dense
+Visual Odometry for a Monocular Camera</a> [2] 2014 <a
+target="_blank" rel="noopener" href="https://vision.in.tum.de/_media/spezial/bib/engel14eccv.pdf">LSD-SLAM:
+Large-Scale Direct Monocular SLAM</a></p>
+<p>论文[2]提出LSD-SLAM，可分为三大模块：Tracking、Depth Map
+Estimation和Map Optimization，如下图所示。其中Depth Map
+Estimation部分详细的算法是在文献[1]中介绍的。 <img
+src="https://res.cloudinary.com/ddqa2am0q/image/upload/v1538703314/lsdslam_flowchart.png" /></p>
+<h2 id="initialization">0 Initialization</h2>
+<p>在这三大模块之前，必然是先初始化。初始化就是选一个关键帧，然后设置随机的深度，方差设置为一个较大的值。然后给予相机充分的运动，不断更新深度，直到收敛。这部分具体原理下面第2节会提到，可以先跳过。</p>
+<p>初始化后，就可以开始下面三大模块了。</p>
+<h2 id="tracking">1 Tracking</h2>
+<p>Tracking部分比较简单，就是《十四讲》中讲的直接法，即最小化光度误差。每当获取一张新的帧时，就把它和当前的关键帧进行<span
+class="math inline">\(\mathfrak{se}(3)\)</span>上的配准。先看下下面的公式，其中一个关键帧可以表示为<span
+class="math inline">\(，K_i=(I_i, D_i, V_i)\)</span>其中<span
+class="math inline">\(I_i\)</span>表示图像，<span
+class="math inline">\(D_i\)</span>表示其逆深度图，<span
+class="math inline">\(V_i\)</span>表示逆深度图方差： <span
+class="math display">\[
+E_p(\mathbf\xi_{ji}) =\sum_{\mathbf{p}\in\Omega_{D_i}}
+\Biggl\|\frac{r_p^2(\mathbf{p},\mathbf\xi_{ji})}{\sigma_{r_p(\mathbf{p},\mathbf\xi_{ji})}^2}\Biggr\|_\delta
+\tag{1}
+\]</span></p>
+<p><span class="math display">\[
+r_p(\mathbf{p},{\mathbf\xi_{ji}}) := I_i({\mathbf{p}}) -
+I_j(\omega({\mathbf{p}}, D_i({\mathbf{p}}), \mathbf\xi_{ji})) \tag{2}
+\]</span></p>
+<p><span class="math display">\[
+\sigma_{r_p(\mathbf{p},\mathbf\xi_{ji})}^2 := 2\sigma_I^2 +
+(\frac{\partial{r_p(\mathbf{p},
+\mathbf\xi_{ji})}}{\partial{D_i(\mathbf{p})}})^2V_i(\mathbf{p}) \tag{3}
+\]</span>
+由于不同像素、不同深度、不同角度的不确定性是不同的，在计算光度误差时，如果按照一样的权重计算也是不合适的。这个和单目SLAM、RGBDSLAM是不同的，因为论文认为直接法SLAM中不同点的深度估计不确定性<strong>差异很大</strong>：如果一个点经常被观测到，深度的不确定性就会很小，反之就会很大。因此必须在tracking时考虑到这个误差。</p>
+<p>因此，LSDSLAM使用方差归一化后的光度误差（variance-normalized
+photometric error）。这个方差<span
+class="math inline">\(\sigma_{r_p(\mathbf{p},\mathbf\xi_{ji})}^2\)</span>可以通过高斯分布的<a
+target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Propagation_of_uncertainty">方差传播</a>（也就是<strong>误差传播定律</strong>）计算得到，由公式(3)可以看出，该方差与两个图像的灰度方差<span
+class="math inline">\(\sigma_I^2\)</span>和逆深度方差计算得到。整个LSDSLAM中，我觉得很重要的一个地方就是<strong>对误差的不确定性建模和分析</strong>，下面会看到其他地方也用到了精细的误差建模。这块也是该论文的创新点之一。</p>
+<p>定义好了误差项，然后就可以去优化求解了。为了抗粗差，本文优化时使用了Huber核函数。同时，还使用了迭代变权高斯牛顿法去做优化，对残差大的项降低权重。</p>
+<h2 id="depth-map-estimation">2 Depth Map Estimation</h2>
+<p>这部分主要是用Tracking跟踪后的帧更新或构建深度图，分两种情况： *
+不构建关键帧时，则更新当前关键帧的深度图（Depth Map Refinement） *
+构建关键帧时，则构建新关键帧的深度图（Depth Map Creation）</p>
+<p>其中，是否构建关键帧是通过计算当前帧与当前关键帧的距离判断的，大于一定距离时才构建新的关键帧。距离定义如下，<span
+class="math inline">\(\mathbf W\)</span>为对角阵，目的是加权：</p>
+<p><span class="math display">\[
+dist(\mathbf\xi_{ji}):=\mathbf\xi_{ji}^T \mathbf W \mathbf\xi_{ji}
+\tag{4}
+\]</span></p>
+<p>在进一步介绍之前，有必要重申一下一些定义：<strong>关键帧（key
+frame）</strong>是相隔一定距离的具有代表性的帧，每一个关键帧对应一个深度图；<strong>参考帧（reference
+frame）</strong>是用于和当前帧做立体匹配的帧，一个关键帧后面一般有许多参考帧。接下来就分别介绍一下上述的两种情况。</p>
+<h3 id="深度图的更新-depth-map-refinement">2.1 深度图的更新 Depth Map
+Refinement</h3>
+<p>当我们获得一个新的帧，并且判断不构建新的关键帧，则进行当前关键帧深度图的更新过程。这部分论文中称为基于立体匹配的深度更新（Stereo-Based
+Depth Map Update），具体可分为以下四个步骤： *
+根据一些标准选择出“好的”像素 * 为每个像素自适应选择最合适的参考帧 *
+极线上进行立体匹配 * 深度观测融合</p>
+<p>原论文打乱了顺序，这里我们按上述顺序依次介绍。</p>
+<h4 id="选择出好的像素">2.1.1 选择出“好的”像素</h4>
+<p>这部分论文中称为不确定性估计（Uncertainty
+Estimation），主要通过建模（对逆深度的不确定度进行估计），并以此为依据挑选出好的像素。我们知道在直接法中，逆深度与四个变量有关，可以表示成它们的的函数：</p>
+<p><span class="math display">\[
+d^*=d(I_0,I_1,\xi,\pi)\tag{5}
+\]</span></p>
+<p>其中<span class="math inline">\(I_0\)</span>，<span
+class="math inline">\(I_1\)</span>分别为参考帧和当前帧两个图像，<span
+class="math inline">\(\xi\)</span>表示两帧间位姿变换，<span
+class="math inline">\(\pi\)</span>为相机内参。为进一步分析各个变量的影响，将整个立体匹配过程分为三步：
+1.计算在参考帧中的极线 2.在极线上找到最好的匹配位置<span
+class="math inline">\(\lambda^\*\in\mathbb{R}\)</span>(视差) 3.通过<span
+class="math inline">\(\lambda^\*\)</span>求出逆深度<span
+class="math inline">\(d^\*\)</span></p>
+<p>这三个步骤分别涉及三个误差：<strong>几何视差误差</strong>，由$<span
+class="math inline">\(和\)</span><span
+class="math inline">\(中的噪声将影响第１步极线的位置，从而导致匹配点位置的误差；**光度视差误差**，在图像\)</span>I_0<span
+class="math inline">\(和\)</span>I_1$上的噪声将影响第２步匹配位置的求取；<strong>逆深度计算误差</strong>，逆深度误差除了与上述两个误差有关外，还与基线、像素位置等有关。接下来将对这几个误差一一建模分析。</p>
+<h5 id="a.几何视差误差">a.几何视差误差</h5>
+<p><strong>几何视差误差（Geometric disparity error）</strong>，记为<span
+class="math inline">\(\epsilon_\lambda\)</span>。这一部分论文从几何和代数上分析了几何视差误差的具体形式。
+首先我们从<strong>代数</strong>上分析。理论上，几何视差误差可以准确地计算出，但计算复杂度较大，不够高效，故使用了近似的误差模型进行了代替。首先，极线可定义为：
+<span class="math display">\[
+L:=\begin{Bmatrix}l_0+\lambda\begin{pmatrix}l_x\\l_y\end{pmatrix}\mid\lambda\in
+S\end{Bmatrix}\tag{6}
+\]</span></p>
+<p>其中，<span class="math inline">\(\lambda\)</span>为视差，<span
+class="math inline">\(l:=(l_x,l_y)^T\)</span>是归一化的极线方向向量，<span
+class="math inline">\(l_0\)</span>是极线上对应无穷远点的图像点（但我认为当作极点更容易理解，不影响结果，只是视差的具体数值不一样）。设我们要解求的点在极线和灰度等值线（isocurve）的交点上，在局部我们将等值线近似为直线，同时梯度方向近似不变，则有：
+<span class="math display">\[
+l_0+\lambda\begin{pmatrix}l_x\\l_y\end{pmatrix}\stackrel{!}＝g_0+\gamma\begin{pmatrix}-g_y\\g_x\end{pmatrix}
+\quad\quad \gamma\in\mathbb{R}\tag{7}
+\]</span></p>
+<p>这里<span class="math inline">\(g_0\)</span>为等值线上的一点，<span
+class="math inline">\(g_0\)</span>处的灰度值等于或接近待匹配像素的灰度值。<span
+class="math inline">\(g:=(g_x,g_y)^T\)</span>表示归一化梯度方向向量，则<span
+class="math inline">\((-g_y,g_x)^T\)</span>表示归一化等值线方向向量。故等式左边是沿极线搜索到的匹配点坐标，等式右边表示该点位于等值线上。由于下面会分析图像噪声的影响，所以这里假设<span
+class="math inline">\(g_0\)</span>和<span
+class="math inline">\(g\)</span>不受噪声影响。现在用这些相关量将<span
+class="math inline">\(\lambda^\*\)</span>表示出来(将式(7)两边同左乘<span
+class="math inline">\(g^T\)</span>并移项得): <span
+class="math display">\[
+\lambda^*(l_0)=\frac{\langle g,g_0-l_0 \rangle}{\langle g,l
+\rangle}\tag{8}
+\]</span></p>
+<p>由高斯分布方差传播可得： <span class="math display">\[
+\sigma_{\lambda(\xi,\pi)}^2=J_{\lambda^*(l_0)}\begin{pmatrix}\sigma_l^2&amp;0\\0&amp;\sigma_l^2\end{pmatrix}J_{\lambda^*(l_0)}^{T}
+\tag{9}
+\]</span></p>
+<p>由式(8)得： <span class="math display">\[
+J_{\lambda^*(l_0)}=\frac{\partial\lambda^*(l_0)}{\partial
+l_0}=-\frac{g^T}{\langle g,l \rangle} \tag{10}
+\]</span></p>
+<p>代入式(9)得： <span class="math display">\[
+\sigma_{\lambda(\xi,\pi)}^2=\frac{\langle
+g,g\rangle\cdot\sigma_l^2}{\langle
+g,l\rangle^2}=\frac{\sigma_l^2}{\langle g,l\rangle^2} \tag{11}
+\]</span></p>
+<p>其中，<span
+class="math inline">\(\sigma_{l}^2\)</span>为极线位置误差<span
+class="math inline">\(\epsilon_l\)</span>的方差（<span
+class="math inline">\(\epsilon_l\)</span>可以看作位姿扰动的影响，其示意图见下面）。总之，从式(11)我们可以得出以下结论：
+* 位姿扰动造成的误差<span
+class="math inline">\(\sigma_{l}^2\)</span>越大，则几何视差误差越大 *
+梯度<span class="math inline">\(g\)</span>和极线<span
+class="math inline">\(l\)</span>的夹角越小（内积越大），几何视差误差越小</p>
+<p>代数上分析完后，再从<strong>几何</strong>上分析一下，毕竟数形结合才能更好理解，否则这个地方理解起来有点抽象。如下图所示，<span
+class="math inline">\(P\_0\)</span>是假设没有误差时匹配到的点，<span
+class="math inline">\(L&#39;\)</span>是无误差时的极线。但是由于位姿扰动影响，在图上表现为<span
+class="math inline">\(P\_0\)</span>偏移了<span
+class="math inline">\(\epsilon\_l\)</span>这么远（论文认为位姿扰动只影响极点位置计算，但极线方向不受影响，所以极点<span
+class="math inline">\(l\_0\)</span>等极线上的点都偏移了这么远），论文假设<span
+class="math inline">\(l\_0\)</span>受各向同性的高斯噪声，因此<span
+class="math inline">\(P\_0\)</span>偏移后的位置可能出现在蓝色虚圆的任意一点<span
+class="math inline">\(P\_1\)</span>。偏移后极线为<span
+class="math inline">\(L\)</span>，虚直线为等值线。那么现在，在极线<span
+class="math inline">\(L\)</span>上要匹配到同样灰度值的点，就得<strong>多走</strong><span
+class="math inline">\(\epsilon\_\lambda\)</span>这么一段距离，这就是几何视差误差。
+从图上我们可以清晰看出梯度方向与极线方向夹角大小对几何视差误差的影响，可以得出和上面代数分析部分一样的两个结论。
+<img
+src="https://res.cloudinary.com/ddqa2am0q/image/upload/v1538738729/lsdslam_geometric.jpg" /></p>
+<h5 id="b.光度视差误差">b.光度视差误差</h5>
+<p><strong>光度视差误差（Photometric disparity
+error）</strong>这一部分论文也从几何和代数上分析了几何视差误差的具体形式。首先我们从<strong>代数</strong>上分析。在立体匹配时我们使用SSD误差（见2.1.3节），即：
+<span class="math display">\[
+\lambda^*＝\min_{\lambda}(i_{ref}-I_p(\lambda))^2 \tag{12}
+\]</span></p>
+<p>其中<span
+class="math inline">\(i_{ref}\)</span>是参考帧像素灰度，<span
+class="math inline">\(I_p(\lambda)\)</span>是极线上视差<span
+class="math inline">\(\lambda\)</span>处的像素灰度。假设实际中可以获得一个比较好的初值<span
+class="math inline">\(\lambda_0\)</span>，则将<span
+class="math inline">\(I_p(\lambda)\)</span>一阶泰勒展开： <span
+class="math display">\[
+I_p(\lambda)\approx I_p(\lambda_0)+g_p\Delta \lambda \tag{13}
+\]</span></p>
+<p>则误差函数变为： <span class="math display">\[
+\lambda^*＝\min_{\lambda}(i_{ref}-I_p(\lambda_0)-g_p\Delta\lambda)^2
+\tag{14}
+\]</span></p>
+<p>可以解出<span class="math inline">\(\Delta\lambda\)</span>，则有：
+<span class="math display">\[
+\lambda^*(I)=\lambda_0+\Delta\lambda=\lambda_0+(i_{ref}-I_p(\lambda_0))g_p^{-1}
+\tag{15}
+\]</span></p>
+<p>注意这里<span class="math inline">\(g_p\)</span>是图像<span
+class="math inline">\(I_p\)</span>极线上的梯度，因此是一维的。这里同样不考虑梯度的噪声，只考虑两个图像的噪声，则有：
+<span class="math display">\[
+\sigma_{\lambda(I)}^2=J_{\lambda^*(I)}\begin{pmatrix}\sigma_i^2&amp;0\\0&amp;\sigma_i^2\end{pmatrix}J_{\lambda^*(I)}^T=\frac{2\sigma_i^2}{g_p^2}
+\tag{16}
+\]</span></p>
+<p>这里由于同时对关键帧和参考帧的灰度都计算了噪声，二者误差相互独立，因此会有２这个系数。故也可以这么求：
+<span class="math display">\[
+\sigma_{\lambda(I)}^2=\text{Var}(\lambda^*(I))=(\text{Var}(i_{ref})+\text{Var}(I_p))g_p^{-2}=\frac{2\sigma_i^2}{g_p^2}　\tag{17}
+\]</span></p>
+<p>其中<span
+class="math inline">\(\sigma_i^2\)</span>是图像的高斯噪声的方差。从上式可得结论：
+* 图像噪声越大，光度视差误差越大 *
+极线方向上梯度越大，光度视差误差越小</p>
+<p>代数上分析完后，再从<strong>几何</strong>上分析一下。如下图所示，比较直观。直线斜率的绝对值表示极线上梯度大小，当梯度值越大时，可以看出光度视差误差越小。直接法因为是靠图像梯度来不断调整位姿的，因此梯度必须较大，这样才能在优化中较快较好地收敛。这部分内容在《十四讲》中也有提到。
+<img
+src="https://res.cloudinary.com/ddqa2am0q/image/upload/v1538746069/lsdslam_photometric.png" /></p>
+<h5 id="c.逆深度计算误差">c.逆深度计算误差</h5>
+<p>这部分主要是讲基线、像素位置等对逆深度误差的影响。首先，视差<span
+class="math inline">\(\lambda\)</span>越大，我们知道物体的深度越小，那么逆深度越大。论文中认为当旋转角度较小时，<span
+class="math inline">\(\lambda\)</span>和<span
+class="math inline">\(d\)</span>近似成正比例关系。而<span
+class="math inline">\(\lambda\)</span>误差方差可以表示为几何视差误差和光度视差误差方差之和（因为两者独立），故就有下面的式子：
+<span class="math display">\[
+\sigma_{d,\text{obs}}^2=\alpha^2\begin{pmatrix}\sigma_{\lambda(\xi,\pi)}^2+\sigma_{\lambda(I)}^2\end{pmatrix}\tag{18}
+\]</span></p>
+<p>其中<span
+class="math inline">\(\alpha\)</span>是权重。更准确说，<span
+class="math inline">\(\alpha\)</span>是当前像素的深度观测值不确定性，其定义如下：
+<span class="math display">\[
+\alpha:=\frac{\partial{d}}{\partial{\lambda}} \tag{19}
+\]</span></p>
+<p>其中分子为逆深度搜索范围，分母为极线段搜索范围。如果一个小的极线上的变化会导致深度变化大，那就是说此时不确定性大，故权重大一些。这个概念我们在学习三角化时早已领略过：即平移太小，三角化的精度不够。因此，平移小的像素，就让它误差的权重大一些，我们不太想要这种像素。<span
+class="math inline">\(\alpha\)</span>具体计算公式推导可以参考其他博客。考虑到在极线上搜索匹配点的时候，是使用了多个点，因此这里给出了逆深度误差的上限：
+<span class="math display">\[
+\sigma_{d,\text{obs}}^2\le\alpha^2\begin{pmatrix}\text{min}[\sigma_{\lambda(\xi,\pi)}^2]+\text{min}[\sigma_{\lambda(I)}^2]\end{pmatrix}
+\tag{20}
+\]</span></p>
+<p>总结一下：几何视差误差与<strong>梯度方向</strong>有关，光度视差误差与<strong>梯度大小</strong>有关，权重<span
+class="math inline">\(\alpha\)</span>与<strong>基线长度焦距像素位置等</strong>有关。这三个因素共同影响立体观测精度，我们可以据此只把好的像素的观测结果保留，并利用计算得到的方差进行深度图的融合更新（见2.1.4节）。
+#### 2.1.2 为每个像素自适应选择参考帧
+挑选好像素后，需要为每个像素找合适的参考帧。为什么需要找合适的参考帧？因为我们知道在立体视觉中：
+* 小基线，匹配的准确度高，三角化的精度低 *
+大基线，匹配的准确度低(有局部最小值，易误匹配)，三角化的精度高</p>
+<p><img
+src="https://res.cloudinary.com/ddqa2am0q/image/upload/v1538751334/lsdslam_adaptive.png" /></p>
+<p>因此，必须<strong>尽可能</strong>选择距离当前帧较远的帧作为参考帧，但是当极线上超过一定距离还没有匹配到，就需要<strong>退而求其次</strong>，选择距离较近的、新获得的这些帧作为参考帧。论文提出一种自适应的方法，下面使用例子来说明这个过程：
+* 当前0s我们获得一个帧（current frame） *
+直接法估计了位姿，并挑选了一些好的像素，如右上角图所示 *
+找最老的帧，比如直接从当前的关键帧开始匹配，但可能没有匹配到，故使用比较新的帧来做极线搜索，结果找到了-4.8s的帧，那么这一小部分像素的参考帧就是-4.8s时的这个帧了。这部分像素因为跨度比较大，因此像素年龄最大，立体观测的精度应该也是最高的。
+*
+但是别的部分的像素还没找到属于自己的参考帧，因此退而求其次，找更新一点的帧，结果找到了-3.9s的帧
+*
+因为时间越近的帧差别越小，如-0.4s的帧和0s的帧差异很小，所以<strong>一定</strong>会匹配成功（短基线准确度高），只是精度没那么高罢了。所以反复进行上面的过程直到<strong>所有</strong>好的像素都找到对应的参考帧。
+* 计算深度并进一步更新地图。</p>
+<h4 id="立体匹配策略">2.1.3 立体匹配策略</h4>
+<p>在立体匹配的过程中，LSDSLAM选择<strong>极线上５个连续采样点</strong>进行匹配。如果具有深度先验信息，可以限制在<span
+class="math inline">\(2\sigma\)</span>对应的极线段内搜索，<strong>缩小搜索范围</strong>。由于这５个点是相邻的，在极线段上移动的时候，每次只需要更新一个点的值，这样比常规匹配一个patch更<strong>高效</strong>。立体匹配的相似度标准有很多，论文中使用了SSD（Sum
+of Squared Distance）误差： <span class="math display">\[
+E_{SSD}(u)=\sum_{i}[I_1(x_i+u)-I_0(x_i)]^2 \tag{21}
+\]</span></p>
+<h4 id="深度观测融合">2.1.4　深度观测融合</h4>
+<p>即把当前观测的深度融合到关键帧的深度地图中去。这里有两种情况：当对应像素点没有深度先验时则由新的观测值构建新的先验；当已经有先验值的话，则把新观测值融合到先验中去。在这个融合的过程，对应<strong>卡尔曼滤波中更新</strong>的过程，即使用两个高斯分布乘法的方式，在《十四讲》chap
+13中也有介绍。对于给定先验<span
+class="math inline">\(\mathcal{N}(d_p,\sigma_p^2)\)</span>以及有噪声的观测值<span
+class="math inline">\(\mathcal{N}(d_o,\sigma_o^2)\)</span>，具体后验估计公式如下：
+<span class="math display">\[
+\mathcal{N}\begin{pmatrix}\frac{\sigma_p^2 d_o +
+\sigma_o^2d_p}{\sigma_p^2 + \sigma_o^2},
+\frac{\sigma_p^2\sigma_o^2}{\sigma_p^2 +
+\sigma_o^2}\end{pmatrix}\tag{22}
+\]</span></p>
+<h3 id="深度图的构建-depth-map-creation">2.2 深度图的构建 Depth Map
+Creation</h3>
+<p>在构建新的关键帧时，需要构建新关键帧的深度图，其实是把上一个关键帧的深度图传递（或叫传播）到当前帧。首先需要把上一个关键帧的<strong>地图点投影</strong>到当前关键帧，然后对于地图点的不确定性，不能再使用之前的了，需要更新一下。这里采用<strong>近似方式计算</strong>，如公式(24)所示：</p>
+<p>假设两帧间的旋转是很小的，逆深度就可以近似为： <span
+class="math display">\[
+d_1(d_0)=(d_0^{-1}-t_z)^{-1} \tag{23}
+\]</span></p>
+<p>这里的<span
+class="math inline">\(t_z\)</span>是相机沿着光轴方向的位移，同样根据协方差传播率则有：
+<span class="math display">\[
+\sigma_{d_1}^2=J_{d_1}\sigma_{d_0}^2J_{d_1}^T+\sigma_p^2=\begin{pmatrix}\frac{d_1}{d_0}\end{pmatrix}^4\sigma_{d_0}^2+\sigma_p^2　\tag{24}
+\]</span></p>
+<p>这里<span
+class="math inline">\(\sigma_p^2\)</span>的为预测不确定性，就像卡尔曼滤波中的预测白噪声一样。</p>
+<p>但是有可能地图点投影时，两个地图点投影到当前关键帧的一个像素上了，即发生了<strong>碰撞冲突</strong>。LSDSLAM采用以下策略处理：</p>
+<ul>
+<li>当两个地图点的逆深度观测值的差值小于<span
+class="math inline">\(2\sigma\)</span>的时候，则认为观测有效，根据(22)融合</li>
+<li>否则，离相机较远的这个深度估计认为是被遮挡了的，并且舍弃该逆深度信息。</li>
+</ul>
+<p>传播到新关键帧后，将深度图缩放到<strong>平均的逆深度为单位1</strong>。<strong>不同关键帧深度图之间的尺度是由第3节恢复的</strong>，现在先忽略。</p>
+<h3 id="其他">2.3 其他</h3>
+<p>论文还进行了一些其他处理，如把每个像素与其周边的加权深度作为改点的深度值，假如两个邻接深度之间的差值远大于<span
+class="math inline">\(2\sigma\)</span>，他们便不做这个处理。处理之后，各自的方差不变。这里其实是一个Edge-preserving
+smoothing，也叫地图的正则化，目的是为了使<strong>深度图更加平滑</strong>。另外，论文中还用了<strong>outlier
+removal</strong>，这些就不介绍了。</p>
+<h2 id="map-optimization">3 Map Optimization</h2>
+<h3 id="帧间对齐与尺度恢复">3.1 帧间对齐与尺度恢复</h3>
+<p>这部分在论文中叫建图一致性约束（constraint
+acquisition），目的就是为了解决单目尺度漂移问题。因为我们之前2.2节提到每个关键帧对应的深度图的平均逆深度为单位1，因此需要帧间需要做一个<span
+class="math inline">\(\mathfrak{sim}(3)\)</span>的对齐，才能<strong>恢复和保证不同关键帧之间的相对尺度</strong>。与Tracking中类似，只不过对齐时的误差函数除了光度项，还加上了尺度项（或叫深度项）<span
+class="math inline">\(r_d^2(\mathbf{p},\mathbf\xi_{ji})\)</span>： <span
+class="math display">\[
+E(\mathbf\xi_{ji}) =\sum_{\mathbf{p}\in\Omega_{D_i}}\Biggl\|
+\frac{r_p^2(\mathbf{p},\mathbf\xi_{ji})}{\sigma_{r_p(\mathbf{p},\mathbf\xi_{ji})}^2}
++
+\frac{r_d^2(\mathbf{p},\mathbf\xi_{ji})}{\sigma_{r_d(\mathbf{p},\mathbf\xi_{ji})}^2}
+\Biggr\|_\delta  \tag{25}
+\]</span></p>
+<p>这里的光度残差和方差的定义和<span
+class="math inline">\(\mathfrak{se}(3)\)</span>跟踪是一样的，见上文公式(1)-(3)。而深度项误差函数和其方差定义如下：
+<span class="math display">\[
+r_d(\mathbf{p},\mathbf\xi_{ji}) =
+[\mathbf{p}&#39;]_3-D_j([\mathbf{p}&#39;]_{1,2}) \tag{26}
+\]</span></p>
+
+$$
+\sigma_{r_d(\mathbf{p},\mathbf\xi_{ji})}^2 = V_j([\mathbf{p}']_{1,2})\begin{pmatrix}\frac{{\partial}r_d(\mathbf{p},\mathbf\xi_{ji})}{{\partial}D_j([\mathbf{p}']_{1,2})}\end{pmatrix} + V_i(\mathbf{p})\begin{pmatrix}\frac{{\partial}r_d(\mathbf{p},\mathbf\xi_{ji})}{{\partial}D_i(\mathbf{p})}\end{pmatrix}　\tag{27}
+$$
+
+<p>其中<span
+class="math inline">\(\mathbf{p}&#39;:=\omega\_s(\mathbf{p},D\_i(\mathbf{p}),\mathbf\xi\_{ji})\)</span>表示从图像帧<span
+class="math inline">\(i\)</span>变换到图像帧<span
+class="math inline">\(j\)</span>上的地图点。由于不同地图点的不确定性不同，在计算深度误差时，也进行了方差归一化加权。由公式(27)可以看出，深度项的方差取决于两个关键帧逆深度图的方差。</p>
+<p>定义完了误差函数，就可以解算了。求解时同样使用了Huber核函数和迭代变权高斯牛顿算法。</p>
+<h3 id="位姿图优化">3.2 位姿图优化</h3>
+<p>上面说完了理论，现在才到了真正的地图优化部分，这里用的就是我们熟知的位姿图优化。当一个关键帧被新的关键帧取代后，它的<strong>深度图不会再被更新</strong>，这时把该关键帧的深度图（即局部地图）加入到全局地图中。然后，需要做位姿图优化。位姿图优化的概念，已经成为许多SLAM系统的标配，在做优化之前，必须进行回环检测。</p>
+<p>空间上，LSDSLAM选取与该关键帧最近的10个关键帧（包括直接相邻的上一帧）；外观上，使用fabmap寻找相似的关键帧。然后将这些关键帧与当前关键帧进行相似性的比较。我们知道，回环检测对于准确率的要求比召回率高。因此，使用<strong>双向跟踪（Reciprocal
+tracking check）</strong>判断两帧之间的<span
+class="math inline">\(\mathfrak{sim}(3)\)</span>的马氏距离平方是否足够小，如果足够小，表示找到一个回环！这里计算<span
+class="math inline">\(\mathfrak{sim}(3)\)</span><strong>帧间位姿的计算</strong>就是采用3.1节的方法。马氏距离平方公式如下：
+$$
+\begin{equation}
+e\left(\mathbf\xi_{j_k i}, \mathbf\xi_{i j_k}\right) := \left(\mathbf\xi_{j_k i} \circ \mathbf\xi_{i j_k}\right)^T \left(\mathbf\Sigma_{j_k i} + \text{Adj}_{j_k i}\mathbf\Sigma_{i j_k}\text{Adj}_{j_k i}^T\right)^{-1} \left(\mathbf\xi_{j_k i} \circ \mathbf\xi_{i j_k}\right)\label{eq:mdis}
+\end{equation} \tag{28}
+$$
+</p>
+<p>回环约束找到后，就可以执行<span
+class="math inline">\(\mathfrak{sim}(3)\)</span>上的位姿图优化了，即优化：
+<span class="math display">\[
+E(\xi_{W1}\cdots\xi_{Wn})=\sum_{(\xi_{ji},\Sigma)\in\varepsilon}(\xi_{ji}\circ\xi_{Wi}^{-1}\circ\xi_{Wj})^T\Sigma_{ji}^{-1}(\xi_{ji}\circ\xi_{Wi}^{-1}\circ\xi_{Wj})
+\tag{29}
+\]</span></p>
+<p>在大的回环检测时，为了更好地优化、增大收敛半径，论文提出可以使用关键点提供初始值、高效二阶最小化（Efficient
+Second Order
+Minimization，ESM）和由粗到细（Coarse-to-Fine）这三种方法，这里就不再详细介绍了。</p>
+<blockquote>
+<p>个人理解错误的地方还请不吝赐教，转载请标明出处</p>
+</blockquote>
+
+    </article>
+    <!-- license -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://gjgjh.github.io">GJGJH</a>
+            <p>原文链接：<a href="https://gjgjh.github.io/lsdslam2.html">https://gjgjh.github.io/lsdslam2.html</a>
+            <p>发表日期：<a href="https://gjgjh.github.io/lsdslam2.html">October 2nd 2018, 2:22:39 pm</a>
+            <p>更新日期：<a href="https://gjgjh.github.io/lsdslam2.html">February 2nd 2022, 7:37:38 pm</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+                <div class="nextSlogan">Next Post</div>
+                <a href="/ros1.html" title="基于ROS获取Android图像和惯导数据">
+                    <div class="nextTitle">基于ROS获取Android图像和惯导数据</div>
+                </a>
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href="/lsdslam.html" title="ubuntu16.04+ROS kinetic下跑LSDSLAM">
+                    <div class="prevTitle">ubuntu16.04+ROS kinetic下跑LSDSLAM</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- comment -->
+    
+        <div class="post-comment">
+            <!-- 来必力 City 版安装代码 -->
+
+
+            
+
+            
+
+            
+
+            <!-- utteranc评论 -->
+
+
+            <!-- partial('_partial/comment/changyan') -->
+            <!--PC版-->
+
+
+            
+            
+
+            
+
+        </div>
+    
+    <!-- timeliness note -->
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
+    
+    <!-- Mathjax -->
+    
+        
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js"></script>
+
+
+    
+</main>
+
+                <!-- profile -->
+                
+            </div>
+            <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+        <div class="social">
+            
+    
+        
+            
+                <a href="mailto:guojh_rs@pku.edu.cn" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="https://github.com/gjgjh" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+
+        </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- website approve for Chinese user -->
+    
+    <!-- 不蒜子  -->
+    
+        <div class="busuanzi-container">
+            
+             
+                <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+            
+        </div>
+    	
+</footer>
+
+        </div>
+        <!-- toc -->
+        
+            <div class="toc-wrapper toc-wrapper-loding" style=
+
+
+
+
+
+
+
+    top:50vh;
+
+>
+                <div class="toc-catalog">
+                    <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+                </div>
+                <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#initialization"><span class="toc-number">1.</span> <span class="toc-text">0 Initialization</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#tracking"><span class="toc-number">2.</span> <span class="toc-text">1 Tracking</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#depth-map-estimation"><span class="toc-number">3.</span> <span class="toc-text">2 Depth Map Estimation</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B1%E5%BA%A6%E5%9B%BE%E7%9A%84%E6%9B%B4%E6%96%B0-depth-map-refinement"><span class="toc-number">3.1.</span> <span class="toc-text">2.1 深度图的更新 Depth Map
+Refinement</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%89%E6%8B%A9%E5%87%BA%E5%A5%BD%E7%9A%84%E5%83%8F%E7%B4%A0"><span class="toc-number">3.1.1.</span> <span class="toc-text">2.1.1 选择出“好的”像素</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#a.%E5%87%A0%E4%BD%95%E8%A7%86%E5%B7%AE%E8%AF%AF%E5%B7%AE"><span class="toc-number">3.1.1.1.</span> <span class="toc-text">a.几何视差误差</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#b.%E5%85%89%E5%BA%A6%E8%A7%86%E5%B7%AE%E8%AF%AF%E5%B7%AE"><span class="toc-number">3.1.1.2.</span> <span class="toc-text">b.光度视差误差</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#c.%E9%80%86%E6%B7%B1%E5%BA%A6%E8%AE%A1%E7%AE%97%E8%AF%AF%E5%B7%AE"><span class="toc-number">3.1.1.3.</span> <span class="toc-text">c.逆深度计算误差</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AB%8B%E4%BD%93%E5%8C%B9%E9%85%8D%E7%AD%96%E7%95%A5"><span class="toc-number">3.1.2.</span> <span class="toc-text">2.1.3 立体匹配策略</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B7%B1%E5%BA%A6%E8%A7%82%E6%B5%8B%E8%9E%8D%E5%90%88"><span class="toc-number">3.1.3.</span> <span class="toc-text">2.1.4　深度观测融合</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%B1%E5%BA%A6%E5%9B%BE%E7%9A%84%E6%9E%84%E5%BB%BA-depth-map-creation"><span class="toc-number">3.2.</span> <span class="toc-text">2.2 深度图的构建 Depth Map
+Creation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B6%E4%BB%96"><span class="toc-number">3.3.</span> <span class="toc-text">2.3 其他</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#map-optimization"><span class="toc-number">4.</span> <span class="toc-text">3 Map Optimization</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%A7%E9%97%B4%E5%AF%B9%E9%BD%90%E4%B8%8E%E5%B0%BA%E5%BA%A6%E6%81%A2%E5%A4%8D"><span class="toc-number">4.1.</span> <span class="toc-text">3.1 帧间对齐与尺度恢复</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%8D%E5%A7%BF%E5%9B%BE%E4%BC%98%E5%8C%96"><span class="toc-number">4.2.</span> <span class="toc-text">3.2 位姿图优化</span></a></li></ol></li></ol>
+            </div>
+        
+        <!-- sidebar -->
+        <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+        <div class="sidebar-panel-archives">
+    <!-- 在 ejs 中将 archive 按照时间排序 -->
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 18
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+        
+            
+            
+            <div class="archive-year"> 2020 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/18</span>
+            <a class="archive-post-title" href="/pybind11.html">pybind11</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/01</span>
+            <a class="archive-post-title" href="/%E5%88%86%E8%A7%A3%E6%8A%95%E5%BD%B1%E7%9F%A9%E9%98%B5P.html">From P to K[R|t]</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/04</span>
+            <a class="archive-post-title" href="/C++17%E7%9B%B8%E5%85%B3.html">C++17相关</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/01</span>
+            <a class="archive-post-title" href="/%E8%87%AA%E5%AE%9A%E4%B9%89Profile%E5%B7%A5%E5%85%B7.html">自定义Profile工具</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">04/04</span>
+            <a class="archive-post-title" href="/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E7%AE%97%E6%B3%95%E9%9D%A2%E8%AF%95%E9%A2%98.html">数据结构算法面试题</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/12</span>
+            <a class="archive-post-title" href="/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E9%9D%A2%E8%AF%95%E9%A2%98.html">操作系统面试题</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/11</span>
+            <a class="archive-post-title" href="/%E6%B8%85%E5%8D%8E%E5%A4%A7%E5%AD%A6%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%AC%94%E8%AE%B0.html">清华大学操作系统笔记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/11</span>
+            <a class="archive-post-title" href="/C++%E9%9D%A2%E8%AF%95%E9%A2%98.html">C++面试题</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2019 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/24</span>
+            <a class="archive-post-title" href="/designPattern2.html">设计模式笔记(下)</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/23</span>
+            <a class="archive-post-title" href="/designPattern1.html">设计模式笔记(上)</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/29</span>
+            <a class="archive-post-title" href="/docker_learning.html">Docker学习笔记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/16</span>
+            <a class="archive-post-title" href="/VinsMono.html">小觅深度版Ubuntu下跑vins-mono</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">03/02</span>
+            <a class="archive-post-title" href="/gtest.html">Google Test(gtest)写c++单元测试</a>
+        </li>
+    
+        
+            
+            
+                
+                </ul>
+            
+            <div class="archive-year"> 2018 </div>
+            <ul class="year-list">
+            
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">12/16</span>
+            <a class="archive-post-title" href="/ROS_note.html">ROS学习笔记</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/12</span>
+            <a class="archive-post-title" href="/ptam.html">PTAM学习</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">11/01</span>
+            <a class="archive-post-title" href="/ros1.html">基于ROS获取Android图像和惯导数据</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/02</span>
+            <a class="archive-post-title" href="/lsdslam2.html">LSDSLAM算法解析</a>
+        </li>
+    
+        
+        <li class="archive-post-item">
+            <span class="archive-post-date">09/30</span>
+            <a class="archive-post-title" href="/lsdslam.html">ubuntu16.04+ROS kinetic下跑LSDSLAM</a>
+        </li>
+    
+    </div>
+</div>
+
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+        
+            <span class="sidebar-tag-name" data-tags="C++">
+                <span class="iconfont-archer">&#xe606;</span>
+                C++
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="SLAM">
+                <span class="iconfont-archer">&#xe606;</span>
+                SLAM
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="Docker">
+                <span class="iconfont-archer">&#xe606;</span>
+                Docker
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="ROS">
+                <span class="iconfont-archer">&#xe606;</span>
+                ROS
+            </span>
+        
+            <span class="sidebar-tag-name" data-tags="操作系统">
+                <span class="iconfont-archer">&#xe606;</span>
+                操作系统
+            </span>
+        
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+        缺失模块，请参考主题文档进行安装配置：https://github.com/fi3ework/hexo-theme-archer#%E5%AE%89%E8%A3%85%E4%B8%BB%E9%A2%98
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+
+    </div>
+</div>
+
+        <!-- site-meta -->
+        <script>
+    var siteMetaRoot = "/"
+    if (siteMetaRoot === "undefined") {
+        siteMetaRoot = '/'
+    }
+    var siteMeta = {
+        url: "https://gjgjh.github.io",
+        root: siteMetaRoot,
+        author: "GJGJH"
+    }
+</script>
+
+        <!-- import experimental options here -->
+        <!-- Custom Font -->
+
+
+        <!-- main func -->
+        <script src="/scripts/main.js?v=20211217"></script>
+        <!-- dark mode -->
+        <script src="/scripts/dark.js?v=20211217"></script>
+        <!-- fancybox -->
+        <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" defer></script>
+        <!-- algolia -->
+        
+        <!-- busuanzi -->
+        
+            <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+        
+        <!-- CNZZ -->
+        
+        <!-- async load share.js -->
+        
+            <script src="/scripts/share.js?v=20211217" async></script>
+        
+        <!-- mermaid -->
+        
+    </body>
+</html>
